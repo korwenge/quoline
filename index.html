@@ -163,7 +163,7 @@
   <div class="wrap">
     <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
     <div class="links"><a href="#features">Возможности</a><a href="#designs">Дизайны</a><a href="#install">Установка</a><a href="#faq">Вопросы</a></div>
-    <a class="btn btn-small dl" href="https://github.com/korwenge/quobar/releases/latest/download/Quobar.msi">Скачать</a>
+    <a class="btn btn-small dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">Скачать</a>
   </div>
 </nav>
 
@@ -174,7 +174,7 @@
     <h1>Таскбар,<br><span class="grad">каким он должен был быть</span></h1>
     <p class="lead">Quoline заменяет таскбар Windows: плавные анимации, живые виджеты, поиск по Alt + Пробел, громкость каждого приложения и ещё куча мелочей, которых тебе не хватало.</p>
     <div class="cta">
-      <a class="btn btn-big dl" href="https://github.com/korwenge/quobar/releases/latest/download/Quobar.msi">
+      <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         Скачать для Windows
       </a>
@@ -285,7 +285,7 @@
   <div class="wrap reveal">
     <h2>Попробуй Quoline</h2>
     <p class="sub" style="margin:0 auto 30px">Твой таскбар больше никогда не будет скучным.</p>
-    <a class="btn btn-big dl" href="https://github.com/korwenge/quobar/releases/latest/download/Quobar.msi">
+    <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
       Скачать для Windows
     </a>
@@ -295,7 +295,7 @@
 <footer>
   <div class="wrap">
     <span>© <span id="yr">2026</span> Quoline</span>
-    <span><a href="https://github.com/korwenge/quobar/releases">Все версии</a></span>
+    <span><a href="https://github.com/korwenge/quoline/releases">Все версии</a></span>
   </div>
 </footer>
 
@@ -312,7 +312,7 @@
   document.getElementById("yr").textContent = new Date().getFullYear();
 
   // current version straight from GitHub
-  fetch("https://api.github.com/repos/korwenge/quobar/releases/latest")
+  fetch("https://api.github.com/repos/korwenge/quoline/releases/latest")
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (j) {
       if (!j || !j.tag_name) return;
