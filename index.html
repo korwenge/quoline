@@ -163,7 +163,7 @@
   <div class="wrap">
     <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
     <div class="links"><a href="#features">Возможности</a><a href="#designs">Дизайны</a><a href="#install">Установка</a><a href="#faq">Вопросы</a></div>
-    <a class="btn btn-small dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">Скачать</a>
+    <a class="btn btn-small dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">Скачать</a>
   </div>
 </nav>
 
@@ -174,7 +174,7 @@
     <h1>Таскбар,<br><span class="grad">каким он должен был быть</span></h1>
     <p class="lead">Quoline заменяет таскбар Windows: плавные анимации, живые виджеты, поиск по Alt + Пробел, громкость каждого приложения и ещё куча мелочей, которых тебе не хватало.</p>
     <div class="cta">
-      <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">
+      <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         Скачать для Windows
       </a>
@@ -256,7 +256,7 @@
       <h2>Три шага — и готово</h2>
     </div>
     <div class="steps">
-      <div class="step reveal"><h3>Скачай установщик</h3><p>Нажми «Скачать» — загрузится Quobar.msi, всегда последней версии.</p></div>
+      <div class="step reveal"><h3>Скачай установщик</h3><p>Нажми «Скачать» — загрузится Quoline.msi, всегда последней версии.</p></div>
       <div class="step reveal"><h3>Запусти его</h3><p>Quoline установится, сам запустится и спрячет обычную панель задач.</p></div>
       <div class="step reveal"><h3>Введи ключ</h3><p>При первом запуске Quoline попросит ключ активации — вставь его, и всё.</p></div>
     </div>
@@ -285,7 +285,7 @@
   <div class="wrap reveal">
     <h2>Попробуй Quoline</h2>
     <p class="sub" style="margin:0 auto 30px">Твой таскбар больше никогда не будет скучным.</p>
-    <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quobar.msi">
+    <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
       Скачать для Windows
     </a>
@@ -318,7 +318,8 @@
       if (!j || !j.tag_name) return;
       var v = String(j.tag_name).replace(/^v/i, "");
       document.getElementById("ver").textContent = "Версия " + v;
-      document.querySelectorAll(".dl").forEach(function (a) { a.title = "Quoline " + v; });
+      var msi = (j.assets || []).filter(function (x) { return /\.msi$/i.test(x.name); })[0];
+      document.querySelectorAll(".dl").forEach(function (a) { a.title = "Quoline " + v; if (msi) a.href = msi.browser_download_url; });
     })
     .catch(function () {});
 
