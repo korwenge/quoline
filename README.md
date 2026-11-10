@@ -1,2 +1,5 @@
-# quobar
-Custom taskbar
+# Quoline
+
+Таскбар для Windows 11 (раньше назывался Quobar).
+
+[Скачать последнюю версию](https://github.com/korwenge/quobar/releases/latest/download/Quobar.msi) · [Сайт](https://korwenge.github.io/quobar/)
