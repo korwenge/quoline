@@ -1,160 +1,145 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quoline — панель задач для Windows</title>
-<meta name="description" content="Quoline заменяет панель задач Windows: виджеты, поиск, громкость каждого приложения, история буфера, скриншоты, погода, помодоро и пиксельный котик.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2322c55e'/%3E%3Ccircle cx='30' cy='30' r='13' fill='none' stroke='white' stroke-width='6'/%3E%3Cpath d='M38 38l9 9' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Quoline — a replacement taskbar for Windows 11</title>
+<meta name="description" content="Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume. MSI installer, about 0.4 MB.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Quoline — a replacement taskbar for Windows 11">
+<meta property="og:description" content="Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume.">
+<meta name="twitter:card" content="summary">
+<script>
+  // language: saved choice → browser language → English
+  (function () {
+    var l = null;
+    try { l = localStorage.getItem("quoline-lang"); } catch (e) {}
+    if (l !== "en" && l !== "ru") l = /^ru\b/i.test(navigator.language || "") ? "ru" : "en";
+    document.documentElement.lang = l;
+  })();
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322c55e'/%3E%3Ccircle cx='30' cy='30' r='13' fill='none' stroke='white' stroke-width='6'/%3E%3Cpath d='M38 38l9 9' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
   :root {
-    --bg: #0b0b0e; --card: #15151a; --card2: #1b1b21; --line: #26262d;
-    --text: #ececf1; --dim: #9a9cab; --accent: #22c55e; --accent2: #16a34a;
+    --bg: #111214; --raised: #1a1b1e; --line: #2a2b2f; --line2: #36383d;
+    --text: #ffffff; --body: #d6d7da; --dim: #9a9ca3; --faint: #6f7178;
+    --accent: #22c55e; --accent-hi: #3ad673; --ink: #05140a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
     font-family: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased;
+    background: var(--bg); color: var(--body); line-height: 1.55; -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
-  a { color: inherit; text-decoration: none; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  h1, h2, h3, b, strong, summary { color: var(--text); }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  /* ---------- top ---------- */
-  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px); background: rgba(11,11,14,.72); border-bottom: 1px solid rgba(255,255,255,.05); }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; }
-  .logo { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(145deg, #4ade80, #15803d); display: grid; place-items: center; box-shadow: 0 6px 18px rgba(34,197,94,.35); }
-  .logo svg { width: 20px; height: 20px; }
-  nav .links { display: flex; gap: 26px; color: var(--dim); font-size: 15px; }
-  nav .links a:hover { color: var(--text); }
-  .btn {
-    display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; font-weight: 600;
-    transition: transform .18s ease, box-shadow .18s ease, background .18s;
-  }
-  .btn-small { padding: 9px 18px; font-size: 14px; background: var(--accent); color: #06130a; }
-  .btn-small:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(34,197,94,.35); }
+  /* ---------- language ---------- */
+  html[lang="en"] body [lang="ru"], html[lang="ru"] body [lang="en"] { display: none !important; }
+  .lang { display: inline-flex; border: 1px solid var(--line2); border-radius: 8px; padding: 2px; }
+  .lang button { font: inherit; font-size: 13px; font-weight: 600; letter-spacing: .03em; color: var(--dim); background: none; border: 0; cursor: pointer; padding: 5px 10px; border-radius: 6px; }
+  .lang button:hover { color: var(--text); }
+  .lang button[aria-pressed="true"] { background: var(--line2); color: var(--text); }
+
+  /* ---------- nav ---------- */
+  nav { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--text); }
+  .brand:hover { text-decoration: none; }
+  .logo { width: 28px; height: 28px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; flex: none; }
+  .logo svg { width: 18px; height: 18px; }
+  nav .links { display: flex; gap: 26px; font-size: 15px; }
+  nav .links a { color: var(--dim); }
+  nav .links a:hover { color: var(--text); text-decoration: none; }
+  .nav-r { display: flex; align-items: center; gap: 12px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 8px; font-weight: 600; background: var(--accent); color: var(--ink); }
+  .btn:hover { background: var(--accent-hi); text-decoration: none; }
+  .btn-small { padding: 7px 14px; font-size: 14px; }
+  .btn-big { padding: 18px 32px; font-size: 19px; border-radius: 10px; }
+  .btn-big svg { flex: none; }
 
   /* ---------- hero ---------- */
-  .hero { position: relative; padding: 96px 0 40px; text-align: center; }
-  .glow { position: absolute; inset: -200px 0 auto; height: 620px; pointer-events: none;
-    background: radial-gradient(600px 300px at 50% 30%, rgba(34,197,94,.22), transparent 70%),
-                radial-gradient(500px 260px at 20% 10%, rgba(59,130,246,.14), transparent 70%),
-                radial-gradient(500px 260px at 80% 10%, rgba(168,85,247,.12), transparent 70%); }
-  .pill { display: inline-flex; gap: 8px; align-items: center; padding: 6px 14px; border-radius: 999px; background: rgba(34,197,94,.12); color: #86efac; font-size: 13px; font-weight: 600; border: 1px solid rgba(34,197,94,.25); }
-  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  h1 { font-size: clamp(40px, 7vw, 76px); line-height: 1.04; letter-spacing: -0.035em; margin: 22px 0 18px; font-weight: 800; }
-  h1 .grad { background: linear-gradient(90deg, #4ade80, #22d3ee 60%, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .lead { font-size: clamp(17px, 2.2vw, 20px); color: var(--dim); max-width: 640px; margin: 0 auto; }
-  .cta { margin-top: 36px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .btn-big { padding: 17px 30px; font-size: 17px; background: linear-gradient(180deg, #34d36c, #16a34a); color: #04110a; box-shadow: 0 10px 30px rgba(34,197,94,.35), inset 0 1px 0 rgba(255,255,255,.35); }
-  .btn-big:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(34,197,94,.45), inset 0 1px 0 rgba(255,255,255,.35); }
-  .btn-ghost { padding: 17px 26px; font-size: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
-  .btn-ghost:hover { background: rgba(255,255,255,.1); }
-  .meta { margin-top: 16px; color: #6f7180; font-size: 13.5px; }
+  .hero { padding: 88px 0 0; }
+  h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; max-width: 16ch; }
+  .lead { margin-top: 22px; font-size: clamp(17px, 2vw, 20px); color: var(--body); max-width: 640px; }
+  .cta { margin-top: 36px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .cta .file { color: var(--dim); font-size: 14.5px; }
+  .facts { margin-top: 52px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .facts div { padding: 16px 20px 0 0; }
+  .facts dt { color: var(--faint); font-size: 13px; }
+  .facts dd { color: var(--text); font-size: 16px; font-weight: 600; }
+  .facts dd small { display: block; color: var(--dim); font-size: 13.5px; font-weight: 400; }
+  .todo { border: 1px dashed var(--dim); border-radius: 4px; padding: 0 5px; color: var(--text); }
 
-  /* ---------- live bar mockup ---------- */
-  .stage { position: relative; margin: 64px auto 0; max-width: 1040px; height: 300px; border-radius: 22px; overflow: hidden;
-    background: linear-gradient(160deg, #1d3b2a 0%, #0f1f2e 45%, #2b1838 100%); border: 1px solid rgba(255,255,255,.06);
-    box-shadow: 0 40px 80px rgba(0,0,0,.5); }
-  .stage::before { content: ""; position: absolute; inset: 0; background:
-      radial-gradient(400px 200px at 25% 30%, rgba(74,222,128,.25), transparent 70%),
-      radial-gradient(420px 220px at 75% 35%, rgba(167,139,250,.25), transparent 70%); }
-  .window { position: absolute; left: 50%; top: 34px; transform: translateX(-50%); width: 62%; height: 150px; border-radius: 12px;
-    background: rgba(20,20,26,.78); border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(6px); }
-  .window .bar { height: 30px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 7px; padding: 0 12px; }
-  .window .bar i { width: 10px; height: 10px; border-radius: 50%; background: #3a3a44; display: block; }
-  .window .lines { padding: 16px; display: grid; gap: 10px; }
-  .window .lines b { display: block; height: 9px; border-radius: 6px; background: rgba(255,255,255,.08); }
-
-  .qbar { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 62px; border-radius: 18px; display: flex; align-items: center; gap: 8px; padding: 0 9px;
-    background: rgba(18,18,22,.86); border: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06); }
-  .mod { height: 46px; border-radius: 12px; background: linear-gradient(180deg, #1d1d23, #18181d); border: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; padding: 0 12px; gap: 10px; font-size: 12px; white-space: nowrap; }
-  .ring { width: 30px; height: 30px; border-radius: 50%; background: conic-gradient(var(--accent) 0 34%, #2c2c33 34% 100%); display: grid; place-items: center; }
-  .ring::after { content: "34%"; width: 22px; height: 22px; border-radius: 50%; background: #18181d; font-size: 8px; font-weight: 700; display: grid; place-items: center; }
-  .eq { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
-  .eq span { width: 3px; border-radius: 2px; background: var(--accent); animation: eq 0.9s ease-in-out infinite alternate; }
-  .eq span:nth-child(2) { animation-delay: .2s } .eq span:nth-child(3) { animation-delay: .45s } .eq span:nth-child(4) { animation-delay: .1s }
-  @keyframes eq { from { height: 3px } to { height: 14px } }
-  .track { line-height: 1.15 } .track b { display: block; font-size: 12.5px } .track small { color: var(--dim); font-size: 11px }
-  .play { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
-  .play::before { content: ""; width: 3px; height: 10px; background: #06130a; box-shadow: 5px 0 0 #06130a; margin-left: -5px; border-radius: 1px; }
-  .apps { flex: 1; display: flex; justify-content: center; gap: 8px; }
-  .app { width: 38px; height: 38px; border-radius: 11px; position: relative; transition: transform .25s cubic-bezier(.3,1.6,.5,1); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 4px 10px rgba(0,0,0,.35); }
-  .app:hover { transform: translateY(-6px) scale(1.12); }
-  .app.on::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #9a9cab; }
-  .app.active::after { width: 14px; margin-left: -7px; border-radius: 3px; background: var(--accent); }
-  .app.q { background: #222228; display: grid; place-items: center; box-shadow: none; }
-  .clock { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; padding: 0 14px; line-height: 1.05; }
-  .clock b { font-size: 19px; letter-spacing: -0.02em } .clock b span { font-size: 11px; color: var(--accent); margin-left: 1px }
-  .clock small { color: var(--dim); font-size: 10.5px }
-  .cat { position: absolute; bottom: 77px; width: 26px; height: 18px; animation: walk 14s linear infinite; image-rendering: pixelated; }
-  @keyframes walk { 0% { left: 30%; transform: scaleX(1) } 48% { left: 62%; transform: scaleX(1) } 50% { left: 62%; transform: scaleX(-1) } 98% { left: 30%; transform: scaleX(-1) } 100% { left: 30%; transform: scaleX(1) } }
 
   /* ---------- sections ---------- */
-  section { padding: 90px 0 10px; }
-  .kicker { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
-  h2 { font-size: clamp(30px, 4.4vw, 44px); letter-spacing: -0.03em; line-height: 1.1; margin: 10px 0 14px; }
-  .sub { color: var(--dim); max-width: 620px; font-size: 17px; }
-  .grid { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-  .feat { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; transition: transform .2s, border-color .2s, background .2s; }
-  .feat:hover { transform: translateY(-3px); border-color: rgba(34,197,94,.4); background: var(--card2); }
-  .feat .ic { width: 42px; height: 42px; border-radius: 12px; background: rgba(34,197,94,.12); display: grid; place-items: center; font-size: 21px; margin-bottom: 14px; }
-  .feat h3 { font-size: 17px; margin-bottom: 6px; }
-  .feat p { color: var(--dim); font-size: 14.5px; }
-  kbd { font-family: inherit; font-size: 12px; padding: 2px 7px; border-radius: 6px; background: #24242b; border: 1px solid #33333c; border-bottom-width: 2px; color: #d4d4dc; white-space: nowrap; }
+  .major { padding-top: 128px; }
+  .minor { padding-top: 88px; }
+  h2 { font-size: clamp(28px, 3.8vw, 40px); letter-spacing: -0.02em; line-height: 1.15; font-weight: 700; max-width: 22ch; }
+  .minor h2 { font-size: clamp(22px, 2.6vw, 28px); max-width: none; }
 
-  /* designs */
-  .designs { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-  .design { border-radius: 18px; padding: 18px; background: var(--card); border: 1px solid var(--line); }
-  .design .scr { height: 110px; border-radius: 12px; position: relative; overflow: hidden; background: linear-gradient(150deg, #23314a, #1a1328); }
-  .design .mb { position: absolute; left: 10px; right: 10px; bottom: 10px; height: 26px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-  .design .mb i { width: 14px; height: 14px; border-radius: 4px; display: block; }
-  .design h4 { margin-top: 14px; font-size: 16px } .design p { color: var(--dim); font-size: 13.5px }
-  .d-classic .mb { background: #121216; border-radius: 9px; border: 1px solid #2a2a31; }
-  .d-square .mb { background: #101013; left: 0; right: 0; bottom: 0; border-radius: 0; border-top: 1px solid #2a2a31; }
-  .d-square .mb i { border-radius: 2px; }
-  .d-ios .mb { background: rgba(40,40,48,.6); border-radius: 13px; border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(6px); }
-  .d-ios .mb i { border-radius: 5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.4); }
-  .d-min .mb { background: transparent; } .d-min .mb i { border-radius: 50%; width: 11px; height: 11px; }
-  .d-island .mb { left: 50%; right: auto; transform: translateX(-50%); width: 46%; background: rgba(40,40,48,.7); border-radius: 13px; border: 1px solid rgba(255,255,255,.16); }
+  /* main features */
+  .feature { padding: 36px 0; border-bottom: 1px solid var(--line); max-width: 760px; }
+  .feature:first-of-type { margin-top: 24px; }
+  .feature h3 { font-size: clamp(21px, 2.3vw, 26px); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .feature p { font-size: 16px; }
+  .feature p + p { margin-top: 10px; }
 
-  /* steps */
-  .steps { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; counter-reset: s; }
-  .step { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; position: relative; }
-  .step::before { counter-increment: s; content: counter(s); position: absolute; top: 20px; right: 22px; font-size: 44px; font-weight: 800; color: rgba(255,255,255,.06); }
-  .step h3 { font-size: 17px; margin-bottom: 8px } .step p { color: var(--dim); font-size: 14.5px }
-  .note { margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: rgba(250,204,21,.07); border: 1px solid rgba(250,204,21,.22); color: #f5e3a3; font-size: 14.5px; }
+  /* other features: plain two-column list */
+  .more { margin-top: 32px; list-style: none; columns: 2; column-gap: 56px; }
+  .more li { break-inside: avoid; padding: 12px 0 14px; border-top: 1px solid var(--line); font-size: 15px; }
+  .more li b { display: block; font-size: 15.5px; margin-bottom: 2px; }
+  kbd { font-family: inherit; font-size: 12.5px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line2); border-bottom-width: 2px; color: var(--text); white-space: nowrap; }
+
+  /* install */
+  .steps { margin-top: 28px; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .steps li { counter-increment: s; border-top: 1px solid var(--line2); padding-top: 14px; font-size: 15px; }
+  .steps li::before { content: counter(s) "."; display: block; color: var(--dim); font-weight: 600; margin-bottom: 4px; }
+  .steps b { display: block; font-size: 16px; margin-bottom: 4px; }
+  .note { margin-top: 32px; padding-left: 16px; border-left: 2px solid var(--line2); color: var(--dim); font-size: 14.5px; max-width: 760px; }
 
   /* faq */
-  .faq { margin-top: 34px; display: grid; gap: 10px; max-width: 800px; }
-  details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px 20px; }
-  summary { cursor: pointer; padding: 15px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq { margin-top: 24px; max-width: 800px; border-top: 1px solid var(--line); }
+  details { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; padding: 15px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; color: var(--dim); font-size: 22px; transition: transform .2s; }
-  details[open] summary::after { transform: rotate(45deg); }
-  details p { color: var(--dim); padding: 0 0 16px; font-size: 15px; }
+  summary::after { content: "+"; color: var(--dim); font-size: 20px; line-height: 1; flex: none; }
+  details[open] summary::after { content: "\2212"; }
+  details p { color: var(--body); padding: 0 0 16px; font-size: 15px; }
 
-  .final { text-align: center; padding: 100px 0 90px; }
-  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: #6f7180; font-size: 13.5px; }
+  .final { padding: 120px 0 104px; }
+  .final p { margin: 12px 0 28px; color: var(--dim); }
+  footer { border-top: 1px solid var(--line); padding: 24px 0 36px; color: var(--faint); font-size: 13.5px; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  footer a:hover { color: var(--text); }
 
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-  .reveal.in { opacity: 1; transform: none; }
+  @media (max-width: 860px) {
+    .feature { padding: 28px 0; }
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts div { padding-bottom: 4px; }
+  }
   @media (max-width: 720px) {
     nav .links { display: none; }
-    .stage { height: 240px; }
-    .window { width: 86%; }
-    .hide-s { display: none !important; }
-    .app { width: 30px; height: 30px; border-radius: 9px; }
-    .apps { gap: 6px; }
-    .apps .app:nth-child(n+6) { display: none; }
-    .clock small { display: none; }
-    .qbar { gap: 6px; }
+    .hero { padding-top: 56px; }
+    .major { padding-top: 88px; }
+    .minor { padding-top: 64px; }
+    .final { padding: 88px 0 80px; }
+    .more { columns: 1; }
+    .steps { grid-template-columns: 1fr; gap: 20px; }
+    .btn-big { padding: 16px 24px; font-size: 18px; }
   }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } .cat, .eq span { animation: none; } }
+  @media (max-width: 400px) {
+    .wrap { padding: 0 16px; }
+    .nav-r { gap: 6px; }
+    .lang button { padding: 5px 7px; }
+    .btn-small { padding: 7px 11px; }
+    .brand { font-size: 17px; gap: 8px; }
+    .facts { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -162,144 +147,144 @@
 <nav>
   <div class="wrap">
     <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
-    <div class="links"><a href="#features">Возможности</a><a href="#designs">Дизайны</a><a href="#install">Установка</a><a href="#faq">Вопросы</a></div>
-    <a class="btn btn-small dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">Скачать</a>
+    <div class="links">
+      <a href="#features"><span lang="en">Features</span><span lang="ru">Возможности</span></a>
+      <a href="#install"><span lang="en">Install</span><span lang="ru">Установка</span></a>
+      <a href="#faq"><span lang="en">FAQ</span><span lang="ru">Вопросы</span></a>
+    </div>
+    <div class="nav-r">
+      <div class="lang" role="group" aria-label="Language / Язык">
+        <button type="button" data-set-lang="en" aria-pressed="true" title="English">EN</button>
+        <button type="button" data-set-lang="ru" aria-pressed="false" title="Русский">RU</button>
+      </div>
+      <a class="btn btn-small dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi"><span lang="en">Download</span><span lang="ru">Скачать</span></a>
+    </div>
   </div>
 </nav>
 
 <header class="hero">
-  <div class="glow"></div>
-  <div class="wrap" style="position:relative">
-    <span class="pill"><span class="dot"></span><span id="ver">Новая версия</span></span>
-    <h1>Таскбар,<br><span class="grad">каким он должен был быть</span></h1>
-    <p class="lead">Quoline заменяет таскбар Windows: плавные анимации, живые виджеты, поиск по Alt + Пробел, громкость каждого приложения и ещё куча мелочей, которых тебе не хватало.</p>
+  <div class="wrap">
+    <h1><span lang="en">A replacement taskbar for Windows 11</span><span lang="ru">Замена панели задач для Windows 11</span></h1>
+    <p class="lead"><span lang="en">Quoline hides the standard Windows taskbar and puts its own bar in its place: your apps, plus widgets for the media player, weather, CPU/RAM/GPU load and clipboard history, search on <kbd>Alt</kbd> + <kbd>Space</kbd> and a volume slider for every app.</span><span lang="ru">Quoline прячет стандартную панель задач Windows и ставит на её место свою: твои приложения, виджеты плеера, погоды, нагрузки на процессор, память и видеокарту, история буфера, поиск по <kbd>Alt</kbd> + <kbd>Пробел</kbd> и громкость каждого приложения.</span></p>
     <div class="cta">
       <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
-        Скачать для Windows
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+        <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
       </a>
-      <a class="btn btn-ghost" href="#features">Что умеет</a>
+      <span class="file">Quoline.msi · <span lang="en">about 0.4 MB</span><span lang="ru">около 0,4 МБ</span></span>
     </div>
-    <p class="meta">Windows 10 и 11 · установщик ~400 КБ · 3 дня бесплатно, потом ключ — 4,99 € навсегда</p>
+    <dl class="facts">
+      <div><dt><span lang="en">Version</span><span lang="ru">Версия</span></dt><dd class="vnum">4.13.11</dd></div>
+      <div><dt><span lang="en">System</span><span lang="ru">Система</span></dt><dd>Windows 11<small><span lang="en">also runs on Windows 10</span><span lang="ru">работает и на Windows 10</span></small></dd></div>
+      <div><dt><span lang="en">Installer</span><span lang="ru">Установщик</span></dt><dd>MSI<small><span lang="en">about 0.4 MB, updates itself</span><span lang="ru">около 0,4 МБ, обновляется сам</span></small></dd></div>
+      <div><dt><span lang="en">Price</span><span lang="ru">Цена</span></dt><dd><span lang="en">€4.99</span><span lang="ru">4,99 €</span><small><span lang="en">once, yours forever · 3 days free</span><span lang="ru">один раз, навсегда · 3 дня бесплатно</span></small></dd></div>
+    </dl>
 
-    <div class="stage" aria-hidden="true">
-      <div class="window"><div class="bar"><i></i><i></i><i></i></div><div class="lines"><b style="width:70%"></b><b style="width:90%"></b><b style="width:55%"></b><b style="width:80%"></b></div></div>
-      <svg class="cat" viewBox="0 0 13 9" shape-rendering="crispEdges">
-        <rect x="0" y="1" width="1" height="4" fill="#d07a3a"/><rect x="1" y="4" width="8" height="3" fill="#f2a65a"/><rect x="2" y="6" width="5" height="1" fill="#fff1e2"/>
-        <rect x="8" y="1" width="4" height="4" fill="#f2a65a"/><rect x="8" y="0" width="1" height="1" fill="#f2a65a"/><rect x="11" y="0" width="1" height="1" fill="#f2a65a"/>
-        <rect x="9" y="2" width="1" height="1" fill="#231a1c"/><rect x="11" y="2" width="1" height="1" fill="#231a1c"/><rect x="10" y="3" width="1" height="1" fill="#ff96aa"/>
-        <rect x="2" y="7" width="1" height="2" fill="#f2a65a"/><rect x="7" y="7" width="1" height="2" fill="#f2a65a"/>
-      </svg>
-      <div class="qbar">
-        <div class="mod hide-s"><span class="ring"></span><span style="color:var(--dim);line-height:1.3">CPU 34%<br>RAM 61%</span></div>
-        <div class="mod hide-s"><span class="eq"><span></span><span></span><span></span><span></span></span><span class="track"><b>Evil Fantasy</b><small>Freddie Dredd</small></span><span class="play"></span></div>
-        <div class="apps">
-          <div class="app q"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20" stroke="#22c55e"/></svg></div>
-          <div class="app on" style="background:linear-gradient(160deg,#fcd34d,#f59e0b)"></div>
-          <div class="app on active" style="background:linear-gradient(160deg,#4ade80,#16a34a)"></div>
-          <div class="app on" style="background:linear-gradient(160deg,#818cf8,#4f46e5)"></div>
-          <div class="app" style="background:linear-gradient(160deg,#60a5fa,#1d4ed8)"></div>
-          <div class="app on" style="background:linear-gradient(160deg,#fb923c,#ea580c)"></div>
-          <div class="app on" style="background:linear-gradient(160deg,#f87171,#dc2626)"></div>
-        </div>
-        <div class="mod hide-s" style="gap:8px"><span style="font-size:20px">⛅</span><span class="track"><b>+6°</b><small>Кентербери</small></span></div>
-        <div class="mod clock"><b id="clk">13:42<span>:07</span></b><small id="day">вт, 10 нояб.</small></div>
-      </div>
-    </div>
   </div>
 </header>
 
-<section id="features">
+<section id="features" class="major">
   <div class="wrap">
-    <div class="reveal">
-      <span class="kicker">Возможности</span>
-      <h2>Всё нужное — прямо на панели</h2>
-      <p class="sub">Никаких лишних окон. Наведи, кликни, покрути колёсиком.</p>
+    <h2><span lang="en">Player, system load, weather, clipboard and designs</span><span lang="ru">Плеер, нагрузка на ПК, погода, буфер обмена и дизайны</span></h2>
+
+    <div class="feature">
+      <div>
+        <h3><span lang="en">Media player and equalizer</span><span lang="ru">Плеер и эквалайзер</span></h3>
+        <p><span lang="en">Album art, track title, play/pause and a seek bar. Works with Spotify, YouTube, SoundCloud and any player in your browser.</span><span lang="ru">Обложка, название, пауза и ползунок длительности с перемоткой. Работает со Spotify, YouTube, SoundCloud и любым плеером в браузере.</span></p>
+        <p><span lang="en">The equalizer follows the music across the whole bar or only inside the player: bars, wave, dots or mirror, in the bar’s accent color or a rainbow.</span><span lang="ru">Эквалайзер — на всю панель или только в плеере: столбики, волна, точки или зеркало, цветом панели или радугой.</span></p>
+      </div>
     </div>
-    <div class="grid">
-      <div class="feat reveal"><div class="ic">🔎</div><h3>Поиск <kbd>Alt</kbd> + <kbd>Пробел</kbd></h3><p>Приложения, настройки Windows, недавние файлы, калькулятор и команды вроде «сон» или «скриншот».</p></div>
-      <div class="feat reveal"><div class="ic">🔊</div><h3>Звук под рукой</h3><p>Кнопка звука у трея: общая громкость, свой ползунок для каждой программы и переключение наушники ↔ колонки одним кликом.</p></div>
-      <div class="feat reveal"><div class="ic">📶</div><h3>Свои быстрые настройки</h3><p>Стрелка у Wi‑Fi и Bluetooth — окошко: сети с вводом пароля, наушники одной кнопкой и их заряд, яркость и ночной свет. Клик по раскладке — список языков.</p></div>
-      <div class="feat reveal"><div class="ic">🧩</div><h3>Расставь как хочешь</h3><p>Правый клик → «Расставить виджеты»: перетаскивай блоки мышкой, тяни за край — ширина, лишнее убирается крестиком.</p></div>
-      <div class="feat reveal"><div class="ic">🖥️</div><h3>Все мониторы</h3><p>Панель на каждом экране — чёткая даже на 4K и 8K, размер можно увеличить. У каждого монитора — свои виджеты и свои кнопки Wi‑Fi, звука и трея.</p></div>
-      <div class="feat reveal"><div class="ic">🎚️</div><h3>Эквалайзер под музыку</h3><p>На всю панель или только в плеере: столбики, волна, точки или зеркало — цветом панели или радугой.</p></div>
-      <div class="feat reveal"><div class="ic">📋</div><h3>История буфера</h3><p>Кнопка на панели: тексты и картинки, поиск, закрепление. Даже огромные тексты не тормозят.</p></div>
-      <div class="feat reveal"><div class="ic">✂️</div><h3>Скриншоты с рисованием</h3><p>Кнопка на панели: выдели область, добавь стрелки, рамки и маркер, скопируй или сохрани.</p></div>
-      <div class="feat reveal"><div class="ic">🌦️</div><h3>Погода и календарь</h3><p>Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</p></div>
-      <div class="feat reveal"><div class="ic">🍅</div><h3>Таймер и помодоро</h3><p>Впиши любое время — 15, 1:30, 1ч 30м — или выбери готовое. Помодоро считает помидоры за день.</p></div>
-      <div class="feat reveal"><div class="ic">🎵</div><h3>Плеер</h3><p>Обложка, название, пауза и ползунок длительности с перемоткой. Работает со Spotify, YouTube, SoundCloud и любым плеером в браузере.</p></div>
-      <div class="feat reveal"><div class="ic">📈</div><h3>Что грузит ПК</h3><p>Процессор, память и видеокарта: какие программы их грузят, и завершение одним кликом.</p></div>
-      <div class="feat reveal"><div class="ic">🎮</div><h3>Игровой режим</h3><p>Пока игра идёт на весь экран, Quoline почти ничего не делает — больше кадров игре. После игры всё возвращается само.</p></div>
-      <div class="feat reveal"><div class="ic">🌗</div><h3>Светлая и тёмная</h3><p>Светлая панель, тёмная, как в Windows или светлая только днём. Окошки и настройки меняют цвет вместе с ней.</p></div>
-      <div class="feat reveal"><div class="ic">✅</div><h3>Заметки и дела</h3><p>Кнопка на панели: быстрая заметка и список дел. Сколько дел осталось — видно прямо на кнопке. Файл можно перетащить на иконку программы — откроется в ней.</p></div>
-      <div class="feat reveal"><div class="ic">👀</div><h3>Настройки с превью</h3><p>Наведи на настройку — справа маленькое видео покажет, что она меняет: цвет, дизайн, узор, шрифт. Поиск находит всё по слову.</p></div>
-      <div class="feat reveal"><div class="ic">🎨</div><h3>Профили</h3><p>«Основной», «Остров», «Фокус» или свои наборы — переключаются одним кликом, каждое изменение сохраняется сразу.</p></div>
-      <div class="feat reveal"><div class="ic">💱</div><h3>Курсы и крипта</h3><p>BTC, ETH, USD/EUR и другие с графиком за сутки — без регистрации и ключей.</p></div>
-      <div class="feat reveal"><div class="ic">🐱</div><h3>Пиксельный котик</h3><p>Гуляет по панели, спит, когда ты отошёл, и прыгает с сердечками, если его погладить.</p></div>
-      <div class="feat reveal"><div class="ic">🌐</div><h3>English и русский</h3><p>Интерфейс на английском или русском — переключается в настройках, одним кликом.</p></div>
-      <div class="feat reveal"><div class="ic">🖌️</div><h3>Свой цвет виджетов</h3><p>Полоски и кольца диска, процессора, памяти и батареи — белые или любого твоего цвета.</p></div>
-      <div class="feat reveal"><div class="ic">🎧</div><h3>Громкость плеера</h3><p>Колёсико над плеером или ползунок в нём меняют громкость только Spotify или браузера — остальные программы не трогает.</p></div>
-      <div class="feat reveal"><div class="ic">🪟</div><h3>Кнопка «Пуск» на выбор</h3><p>Лупа Quoline или привычный значок Windows.</p></div>
-      <div class="feat reveal"><div class="ic">⬆️</div><h3>Обновляется сам</h3><p>Новая версия — уведомление над панелью. Один клик, и всё установлено.</p></div>
+
+    <div class="feature">
+      <div>
+        <h3><span lang="en">CPU, memory and GPU load</span><span lang="ru">Процессор, память и видеокарта</span></h3>
+        <p><span lang="en">Widgets show CPU, RAM and GPU load right on the bar. The “What’s using your PC” window lists which apps are using them and ends any of them with one click.</span><span lang="ru">Виджеты показывают нагрузку на процессор, память и видеокарту прямо на панели. Окно «Что грузит ПК» показывает, какие программы их грузят, и завершает любую одним кликом.</span></p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3><span lang="en">Weather and calendar</span><span lang="ru">Погода и календарь</span></h3>
+        <p><span lang="en">Hourly and 7-day forecasts, plus a calendar when you click the clock. Rain and snow on the bar, to match the weather or just for the mood.</span><span lang="ru">Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</span></p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div>
+        <h3><span lang="en">Clipboard history</span><span lang="ru">История буфера обмена</span></h3>
+        <p><span lang="en">A button on the bar opens everything you have copied: text and images, with search and pinning. Even huge chunks of text stay fast, and the history is kept when you turn off your computer.</span><span lang="ru">Кнопка на панели открывает всё, что ты копировал: тексты и картинки, поиск, закрепление. Даже огромные тексты не тормозят, а история не пропадает после выключения компьютера.</span></p>
+      </div>
+    </div>
+
+    <div class="feature" id="designs">
+      <div>
+        <h3><span lang="en">Designs and themes</span><span lang="ru">Дизайны и темы</span></h3>
+        <p><span lang="en">Four designs: Classic, Square, iOS and Island. Light or dark theme, matching Windows, or light only during the day. Any accent color, height, bar and widget transparency and corner radius.</span><span lang="ru">Четыре дизайна: «Классика», «Квадрат», iOS и «Остров». Светлая или тёмная тема, как в Windows или светлая только днём. Любой цвет акцента, высота, прозрачность панели и виджетов, скругление.</span></p>
+        <p><span lang="en">The hover highlight glides from button to button and takes the shape of each one. Islands mode draws a background only behind what’s on the bar. In full-screen games, the bar gets out of the way on its own.</span><span lang="ru">Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой. Режим «Острова» рисует фон только под тем, что есть на панели. В полноэкранных играх панель сама уходит вниз.</span></p>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="designs">
+<section id="more" class="minor">
   <div class="wrap">
-    <div class="reveal">
-      <span class="kicker">Дизайны</span>
-      <h2>Выбери свой стиль</h2>
-      <p class="sub">Любой цвет акцента, высота, прозрачность панели и виджетов, скругление и узоры. Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой — белая, цветная или контуром, везде или только на приложениях или виджетах. Любой шрифт ложится ровно — текст подгоняется под форму букв. Или режим «Острова»: фон только под тем, что есть на панели. А в полноэкранных играх панель сама уходит вниз.</p>
-    </div>
-    <div class="designs">
-      <div class="design d-classic reveal"><div class="scr"><div class="mb"><i style="background:#f59e0b"></i><i style="background:#22c55e"></i><i style="background:#6366f1"></i><i style="background:#ef4444"></i></div></div><h4>Классика</h4><p>Аккуратные карточки виджетов.</p></div>
-      <div class="design d-square reveal"><div class="scr"><div class="mb"><i style="background:#f59e0b"></i><i style="background:#22c55e"></i><i style="background:#6366f1"></i><i style="background:#ef4444"></i></div></div><h4>Квадрат</h4><p>Строгая панель от края до края.</p></div>
-      <div class="design d-ios reveal"><div class="scr"><div class="mb"><i style="background:#f59e0b"></i><i style="background:#22c55e"></i><i style="background:#6366f1"></i><i style="background:#ef4444"></i></div></div><h4>iOS</h4><p>Стекло, мягкие тени и «жидкая линза».</p></div>
-      <div class="design d-island reveal"><div class="scr"><div class="mb"><i style="background:#f59e0b"></i><i style="background:#22c55e"></i><i style="background:#6366f1"></i><i style="background:#ef4444"></i></div></div><h4>Остров</h4><p>Одна круглая плашка по центру, выезжает по наведению.</p></div>
-    </div>
+    <h2><span lang="en">Also in Quoline</span><span lang="ru">Ещё в Quoline</span></h2>
+    <ul class="more">
+      <li><b><span lang="en">Search with <kbd>Alt</kbd> + <kbd>Space</kbd></span><span lang="ru">Поиск по <kbd>Alt</kbd> + <kbd>Пробел</kbd></span></b><span lang="en">Apps, Windows settings, recent files, a calculator, and commands like “sleep” or “screenshot”.</span><span lang="ru">Приложения, настройки Windows, недавние файлы, калькулятор и команды вроде «сон» или «скриншот».</span></li>
+      <li><b><span lang="en">Sound</span><span lang="ru">Звук</span></b><span lang="en">A sound button next to the tray: master volume, a separate slider for every app, and one-click switching between headphones and speakers.</span><span lang="ru">Кнопка звука у трея: общая громкость, свой ползунок для каждой программы и переключение наушники ↔ колонки одним кликом.</span></li>
+      <li><b><span lang="en">Quick settings</span><span lang="ru">Быстрые настройки</span></b><span lang="en">The arrow next to Wi‑Fi and Bluetooth opens a panel: networks with password entry, headphones with their battery level, brightness and Night light. Click the keyboard layout for a list of languages.</span><span lang="ru">Стрелка у Wi‑Fi и Bluetooth — окошко: сети с вводом пароля, наушники одной кнопкой и их заряд, яркость и ночной свет. Клик по раскладке — список языков.</span></li>
+      <li><b><span lang="en">Widget layout</span><span lang="ru">Расстановка виджетов</span></b><span lang="en">Right-click the bar → “Arrange widgets…”: drag blocks with the mouse, pull an edge to resize, remove anything with the ×.</span><span lang="ru">Правый клик → «Расставить виджеты…»: перетаскивай блоки мышкой, тяни за край — ширина, лишнее убирается крестиком.</span></li>
+      <li><b><span lang="en">Multiple monitors</span><span lang="ru">Несколько мониторов</span></b><span lang="en">A bar on every screen, sharp on 4K and 8K, with adjustable size. Secondary displays can show just app icons and the clock.</span><span lang="ru">Панель на каждом экране — чёткая даже на 4K и 8K, размер можно увеличить. На второстепенных можно оставить только иконки и часы.</span></li>
+      <li><b><span lang="en">Screenshots with markup</span><span lang="ru">Скриншоты с рисованием</span></b><span lang="en">Select an area, add arrows, boxes and highlighter, then copy or save.</span><span lang="ru">Выдели область, добавь стрелки, рамки и маркер, скопируй или сохрани.</span></li>
+      <li><b><span lang="en">Timer and Pomodoro</span><span lang="ru">Таймер и помодоро</span></b><span lang="en">Type any duration (15, 1:30, 1h 30m) or pick a preset. The Pomodoro timer counts your sessions for the day.</span><span lang="ru">Впиши любое время (15, 1:30, 1ч 30м) или выбери готовое. Помодоро считает помидоры за день.</span></li>
+      <li><b><span lang="en">Game mode</span><span lang="ru">Игровой режим</span></b><span lang="en">While a game runs full screen, Quoline stays almost idle, leaving more frames for the game. Everything comes back on its own afterward.</span><span lang="ru">Пока игра идёт на весь экран, Quoline почти ничего не делает — больше кадров игре. После игры всё возвращается само.</span></li>
+      <li><b><span lang="en">Notes and to-dos</span><span lang="ru">Заметки и дела</span></b><span lang="en">A quick note and a to-do list; the number of open tasks is shown on the button. Drag a file onto an app icon to open it in that app.</span><span lang="ru">Быстрая заметка и список дел; сколько дел осталось — видно на кнопке. Файл можно перетащить на иконку программы — откроется в ней.</span></li>
+      <li><b><span lang="en">Settings with live previews</span><span lang="ru">Настройки с превью</span></b><span lang="en">Hover over a setting and a small animation on the right shows what it does: colors, designs, patterns, fonts. Search finds any option by keyword.</span><span lang="ru">Наведи на настройку — справа маленькая анимация покажет, что она меняет: цвет, дизайн, узор, шрифт. Поиск находит всё по слову.</span></li>
+      <li><b><span lang="en">English and Russian</span><span lang="ru">Английский и русский</span></b><span lang="en">The whole interface in English or Russian, switched in the settings with one click.</span><span lang="ru">Весь интерфейс на английском или русском — переключается в настройках одним кликом.</span></li>
+      <li><b><span lang="en">Player volume</span><span lang="ru">Громкость плеера</span></b><span lang="en">Scroll over the player to change the volume of Spotify or the browser only — other apps stay as they are.</span><span lang="ru">Колёсико над плеером меняет громкость только Spotify или браузера — остальные программы не трогает.</span></li>
+      <li><b><span lang="en">Your widget color</span><span lang="ru">Свой цвет виджетов</span></b><span lang="en">Disk, CPU, memory and battery meters in neutral white or any color you like; the Start button as a magnifier or the Windows logo.</span><span lang="ru">Полоски и кольца диска, процессора, памяти и батареи — белые или любого цвета; кнопка «Пуск» — лупа или значок Windows.</span></li>
+      <li><b><span lang="en">Profiles</span><span lang="ru">Профили</span></b><span lang="en">“Main”, “Island”, “Focus” or your own presets, switched with one click.</span><span lang="ru">«Основной», «Остров», «Фокус» или свои наборы — переключаются одним кликом.</span></li>
+      <li><b><span lang="en">Exchange rates and crypto</span><span lang="ru">Курсы и крипта</span></b><span lang="en">BTC, ETH, USD/EUR and more with a 24-hour chart, no sign-up and no API keys.</span><span lang="ru">BTC, ETH, USD/EUR и другие с графиком за сутки — без регистрации и ключей.</span></li>
+      <li><b><span lang="en">Pixel cat</span><span lang="ru">Пиксельный котик</span></b><span lang="en">Walks along the bar, naps when you step away, and jumps with hearts when you pet it.</span><span lang="ru">Гуляет по панели, спит, когда ты отошёл, и прыгает с сердечками, если его погладить.</span></li>
+      <li><b><span lang="en">Automatic updates</span><span lang="ru">Обновляется сам</span></b><span lang="en">When a new version is out, a notification appears above the bar. One click installs it.</span><span lang="ru">Новая версия — уведомление над панелью. Один клик, и всё установлено.</span></li>
+    </ul>
   </div>
 </section>
 
-<section id="install">
+<section id="install" class="minor">
   <div class="wrap">
-    <div class="reveal">
-      <span class="kicker">Установка</span>
-      <h2>Три шага — и готово</h2>
-    </div>
-    <div class="steps">
-      <div class="step reveal"><h3>Скачай установщик</h3><p>Нажми «Скачать» — загрузится Quoline.msi, всегда последней версии.</p></div>
-      <div class="step reveal"><h3>Запусти его</h3><p>Quoline установится, сам запустится и спрячет обычную панель задач.</p></div>
-      <div class="step reveal"><h3>Пользуйся 3 дня бесплатно</h3><p>Потом Quoline попросит ключ активации — 4,99 € навсегда. Вставь его, и всё.</p></div>
-    </div>
-    <div class="note reveal">⚠️ Windows может показать «Система Windows защитила ваш компьютер» — так бывает с новыми программами без дорогой цифровой подписи. Нажми <b>«Подробнее» → «Выполнить в любом случае»</b>.</div>
+    <h2><span lang="en">How to install Quoline</span><span lang="ru">Как установить Quoline</span></h2>
+    <ol class="steps">
+      <li><b><span lang="en">Download Quoline.msi</span><span lang="ru">Скачай Quoline.msi</span></b><span lang="en">The “Download” button always gets the latest version.</span><span lang="ru">Кнопка «Скачать» всегда загружает последнюю версию.</span></li>
+      <li><b><span lang="en">Run the installer</span><span lang="ru">Запусти установщик</span></b><span lang="en">Quoline installs, starts automatically and hides the standard taskbar.</span><span lang="ru">Quoline установится, сам запустится и спрячет обычную панель задач.</span></li>
+      <li><b><span lang="en">Use it free for 3 days</span><span lang="ru">Пользуйся 3 дня бесплатно</span></b><span lang="en">After that Quoline asks for a license key (€4.99, once). Paste the key that starts with QB1-, and that is it.</span><span lang="ru">Потом Quoline попросит ключ активации (4,99 €, один раз). Вставь ключ, который начинается с QB1-, — и всё.</span></li>
+    </ol>
+    <p class="note"><span lang="en">Windows may show “Windows protected your PC”. This happens with new apps that don’t have an expensive code-signing certificate. Click <b>“More info” → “Run anyway”</b>.</span><span lang="ru">Windows может показать «Система Windows защитила ваш компьютер». Так бывает с новыми программами без дорогой цифровой подписи. Нажми <b>«Подробнее» → «Выполнить в любом случае»</b>.</span></p>
   </div>
 </section>
 
-<section id="faq">
+<section id="faq" class="minor">
   <div class="wrap">
-    <div class="reveal">
-      <span class="kicker">Вопросы</span>
-      <h2>Частые вопросы</h2>
-    </div>
+    <h2><span lang="en">Questions</span><span lang="ru">Вопросы</span></h2>
     <div class="faq">
-      <details class="reveal"><summary>Сколько стоит и где взять ключ?</summary><p>Первые 3 дня Quoline работает бесплатно. Дальше нужен ключ — 4,99 € один раз, навсегда. Пока ключ выдаёт автор Quoline; он приходит строкой вида <b>QB1-…</b>, её нужно вставить в окно активации (правый клик по панели → «Активировать Quoline…»).</p></details>
-      <details class="reveal"><summary>Работает на Windows 10?</summary><p>Да, на Windows 10 и 11. На Windows 10 углы окон будут квадратными — на работу это не влияет.</p></details>
-      <details class="reveal"><summary>Как вернуть обычную панель Windows?</summary><p>Правый клик по панели → «Выйти и вернуть таскбар Windows». При удалении Quoline всё тоже возвращается как было.</p></details>
-      <details class="reveal"><summary>Как удалить?</summary><p>Параметры Windows → Приложения → Установленные приложения → Quoline → Удалить.</p></details>
-      <details class="reveal"><summary>Много ли ест памяти?</summary><p>Нет. Тяжёлая работа идёт в фоне, а панель перерисовывается только когда что-то меняется.</p></details>
-      <details class="reveal"><summary>Как обновить?</summary><p>Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</p></details>
+      <details><summary><span lang="en">How much does it cost?</span><span lang="ru">Сколько стоит?</span></summary><p><span lang="en">€4.99, paid once — no subscription. The first 3 days are free, no key needed.</span><span lang="ru">4,99 € один раз — без подписки. Первые 3 дня бесплатно, ключ не нужен.</span></p></details>
+      <details><summary><span lang="en">Where do I get a license key?</span><span lang="ru">Где взять ключ активации?</span></summary><p><span lang="en">License keys are issued by the author of Quoline. Your key is a string that starts with <b>QB1-…</b>; paste it into the activation window (right-click the bar → “Activate Quoline…”).</span><span lang="ru">Ключ выдаёт автор Quoline. Он приходит строкой вида <b>QB1-…</b> — её нужно вставить в окно активации (правый клик по панели → «Активировать Quoline…»).</span></p></details>
+      <details><summary><span lang="en">Does it work on Windows 10?</span><span lang="ru">Работает на Windows 10?</span></summary><p><span lang="en">Yes, on both Windows 10 and 11. On Windows 10, window corners are square and the blur in the iOS design may look slightly different; this doesn’t affect how anything works.</span><span lang="ru">Да, на Windows 10 и 11. На Windows 10 углы окон будут квадратными, а размытие в дизайне iOS может выглядеть чуть иначе — на работу это не влияет.</span></p></details>
+      <details><summary><span lang="en">How do I get the standard Windows taskbar back?</span><span lang="ru">Как вернуть обычную панель Windows?</span></summary><p><span lang="en">Right-click the bar → “Quit and restore the Windows taskbar”. Uninstalling Quoline also puts everything back the way it was.</span><span lang="ru">Правый клик по панели → «Выйти и вернуть таскбар Windows». При удалении Quoline всё тоже возвращается как было.</span></p></details>
+      <details><summary><span lang="en">How do I uninstall it?</span><span lang="ru">Как удалить?</span></summary><p><span lang="en">Windows Settings → Apps → Installed apps → Quoline → Uninstall.</span><span lang="ru">Параметры Windows → Приложения → Установленные приложения → Quoline → Удалить.</span></p></details>
+      <details><summary><span lang="en">Does it use a lot of memory?</span><span lang="ru">Много ли ест памяти?</span></summary><p><span lang="en">No. Heavy work runs in the background, and the bar only redraws when something changes.</span><span lang="ru">Нет. Тяжёлая работа идёт в фоне, а панель перерисовывается только когда что-то меняется.</span></p></details>
+      <details><summary><span lang="en">How do I update?</span><span lang="ru">Как обновить?</span></summary><p><span lang="en">You don’t have to do anything: when a new version is released, a notification appears above the bar. Click it, and Quoline updates itself.</span><span lang="ru">Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</span></p></details>
     </div>
   </div>
 </section>
 
 <div class="final">
-  <div class="wrap reveal">
-    <h2>Попробуй Quoline</h2>
-    <p class="sub" style="margin:0 auto 30px">Твой таскбар больше никогда не будет скучным.</p>
+  <div class="wrap">
+    <h2><span lang="en">Download Quoline</span><span lang="ru">Скачать Quoline</span> <span class="vnum">4.13.11</span></h2>
+    <p><span lang="en">Quoline.msi · about 0.4 MB · Windows 11 and 10 · 3 days free, then €4.99</span><span lang="ru">Quoline.msi · около 0,4 МБ · Windows 11 и 10 · 3 дня бесплатно, потом 4,99 €</span></p>
     <a class="btn btn-big dl" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
-      Скачать для Windows
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+      <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
     </a>
   </div>
 </div>
@@ -307,20 +292,34 @@
 <footer>
   <div class="wrap">
     <span>© <span id="yr">2026</span> Quoline</span>
-    <span><a href="https://github.com/korwenge/quoline/releases">Все версии</a></span>
+    <span><a href="https://github.com/korwenge/quoline/releases"><span lang="en">All releases</span><span lang="ru">Все версии</span></a></span>
   </div>
 </footer>
 
 <script>
-  // live clock in the mockup
-  (function tick() {
-    var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
-    var c = document.getElementById("clk");
-    if (c) c.innerHTML = p(d.getHours()) + ":" + p(d.getMinutes()) + "<span>:" + p(d.getSeconds()) + "</span>";
-    var day = document.getElementById("day");
-    if (day) day.textContent = d.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" });
-    setTimeout(tick, 1000 - d.getMilliseconds());
-  })();
+  // ---------- language switch ----------
+  var META = {
+    en: { title: "Quoline — a replacement taskbar for Windows 11",
+          desc: "Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume. MSI installer, about 0.4 MB." },
+    ru: { title: "Quoline — замена панели задач для Windows 11",
+          desc: "Quoline заменяет панель задач Windows 11 своей: плеер, погода, нагрузка на процессор, память и видеокарту, история буфера, поиск по Alt + Пробел и громкость каждого приложения. Установщик MSI около 0,4 МБ." }
+  };
+  function setLang(l, save) {
+    if (!META[l]) l = "en";
+    document.documentElement.lang = l;
+    document.title = META[l].title;
+    var md = document.querySelector('meta[name="description"]');
+    if (md) md.setAttribute("content", META[l].desc);
+    document.querySelectorAll("img[data-alt-" + l + "]").forEach(function (im) { im.alt = im.getAttribute("data-alt-" + l); });
+    document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === l ? "true" : "false");
+    });
+    if (save) { try { localStorage.setItem("quoline-lang", l); } catch (e) {} }
+  }
+  document.querySelectorAll("[data-set-lang]").forEach(function (b) {
+    b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); });
+  });
+  setLang(document.documentElement.lang, false);
   document.getElementById("yr").textContent = new Date().getFullYear();
 
   // current version straight from GitHub
@@ -329,20 +328,11 @@
     .then(function (j) {
       if (!j || !j.tag_name) return;
       var v = String(j.tag_name).replace(/^v/i, "");
-      document.getElementById("ver").textContent = "Версия " + v;
+      document.querySelectorAll(".vnum").forEach(function (el) { el.textContent = v; });
       var msi = (j.assets || []).filter(function (x) { return /\.msi$/i.test(x.name); })[0];
       document.querySelectorAll(".dl").forEach(function (a) { a.title = "Quoline " + v; if (msi) a.href = msi.browser_download_url; });
     })
     .catch(function () {});
-
-  // gentle fade-in on scroll
-  var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
-    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-  }, { threshold: 0.12 }) : null;
-  document.querySelectorAll(".reveal").forEach(function (el, i) {
-    el.style.transitionDelay = (i % 4) * 60 + "ms";
-    if (io) io.observe(el); else el.classList.add("in");
-  });
 </script>
 </body>
 </html>
