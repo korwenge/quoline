@@ -122,6 +122,8 @@
   .final p { margin: 12px 0 28px; color: var(--dim); }
   footer { border-top: 1px solid var(--line); padding: 24px 0 36px; color: var(--faint); font-size: 13.5px; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--dim); }
+  footer .legal { display: flex; gap: 18px; flex-wrap: wrap; }
 
   @media (max-width: 860px) {
     .feature { padding: 28px 0; }
@@ -294,7 +296,7 @@
       <a class="btn btn-big" href="https://quoline.lemonsqueezy.com/checkout/buy/a111873b-d4b2-49f7-a7fb-6bfb9a00e8e7"><span lang="en">Buy a key — €4.99</span><span lang="ru">Купить ключ — 4,99 €</span></a>
       <a class="btn btn-big btn-line" href="/Quoline.msi" download><span lang="en">Try 3 days free</span><span lang="ru">3 дня бесплатно</span></a>
     </div>
-    <p class="note"><span lang="en">Payment by card, PayPal or Apple Pay through Lemon Squeezy, our reseller: it handles the payment, VAT and the receipt.</span><span lang="ru">Оплата картой, PayPal или Apple Pay через Lemon Squeezy — нашего продавца: он принимает платёж, считает налоги и присылает чек.</span></p>
+    <p class="note"><span lang="en">Payment by card, PayPal or Apple Pay through Lemon Squeezy, our reseller: it handles the payment, VAT and the receipt. Not happy? <a href="/legal.html#refunds">Money back within 14 days</a>.</span><span lang="ru">Оплата картой, PayPal или Apple Pay через Lemon Squeezy — нашего продавца: он принимает платёж, считает налоги и присылает чек. Не понравилось? <a href="/legal.html#refunds">Вернём деньги в течение 14 дней</a>.</span></p>
   </div>
 </section>
 
@@ -311,7 +313,13 @@
 
 <footer>
   <div class="wrap">
-    <span>© <span id="yr">2026</span> Quoline</span>
+    <span>© <span id="yr">2026</span> Quoline · <a href="mailto:support@quoline.app">support@quoline.app</a></span>
+    <span class="legal">
+      <a href="/legal.html#contact"><span lang="en">Contact</span><span lang="ru">Контакты</span></a>
+      <a href="/legal.html#terms"><span lang="en">Terms</span><span lang="ru">Условия</span></a>
+      <a href="/legal.html#refunds"><span lang="en">Refunds</span><span lang="ru">Возвраты</span></a>
+      <a href="/legal.html#privacy"><span lang="en">Privacy</span><span lang="ru">Конфиденциальность</span></a>
+    </span>
   </div>
 </footer>
 
