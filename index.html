@@ -65,6 +65,9 @@
   .btn-small { padding: 7px 14px; font-size: 14px; }
   .btn-big { padding: 18px 32px; font-size: 19px; border-radius: 10px; }
   .btn-big svg { flex: none; }
+  .btn-line { background: none; color: var(--text); box-shadow: inset 0 0 0 1px var(--line2); }
+  .btn-line:hover { background: var(--line2); }
+  .buy-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 28px; }
 
   /* ---------- hero ---------- */
   .hero { padding: 88px 0 0; }
@@ -154,6 +157,7 @@
       <a href="#features"><span lang="en">Features</span><span lang="ru">Возможности</span></a>
       <a href="#install"><span lang="en">Install</span><span lang="ru">Установка</span></a>
       <a href="#faq"><span lang="en">FAQ</span><span lang="ru">Вопросы</span></a>
+      <a href="#buy"><span lang="en">Buy</span><span lang="ru">Купить</span></a>
     </div>
     <div class="nav-r">
       <div class="lang" role="group" aria-label="Language / Язык">
@@ -271,13 +275,26 @@
     <h2><span lang="en">Questions</span><span lang="ru">Вопросы</span></h2>
     <div class="faq">
       <details><summary><span lang="en">How much does it cost?</span><span lang="ru">Сколько стоит?</span></summary><p><span lang="en">€4.99, paid once — no subscription. The first 3 days are free, no key needed.</span><span lang="ru">4,99 € один раз — без подписки. Первые 3 дня бесплатно, ключ не нужен.</span></p></details>
-      <details><summary><span lang="en">Where do I get a license key?</span><span lang="ru">Где взять ключ активации?</span></summary><p><span lang="en">Keys go on sale on this site very soon. The key arrives by email right after payment; paste it into the activation window (right-click the bar → “Activate Quoline…”).</span><span lang="ru">Ключи совсем скоро появятся в продаже на этом сайте. Ключ приходит на почту сразу после оплаты — вставь его в окно активации (правый клик по панели → «Активировать Quoline…»).</span></p></details>
+      <details><summary><span lang="en">Where do I get a license key?</span><span lang="ru">Где взять ключ активации?</span></summary><p><span lang="en">Buy it <a href="#buy">here</a>: the key arrives by email right after payment. Paste it into the activation window (right-click the bar → “Activate Quoline…”).</span><span lang="ru">Купи его <a href="#buy">здесь</a>: ключ придёт на почту сразу после оплаты. Вставь его в окно активации (правый клик по панели → «Активировать Quoline…»).</span></p></details>
+      <details><summary><span lang="en">Can I move my key to a new PC?</span><span lang="ru">Можно перенести ключ на другой ПК?</span></summary><p><span lang="en">Yes. One key works on one PC at a time. On the old PC: right-click the bar → Settings → General → Key… → “Unlink this PC”, then activate the key on the new one.</span><span lang="ru">Да. Один ключ работает на одном ПК. На старом: правый клик по панели → Настройки → Главное → Ключ… → «Отвязать этот ПК», потом активируй ключ на новом.</span></p></details>
       <details><summary><span lang="en">Does it work on Windows 10?</span><span lang="ru">Работает на Windows 10?</span></summary><p><span lang="en">Yes. Quoline is tested on Windows 10 and Windows 11 and works on both.</span><span lang="ru">Да. Quoline проверен на Windows 10 и Windows 11 и работает на обеих.</span></p></details>
       <details><summary><span lang="en">How do I get the standard Windows taskbar back?</span><span lang="ru">Как вернуть обычную панель Windows?</span></summary><p><span lang="en">Right-click the bar → “Quit and restore the Windows taskbar”. Uninstalling Quoline also puts everything back the way it was.</span><span lang="ru">Правый клик по панели → «Выйти и вернуть таскбар Windows». При удалении Quoline всё тоже возвращается как было.</span></p></details>
       <details><summary><span lang="en">How do I uninstall it?</span><span lang="ru">Как удалить?</span></summary><p><span lang="en">Windows Settings → Apps → Installed apps → Quoline → Uninstall.</span><span lang="ru">Параметры Windows → Приложения → Установленные приложения → Quoline → Удалить.</span></p></details>
       <details><summary><span lang="en">Does it use a lot of memory?</span><span lang="ru">Много ли ест памяти?</span></summary><p><span lang="en">No. Heavy work runs in the background, and the bar only redraws when something changes.</span><span lang="ru">Нет. Тяжёлая работа идёт в фоне, а панель перерисовывается только когда что-то меняется.</span></p></details>
       <details><summary><span lang="en">How do I update?</span><span lang="ru">Как обновить?</span></summary><p><span lang="en">You don’t have to do anything: when a new version is released, a notification appears above the bar. Click it, and Quoline updates itself.</span><span lang="ru">Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</span></p></details>
     </div>
+  </div>
+</section>
+
+<section id="buy" class="minor">
+  <div class="wrap">
+    <h2><span lang="en">Buy a license key</span><span lang="ru">Купить ключ</span></h2>
+    <p class="lead"><span lang="en">€4.99 once — no subscription. One key for one PC, yours forever, with all future updates. The key arrives by email right after payment.</span><span lang="ru">4,99 € один раз — без подписки. Один ключ на один ПК, навсегда и со всеми обновлениями. Ключ придёт на почту сразу после оплаты.</span></p>
+    <div class="buy-row">
+      <a class="btn btn-big" href="https://quoline.lemonsqueezy.com/checkout/buy/a111873b-d4b2-49f7-a7fb-6bfb9a00e8e7"><span lang="en">Buy a key — €4.99</span><span lang="ru">Купить ключ — 4,99 €</span></a>
+      <a class="btn btn-big btn-line" href="https://github.com/korwenge/quoline/releases/latest/download/Quoline.msi"><span lang="en">Try 3 days free</span><span lang="ru">3 дня бесплатно</span></a>
+    </div>
+    <p class="note"><span lang="en">Payment by card, PayPal or Apple Pay through Lemon Squeezy, our reseller: it handles the payment, VAT and the receipt.</span><span lang="ru">Оплата картой, PayPal или Apple Pay через Lemon Squeezy — нашего продавца: он принимает платёж, считает налоги и присылает чек.</span></p>
   </div>
 </section>
 
