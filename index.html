@@ -12,11 +12,12 @@
 <meta property="og:description" content="Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume.">
 <meta name="twitter:card" content="summary">
 <script>
-  // language: saved choice → browser language → English
+  // language: the visitor's own choice (EN/RU buttons at the top), otherwise the system language
+  // (Russian for ru/uk/be/kk, like the app itself), otherwise English
   (function () {
     var l = null;
-    try { l = localStorage.getItem("quoline-lang"); } catch (e) {}
-    if (l !== "en" && l !== "ru") l = /^ru\b/i.test(navigator.language || "") ? "ru" : "en";
+    try { l = localStorage.getItem("quoline-lang2"); } catch (e) {}
+    if (l !== "en" && l !== "ru") l = /^(ru|uk|be|kk)\b/i.test(navigator.language || "") ? "ru" : "en";
     document.documentElement.lang = l;
   })();
 </script>
@@ -316,7 +317,7 @@
     document.querySelectorAll("[data-set-lang]").forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === l ? "true" : "false");
     });
-    if (save) { try { localStorage.setItem("quoline-lang", l); } catch (e) {} }
+    if (save) { try { localStorage.setItem("quoline-lang2", l); } catch (e) {} }
   }
   document.querySelectorAll("[data-set-lang]").forEach(function (b) {
     b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); });
