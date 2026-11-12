@@ -197,12 +197,6 @@
   .w.clock .two { text-align: left; }
   .w.clock b { font-size: 15px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
   .w.clock b small { font-size: 10px; color: var(--qb-dim); font-weight: 600; }
-  /* the pixel cat on top of the bar */
-  .cat { position: absolute; bottom: 47px; left: 0; width: 34px; height: 24px; z-index: 3; pointer-events: none; animation: catwalk 46s linear infinite; }
-  .cat svg { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
-  .cat .f2 { display: none; }
-  .cat.step .f1 { display: none; } .cat.step .f2 { display: block; }
-  @keyframes catwalk { 0% { transform: translateX(600px) scaleX(1); } 48% { transform: translateX(1330px) scaleX(1); } 50% { transform: translateX(1330px) scaleX(-1); } 98% { transform: translateX(600px) scaleX(-1); } 100% { transform: translateX(600px) scaleX(1); } }
 
   /* ---------- sections ---------- */
   section { position: relative; }
@@ -233,7 +227,6 @@
   .desk .cap b { font-size: clamp(20px, 2.6vw, 34px); letter-spacing: -.03em; }
   .desk .cap span { color: var(--dim); font-size: 14px; max-width: 28em; text-align: right; }
   .desk .stage { position: absolute; left: 0; right: 0; bottom: 0; }
-  .desk .cat { display: none; }
   /* which blocks each of them carries (fewer than the bar in the hero: the look is the point here) */
   .desk .qbar { width: 1040px; margin-left: -520px; }
   .desk .qbar [data-p] { display: none; }
@@ -430,7 +423,6 @@
   .final .eyebrow, .final .cta { justify-content: center; }
   .final .cta { margin-top: 44px; }
   .final .stage { margin-top: clamp(60px, 10vh, 120px); }
-  .final .cat { display: none; }
 
   footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--faint); font-size: 13px; background: #000; position: relative; z-index: 2; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -658,7 +650,6 @@
       <li><b><span lang="en">Your widget color</span><span lang="ru">Свой цвет виджетов</span></b><span lang="en">Disk, CPU, memory and battery meters in neutral white or any color you like; the Start button as a magnifier or the Windows logo.</span><span lang="ru">Полоски и кольца диска, процессора, памяти и батареи — белые или любого цвета; кнопка «Пуск» — лупа или значок Windows.</span></li>
       <li><b><span lang="en">Profiles</span><span lang="ru">Профили</span></b><span lang="en">“Main”, “Island”, “Focus” or your own presets, switched with one click.</span><span lang="ru">«Основной», «Остров», «Фокус» или свои наборы — переключаются одним кликом.</span></li>
       <li><b><span lang="en">Exchange rates and crypto</span><span lang="ru">Курсы и крипта</span></b><span lang="en">BTC, ETH, USD/EUR and more with a 24-hour chart, no sign-up and no API keys.</span><span lang="ru">BTC, ETH, USD/EUR и другие с графиком за сутки — без регистрации и ключей.</span></li>
-      <li><b><span lang="en">Pixel cat</span><span lang="ru">Пиксельный котик</span></b><span lang="en">Walks along the bar, naps when you step away, and jumps with hearts when you pet it.</span><span lang="ru">Гуляет по панели, спит, когда ты отошёл, и прыгает с сердечками, если его погладить.</span></li>
       <li><b><span lang="en">English and Russian</span><span lang="ru">Английский и русский</span></b><span lang="en">The whole interface in English or Russian, switched in the settings with one click.</span><span lang="ru">Весь интерфейс на английском или русском — переключается в настройках одним кликом.</span></li>
       <li><b><span lang="en">Automatic updates</span><span lang="ru">Обновляется сам</span></b><span lang="en">When a new version is out, a notification appears above the bar. One click installs it.</span><span lang="ru">Новая версия — уведомление над панелью. Один клик, и всё установлено.</span></li>
     </ul>
@@ -878,21 +869,11 @@
         '<div class="w clock hit"><div class="two"><b><span data-hm>12:48</span><small data-ss>:00</small></b><i data-date></i></div></div>' +
       '</div>';
   }
-  var CAT = {
-    f1: ["..........O..O..", ".........OFOOFO.", ".O.......OFFFFO.", "OFO......OFEFEO.", "OFO.OOOOOOFFPFO.", ".OFOFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFLLFFFFLLFO..", "..OFOOFO.OFOOFO.", "..OO..OO.OO..OO."],
-    f2: ["..........O..O..", ".........OFOOFO.", "..O......OFFFFO.", ".OFO.....OFEFEO.", ".OFOOOOOOOFFPFO.", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFLLFFFFLLFO..", "...OFOFO.OFOFO..", "...OO.OO.OO.OO.."]
-  };
-  function catSvg(rows, cls) {
-    var col = { O: "#2b1e1c", F: "#f2a65a", L: "#fff1e2", E: "#231a1c", P: "#ff96aa" }, s = '<svg class="' + cls + '" viewBox="0 0 16 11" shape-rendering="crispEdges">';
-    rows.forEach(function (r, y) { for (var x = 0; x < r.length; x++) if (col[r[x]]) s += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + col[r[x]] + '"/>'; });
-    return s + "</svg>";
-  }
   var bars = [];
   $$(".stage[data-bar]").forEach(function (stage) {
     var fit = document.createElement("div"); fit.className = "fit";
     var bar = document.createElement("div"); bar.className = "qbar"; bar.innerHTML = stage.getAttribute("data-bar") === "looks" ? liteHtml() : barHtml();
-    var cat = document.createElement("div"); cat.className = "cat"; cat.innerHTML = catSvg(CAT.f1, "f1") + catSvg(CAT.f2, "f2");
-    bar.appendChild(cat); fit.appendChild(bar); stage.appendChild(fit);
+    fit.appendChild(bar); stage.appendChild(fit);
     var plate = $(".plate", bar), hold = false, idle = 0;
     function to(el) {
       if (!el) { plate.style.opacity = 0; return; }
@@ -904,7 +885,7 @@
     bar.addEventListener("mouseover", function (e) { var h = e.target.closest ? e.target.closest(".hit") : null; if (h && bar.contains(h)) { hold = true; to(h); } });
     bar.addEventListener("mouseleave", function () { hold = false; to(null); });
     bar.addEventListener("click", function (e) { var p = e.target.closest ? e.target.closest("[data-play]") : null; if (p) bars.forEach(function (x) { x.bar.classList.toggle("paused"); }); });
-    bars.push({ stage: stage, fit: fit, bar: bar, cat: cat, hits: $$(".grp.c .hit, .w.clock, .w.wx, .w.cpu, .w.disk", bar), idle: function () { if (hold || calm) return; idle = (idle + 1) % this.hits.length; to(this.hits[idle]); } });
+    bars.push({ stage: stage, fit: fit, bar: bar, hits: $$(".grp.c .hit, .w.clock, .w.wx, .w.cpu, .w.disk", bar), idle: function () { if (hold || calm) return; idle = (idle + 1) % this.hits.length; to(this.hits[idle]); } });
   });
   function fitBars() {
     bars.forEach(function (x) {
@@ -916,7 +897,6 @@
   window.addEventListener("resize", fitBars);
   // the highlight wanders over the hero bar until somebody takes the mouse to it
   setInterval(function () { if (bars[0] && document.visibilityState === "visible") bars[0].idle(); }, 1500);
-  setInterval(function () { bars.forEach(function (x) { x.cat.classList.toggle("step"); }); }, 190);
 
   // the clock and the meters are alive
   var cpu = 12, ram = 61;
