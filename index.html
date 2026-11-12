@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quoline — a replacement taskbar for Windows 11</title>
-<meta name="description" content="Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume. MSI installer, about 0.4 MB.">
+<meta name="description" content="Quoline replaces the Windows 11 taskbar with its own bar: media player and equalizer, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search, per-app volume, six ready-made looks, any screen edge. MSI installer, about 0.5 MB. 3 days free, then €4.99 once.">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://quoline.app/">
 <meta property="og:url" content="https://quoline.app/">
@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Quoline">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://quoline.app/og.png">
-<meta name="theme-color" content="#0c0c0f">
+<meta name="theme-color" content="#000000">
 <script>
   // language: the visitor's own choice (EN/RU buttons at the top), otherwise the system language
   // (Russian for ru/uk/be/kk, like the app itself), otherwise English
@@ -31,295 +31,677 @@
 <link rel="apple-touch-icon" href="/icon-180.png">
 <style>
   :root {
-    --bg: #111214; --raised: #1a1b1e; --line: #2a2b2f; --line2: #36383d;
-    --text: #ffffff; --body: #d6d7da; --dim: #9a9ca3; --faint: #6f7178;
-    --accent: #22c55e; --accent-hi: #3ad673; --ink: #05140a;
+    --bg: #000; --ink: #f5f5f7; --body: #b9bbc2; --dim: #85878f; --faint: #55575e;
+    --line: rgba(255,255,255,.10); --line2: rgba(255,255,255,.18);
+    --card: #0b0c0e; --card2: #111215;
+    --acc: #22c55e; --acc-hi: #4ade80; --acc-ink: #03130a;
+    --bar: #0d0e11; --plate: rgba(255,255,255,.055);
+    --cut: 14px;
+    --ease: cubic-bezier(.2,.8,.2,1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; background: var(--bg); }
   body {
-    font-family: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
-    background: var(--bg); color: var(--body); line-height: 1.55; -webkit-font-smoothing: antialiased;
+    font-family: "Segoe UI Variable Display", "Segoe UI Variable", "SF Pro Display", -apple-system, "Inter", "Segoe UI", system-ui, Roboto, sans-serif;
+    background: var(--bg); color: var(--body); line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  h1, h2, h3, b, strong, summary { color: var(--text); }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  /* ---------- language ---------- */
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  h1, h2, h3, b, strong, summary { color: var(--ink); }
+  ::selection { background: var(--acc); color: var(--acc-ink); }
+  :focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+  .wrap { width: min(1240px, 100% - 48px); margin: 0 auto; }
   html[lang="en"] body [lang="ru"], html[lang="ru"] body [lang="en"] { display: none !important; }
-  .lang { display: inline-flex; border: 1px solid var(--line2); border-radius: 8px; padding: 2px; }
-  .lang button { font: inherit; font-size: 13px; font-weight: 600; letter-spacing: .03em; color: var(--dim); background: none; border: 0; cursor: pointer; padding: 5px 10px; border-radius: 6px; }
-  .lang button:hover { color: var(--text); }
-  .lang button[aria-pressed="true"] { background: var(--line2); color: var(--text); }
+
+  /* ---------- type ---------- */
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 14px; }
+  .eyebrow i { font-style: normal; color: var(--acc); }
+  .eyebrow::before { content: ""; width: 34px; height: 1px; background: var(--acc); transform: skewX(-40deg); }
+  .display { font-size: clamp(46px, 9.6vw, 148px); line-height: .92; letter-spacing: -.05em; font-weight: 700; color: var(--ink); }
+  .title { font-size: clamp(36px, 6.2vw, 92px); line-height: .96; letter-spacing: -.045em; font-weight: 700; color: var(--ink); }
+  .title em, .display em { font-style: normal; color: var(--dim); }
+  .lead { font-size: clamp(17px, 1.7vw, 22px); line-height: 1.45; color: var(--body); max-width: 34em; }
+  kbd { font-family: inherit; font-size: .82em; padding: 1px 7px; border-radius: 5px; border: 1px solid var(--line2); border-bottom-width: 2px; color: var(--ink); white-space: nowrap; }
+
+  /* ---------- buttons: cut corners ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px; font-weight: 650; letter-spacing: .01em; white-space: nowrap;
+    padding: 17px 30px; font-size: 17px; color: var(--acc-ink); background: var(--acc);
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+    transition: background .2s, transform .2s var(--ease), color .2s;
+  }
+  .btn:hover { background: var(--acc-hi); transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.985); }
+  .btn svg { flex: none; }
+  .btn.ghost { background: rgba(255,255,255,.08); color: var(--ink); }
+  .btn.ghost:hover { background: rgba(255,255,255,.16); }
+  .btn.small { padding: 10px 18px; font-size: 14px; --cut: 9px; }
 
   /* ---------- nav ---------- */
-  nav { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--text); }
-  .brand:hover { text-decoration: none; }
-  .logo { width: 28px; height: 28px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; flex: none; }
-  .logo svg { width: 18px; height: 18px; }
-  nav .links { display: flex; gap: 26px; font-size: 15px; }
-  nav .links a { color: var(--dim); }
-  nav .links a:hover { color: var(--text); text-decoration: none; }
+  nav { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s, border-color .3s; border-bottom: 1px solid transparent; }
+  nav.solid { background: rgba(0,0,0,.72); -webkit-backdrop-filter: saturate(160%) blur(18px); backdrop-filter: saturate(160%) blur(18px); border-bottom-color: var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 14px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 18px; letter-spacing: -.01em; color: var(--ink); }
+  .logo { width: 28px; height: 28px; background: var(--acc); display: grid; place-items: center; flex: none; clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px); }
+  .logo svg { width: 17px; height: 17px; }
+  nav .links { display: flex; gap: 30px; font-size: 14px; color: var(--dim); }
+  nav .links a { transition: color .2s; }
+  nav .links a:hover { color: var(--ink); }
   .nav-r { display: flex; align-items: center; gap: 12px; }
-
-  .btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 8px; font-weight: 600; background: var(--accent); color: var(--ink); }
-  .btn:hover { background: var(--accent-hi); text-decoration: none; }
-  .btn-small { padding: 7px 14px; font-size: 14px; }
-  .btn-big { padding: 18px 32px; font-size: 19px; border-radius: 10px; }
-  .btn-big svg { flex: none; }
-  .btn-line { background: none; color: var(--text); box-shadow: inset 0 0 0 1px var(--line2); }
-  .btn-line:hover { background: var(--line2); }
-  .buy-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 28px; }
+  .lang { display: inline-flex; border: 1px solid var(--line2); padding: 2px; }
+  .lang button { font-size: 12px; font-weight: 650; letter-spacing: .08em; color: var(--dim); padding: 5px 9px; }
+  .lang button:hover { color: var(--ink); }
+  .lang button[aria-pressed="true"] { background: var(--ink); color: #000; }
 
   /* ---------- hero ---------- */
-  .hero { padding: 88px 0 0; }
-  h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; max-width: 16ch; }
-  .lead { margin-top: 22px; font-size: clamp(17px, 2vw, 20px); color: var(--body); max-width: 640px; }
-  .cta { margin-top: 36px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-  .cta .file { color: var(--dim); font-size: 14.5px; }
-  .facts { margin-top: 52px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
-  .facts div { padding: 16px 20px 0 0; }
-  .facts dt { color: var(--faint); font-size: 13px; }
-  .facts dd { color: var(--text); font-size: 16px; font-weight: 600; }
-  .facts dd small { display: block; color: var(--dim); font-size: 13.5px; font-weight: 400; }
-  .todo { border: 1px dashed var(--dim); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px 0 0; overflow: hidden; isolation: isolate; }
+  .hero::before { /* the light behind the bar */
+    content: ""; position: absolute; z-index: -1; left: 50%; bottom: -34vh; width: 150vw; height: 90vh; transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(34,197,94,.34), rgba(16,120,90,.16) 42%, rgba(0,0,0,0) 70%);
+    filter: blur(8px); animation: breathe 9s ease-in-out infinite;
+  }
+  .hero::after { /* fine grid, fading up */
+    content: ""; position: absolute; z-index: -1; inset: 0;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 88px 88px; -webkit-mask-image: linear-gradient(to top, #000 0, transparent 62%); mask-image: linear-gradient(to top, #000 0, transparent 62%); opacity: .5;
+  }
+  @keyframes breathe { 50% { opacity: .72; transform: translateX(-50%) scale(1.06); } }
+  .hero .copy { padding-bottom: clamp(36px, 7vh, 84px); }
+  .hero .display { margin-top: 26px; max-width: 9.5em; }
+  .hero .lead { margin-top: 28px; }
+  .cta { margin-top: 38px; display: flex; align-items: center; gap: 16px 22px; flex-wrap: wrap; }
+  .cta .file { color: var(--dim); font-size: 14px; line-height: 1.5; }
+  .cta .file b { font-weight: 600; }
 
+  /* ---------- the live bar (a drawing of Quoline in HTML: hover it) ---------- */
+  .stage { position: relative; width: 100%; }
+  .stage .fit { position: relative; height: calc(48px * var(--k, 1) + 26px); }
+  .qbar {
+    --r: 0px;
+    position: absolute; left: 50%; bottom: 0; width: 1440px; height: 48px; margin-left: -720px; transform: scale(var(--k, 1)); transform-origin: 50% 100%;
+    background: var(--bar); border-top: 1px solid rgba(255,255,255,.09); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 6px; font-size: 12px; color: #e9eaee; text-align: left; line-height: 1.5; user-select: none; -webkit-user-select: none;
+    transition: border-radius .5s var(--ease), background .5s, width .5s var(--ease), margin .5s var(--ease), bottom .5s var(--ease), box-shadow .5s, border-color .5s;
+  }
+  .qbar .grp { display: flex; align-items: center; gap: 6px; height: 38px; transition: background .5s, padding .5s var(--ease), border-radius .5s; border-radius: 12px; }
+  .qbar .grp.c { position: absolute; left: 50%; transform: translateX(-50%); gap: 4px; }
+  .qbar .w { height: 38px; border-radius: 9px; background: var(--plate); display: flex; align-items: center; padding: 0 11px; gap: 9px; position: relative; transition: background .5s; }
+  .qbar .hit { position: relative; z-index: 1; cursor: pointer; }
+  .qbar .plate { position: absolute; z-index: 0; left: 0; top: 0; width: 0; height: 0; border-radius: 9px; background: rgba(255,255,255,.11); opacity: 0; pointer-events: none;
+    transition: left .26s var(--ease), top .26s var(--ease), width .26s var(--ease), height .26s var(--ease), border-radius .26s, opacity .2s; }
+  .qbar b { font-weight: 650; color: #fff; }
+  .qbar i { font-style: normal; color: #9a9ca6; font-size: 10px; }
+  /* disk */
+  .w.disk { flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; width: 118px; }
+  .w.disk .t { display: flex; align-items: baseline; gap: 5px; font-size: 13px; }
+  .w.disk u { display: block; width: 96px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+  .w.disk u s { display: block; height: 100%; width: 62%; border-radius: 2px; background: #e9eaee; }
+  /* cpu */
+  .ring { width: 30px; height: 30px; flex: none; position: relative; display: grid; place-items: center; font-size: 9.5px; font-weight: 700; color: #fff; }
+  .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 3.2; }
+  .ring .tr { stroke: rgba(255,255,255,.12); }
+  .ring .ar { stroke: #e9eaee; stroke-linecap: round; transition: stroke-dashoffset .9s var(--ease); }
+  .rows { display: grid; gap: 3px; width: 92px; }
+  .rows span { display: grid; grid-template-columns: 26px 1fr 24px; align-items: center; gap: 4px; font-size: 10px; color: #9a9ca6; }
+  .rows u { height: 3px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; display: block; }
+  .rows u s { display: block; height: 100%; background: #e9eaee; border-radius: 2px; transition: width .9s var(--ease); }
+  .rows em { font-style: normal; color: #fff; text-align: right; }
+  /* media */
+  .w.media { width: 290px; overflow: hidden; }
+  .eqm { display: flex; align-items: flex-end; gap: 2px; height: 14px; width: 17px; flex: none; }
+  .eqm i { width: 2.6px; border-radius: 2px; background: #e9eaee; height: 30%; animation: eqm 1s ease-in-out infinite; }
+  .eqm i:nth-child(2) { animation-duration: .74s; animation-delay: -.3s; } .eqm i:nth-child(3) { animation-duration: 1.18s; animation-delay: -.5s; } .eqm i:nth-child(4) { animation-duration: .86s; animation-delay: -.1s; }
+  @keyframes eqm { 0%,100% { height: 22%; } 50% { height: 100%; } }
+  .paused .eqm i { animation-play-state: paused; height: 18%; }
+  .tt { display: grid; min-width: 0; flex: 1; line-height: 1.25; }
+  .tt b { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tt span { font-size: 10px; color: #9a9ca6; white-space: nowrap; }
+  .mb { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: #b9bbc2; flex: none; }
+  .mb svg { width: 11px; height: 11px; fill: currentColor; }
+  .mb.play { background: var(--acc); color: #06140b; }
+  .mb.play .pa { display: none; } .mb.play .pl { display: block; }
+  .qbar:not(.paused) .mb.play .pa { display: block; } .qbar:not(.paused) .mb.play .pl { display: none; }
+  /* apps */
+  .app { width: 38px; height: 38px; border-radius: 8px; display: grid; place-items: center; }
+  .app > span { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; transition: transform .25s var(--ease); }
+  .app:hover > span { transform: scale(1.14) translateY(-1px); }
+  .app svg { width: 16px; height: 16px; }
+  .app::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 4px; height: 3px; margin-left: -2px; border-radius: 2px; background: rgba(255,255,255,.4); opacity: 0; transition: width .3s var(--ease), margin .3s var(--ease), background .3s; }
+  .app.run::after { opacity: 1; }
+  .app.on::after { opacity: 1; width: 12px; margin-left: -6px; background: var(--acc); }
+  .app.on { background: rgba(255,255,255,.07); }
+  .app.start > span { background: none; }
+  .app.start svg { width: 22px; height: 22px; }
+  .a1 > span { background: linear-gradient(160deg, #ffd45e, #f2a31c); } .a2 > span { background: linear-gradient(160deg, #35e07f, #159a4d); }
+  .a3 > span { background: linear-gradient(160deg, #8f9cff, #5865f2); } .a4 > span { background: linear-gradient(160deg, #3f5878, #17263b); }
+  .a5 > span { background: linear-gradient(160deg, #ff9d6b, #e2603a); } .a6 > span { background: linear-gradient(160deg, #6fd3ff, #2787e6); }
+  /* right side */
+  .ic { width: 32px; height: 38px; display: grid; place-items: center; border-radius: 8px; color: #c9cbd3; }
+  .ic svg { width: 15px; height: 15px; }
+  .w.quick { gap: 5px; padding: 0 8px; }
+  .pill { height: 26px; border-radius: 13px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.09); display: flex; align-items: center; gap: 6px; padding: 0 9px; color: #e9eaee; font-weight: 650; font-size: 11px; }
+  .pill svg { width: 13px; height: 13px; }
+  .pill .ch { width: 8px; height: 8px; color: #9a9ca6; }
+  .bat { width: 30px; height: 15px; border-radius: 4px; background: rgba(255,255,255,.2); position: relative; overflow: hidden; display: grid; place-items: center; font-size: 9.5px; font-weight: 700; color: #0e0e10; }
+  .bat::before { content: ""; position: absolute; inset: 0 8% 0 0; background: #e9eaee; }
+  .bat span { position: relative; }
+  .w.wx { gap: 8px; }
+  .w.wx svg { width: 26px; height: 26px; flex: none; }
+  .two { display: grid; line-height: 1.2; }
+  .two b { font-size: 13px; }
+  .w.clock { padding: 0 12px; }
+  .w.clock .two { text-align: left; }
+  .w.clock b { font-size: 15px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .w.clock b small { font-size: 10px; color: #9a9ca6; font-weight: 600; }
+  /* the pixel cat on top of the bar */
+  .cat { position: absolute; bottom: 47px; left: 0; width: 34px; height: 24px; z-index: 3; pointer-events: none; animation: catwalk 46s linear infinite; }
+  .cat svg { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  .cat .f2 { display: none; }
+  .cat.step .f1 { display: none; } .cat.step .f2 { display: block; }
+  @keyframes catwalk { 0% { transform: translateX(600px) scaleX(1); } 48% { transform: translateX(1330px) scaleX(1); } 50% { transform: translateX(1330px) scaleX(-1); } 98% { transform: translateX(600px) scaleX(-1); } 100% { transform: translateX(600px) scaleX(1); } }
 
   /* ---------- sections ---------- */
-  .major { padding-top: 128px; }
-  .minor { padding-top: 88px; }
-  h2 { font-size: clamp(28px, 3.8vw, 40px); letter-spacing: -0.02em; line-height: 1.15; font-weight: 700; max-width: 22ch; }
-  .minor h2 { font-size: clamp(22px, 2.6vw, 28px); max-width: none; }
+  section { position: relative; }
+  .sec { padding: clamp(110px, 17vh, 220px) 0 0; }
+  .sec .head { display: grid; gap: 26px; }
+  .sec .head .lead { margin-top: 2px; }
+  .num { font-size: 12px; font-weight: 600; letter-spacing: .24em; color: var(--dim); display: flex; align-items: center; gap: 14px; text-transform: uppercase; }
+  .num b { color: var(--acc); font-weight: 700; }
+  .num::after { content: ""; flex: none; width: 46px; height: 1px; background: var(--line2); transform: skewX(-40deg); }
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; } .reveal.d2 { transition-delay: .16s; } .reveal.d3 { transition-delay: .24s; }
 
-  /* main features */
-  .feature { padding: 36px 0; border-bottom: 1px solid var(--line); max-width: 760px; }
-  .feature:first-of-type { margin-top: 24px; }
-  .feature h3 { font-size: clamp(21px, 2.3vw, 26px); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 12px; }
-  .feature p { font-size: 16px; }
-  .feature p + p { margin-top: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 10px 16px; font-size: 14px; font-weight: 600; color: var(--body); box-shadow: inset 0 0 0 1px var(--line2); transition: color .2s, background .2s, box-shadow .2s;
+    clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px); background: rgba(255,255,255,.03); }
+  .chip:hover { color: var(--ink); background: rgba(255,255,255,.09); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #000; box-shadow: none; }
 
-  /* other features: plain two-column list */
-  .more { margin-top: 32px; list-style: none; columns: 2; column-gap: 56px; }
-  .more li { break-inside: avoid; padding: 12px 0 14px; border-top: 1px solid var(--line); font-size: 15px; }
-  .more li b { display: block; font-size: 15.5px; margin-bottom: 2px; }
-  kbd { font-family: inherit; font-size: 12.5px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line2); border-bottom-width: 2px; color: var(--text); white-space: nowrap; }
+  /* looks: a desktop with the bar on it */
+  .desk { margin-top: 44px; position: relative; height: clamp(260px, 34vw, 440px); overflow: hidden; border: 1px solid var(--line);
+    background:
+      radial-gradient(60% 80% at 22% 108%, rgba(34,197,94,.55), transparent 60%),
+      radial-gradient(55% 70% at 78% 112%, rgba(20,150,220,.5), transparent 62%),
+      radial-gradient(40% 60% at 52% 118%, rgba(120,80,255,.45), transparent 60%),
+      linear-gradient(#05070a, #0a1016); }
+  .desk .cap { position: absolute; left: 28px; top: 26px; right: 28px; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+  .desk .cap b { font-size: clamp(20px, 2.6vw, 34px); letter-spacing: -.03em; }
+  .desk .cap span { color: var(--dim); font-size: 14px; max-width: 28em; text-align: right; }
+  .desk .stage { position: absolute; left: 0; right: 0; bottom: 0; }
+  .desk .cat { display: none; }
+  [data-look="windows"] .qbar { background: rgba(28,30,36,.86); }
+  [data-look="windows"] .qbar .w { background: transparent; }
+  [data-look="windows"] .qbar .pill { box-shadow: none; }
+  [data-look="floating"] .qbar { --r: 16px; bottom: 12px; width: 1416px; margin-left: -708px; border: 1px solid rgba(255,255,255,.10); box-shadow: 0 18px 50px rgba(0,0,0,.6); }
+  [data-look="islands"] .qbar { background: transparent; border-color: transparent; bottom: 10px; }
+  [data-look="islands"] .qbar .grp { background: var(--bar); padding: 0 6px; height: 46px; border-radius: 15px; box-shadow: 0 12px 34px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.08); }
+  [data-look="dock"] .qbar { background: transparent; border-color: transparent; bottom: 12px; }
+  [data-look="dock"] .qbar .grp.c { background: rgba(255,255,255,.14); -webkit-backdrop-filter: blur(22px) saturate(170%); backdrop-filter: blur(22px) saturate(170%); padding: 0 10px; height: 54px; border-radius: 20px; gap: 6px; box-shadow: 0 16px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.2); }
+  [data-look="dock"] .qbar .grp.l, [data-look="dock"] .qbar .grp.r { background: rgba(13,14,17,.72); padding: 0 6px; height: 46px; border-radius: 15px; }
+  [data-look="clear"] .qbar { background: transparent; border-color: transparent; }
+  [data-look="clear"] .qbar .w { background: transparent; }
+  [data-look="clear"] .qbar { text-shadow: 0 1px 6px rgba(0,0,0,.7); }
+
+  /* music: the equaliser across a slab */
+  .slab { margin-top: 44px; position: relative; height: clamp(150px, 20vw, 240px); background: #050607; border: 1px solid var(--line); overflow: hidden; }
+  .slab canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .slab .now { position: absolute; left: clamp(18px, 3vw, 40px); bottom: clamp(16px, 2.6vw, 34px); display: grid; gap: 4px; }
+  .slab .now b { font-size: clamp(20px, 2.8vw, 38px); letter-spacing: -.03em; line-height: 1; }
+  .slab .now span { color: var(--body); font-size: 14px; }
+  .row2 { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 22px 40px; align-items: center; }
+  .row2 .lbl { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); margin-right: 4px; }
+  .row2 > div { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  /* edges: a screen whose bar moves */
+  .edge { margin-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: clamp(24px, 5vw, 72px); align-items: center; }
+  .edge .pick { display: grid; gap: 30px; }
+  .screen { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--line2); background: radial-gradient(70% 90% at 30% 110%, rgba(34,197,94,.35), transparent 60%), radial-gradient(60% 80% at 80% 0%, rgba(40,120,255,.25), transparent 60%), #06080b; overflow: hidden; }
+  .screen .win { position: absolute; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 6px; transition: all .7s var(--ease); }
+  .screen .win::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 9%; min-height: 8px; background: rgba(255,255,255,.07); border-radius: 6px 6px 0 0; }
+  .mbar { position: absolute; background: #0d0e11; border: 1px solid rgba(255,255,255,.12); display: flex; align-items: center; justify-content: space-between; gap: 2%; padding: 0 1.2%; transition: all .7s var(--ease); }
+  .mbar .g { display: flex; align-items: center; gap: 5px; transition: all .7s var(--ease); }
+  .mbar .blk { height: 12px; width: 34px; border-radius: 3px; background: rgba(255,255,255,.16); transition: all .7s var(--ease); }
+  .mbar .blk.s { width: 20px; } .mbar .blk.a { background: var(--acc); width: 12px; border-radius: 50%; }
+  .mbar .dot { width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,.34); transition: all .7s var(--ease); }
+  .mbar .dot:nth-child(2) { background: #f2b33a; } .mbar .dot:nth-child(3) { background: #23b866; } .mbar .dot:nth-child(4) { background: #6370f5; } .mbar .dot:nth-child(5) { background: #e2603a; }
+  .screen[data-pos="bottom"] .mbar { left: 0; top: 91%; width: 100%; height: 9%; }
+  .screen[data-pos="top"] .mbar { left: 0; top: 0; width: 100%; height: 9%; }
+  .screen[data-pos="left"] .mbar { left: 0; top: 0; width: 6.2%; height: 100%; flex-direction: column; padding: 1.6% 0; }
+  .screen[data-pos="right"] .mbar { left: 93.8%; top: 0; width: 6.2%; height: 100%; flex-direction: column; padding: 1.6% 0; }
+  .screen[data-pos="left"] .mbar .g, .screen[data-pos="right"] .mbar .g { flex-direction: column; }
+  .screen[data-pos="left"] .mbar .blk, .screen[data-pos="right"] .mbar .blk { width: 14px; height: 22px; }
+  .screen[data-pos="left"] .mbar .blk.s, .screen[data-pos="right"] .mbar .blk.s { height: 14px; }
+  .screen[data-pos="left"] .mbar .blk.a, .screen[data-pos="right"] .mbar .blk.a { width: 12px; height: 12px; }
+  .screen[data-pos="bottom"] .w1 { left: 4%; top: 6%; width: 56%; height: 78%; } .screen[data-pos="bottom"] .w2 { left: 46%; top: 22%; width: 48%; height: 62%; }
+  .screen[data-pos="top"] .w1 { left: 4%; top: 15%; width: 56%; height: 78%; } .screen[data-pos="top"] .w2 { left: 46%; top: 31%; width: 48%; height: 62%; }
+  .screen[data-pos="left"] .w1 { left: 10%; top: 6%; width: 54%; height: 86%; } .screen[data-pos="left"] .w2 { left: 50%; top: 22%; width: 46%; height: 70%; }
+  .screen[data-pos="right"] .w1 { left: 4%; top: 6%; width: 54%; height: 86%; } .screen[data-pos="right"] .w2 { left: 44%; top: 22%; width: 46%; height: 70%; }
+  .edge p.sm { font-size: 15px; color: var(--dim); max-width: 30em; }
+
+  /* bento */
+  .bento { margin-top: 56px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .tile { position: relative; background: var(--card); border: 1px solid var(--line); padding: 26px 26px 24px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; transition: border-color .3s, transform .5s var(--ease); }
+  .tile:hover { border-color: var(--line2); }
+  .tile::after { content: ""; position: absolute; right: -1px; top: -1px; width: 22px; height: 22px; background: var(--bg); border-left: 1px solid var(--line); transform: translate(11px, -11px) rotate(45deg); }
+  .tile h3 { font-size: clamp(20px, 2vw, 26px); letter-spacing: -.03em; line-height: 1.1; }
+  .tile p { margin-top: 8px; font-size: 14.5px; color: var(--body); max-width: 34em; }
+  .tile .viz { min-height: 150px; margin-bottom: 28px; }
+  .tile .txt { display: block; }
+  .t3 { grid-column: span 3; } .t2 { grid-column: span 2; } .t4 { grid-column: span 4; }
+  /* search */
+  .vsearch { border: 1px solid var(--line2); background: #111215; height: 46px; display: flex; align-items: center; gap: 12px; padding: 0 16px; font-size: 16px; color: var(--ink); max-width: 420px; }
+  .vsearch svg { width: 17px; height: 17px; color: var(--dim); flex: none; }
+  .vsearch .car { width: 1.5px; height: 20px; background: var(--acc); animation: blink 1s steps(2) infinite; margin-left: -8px; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .vres { margin-top: 8px; max-width: 420px; display: grid; gap: 2px; }
+  .vres div { display: flex; justify-content: space-between; padding: 9px 16px; font-size: 14px; background: rgba(255,255,255,.04); color: var(--body); }
+  .vres div:first-child { background: rgba(34,197,94,.14); color: var(--ink); }
+  .vres div span:last-child { color: var(--dim); font-size: 12px; }
+  /* clipboard */
+  .vclip { display: grid; gap: 7px; }
+  .vclip div { height: 40px; background: #111215; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 13px; color: var(--body); white-space: nowrap; overflow: hidden; }
+  .vclip div i { flex: none; width: 46px; height: 26px; background: linear-gradient(135deg, #1f8f55, #1b4f9c); font-style: normal; }
+  .vclip div:first-child { border-color: rgba(34,197,94,.5); color: var(--ink); }
+  /* load */
+  .vload { display: flex; gap: 22px; align-items: center; }
+  .vload .big { width: 120px; height: 120px; position: relative; display: grid; place-items: center; flex: none; }
+  .vload .big svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .vload .big circle { fill: none; stroke-width: 9; }
+  .vload .big .tr { stroke: rgba(255,255,255,.1); } .vload .big .ar { stroke: var(--acc); stroke-linecap: round; transition: stroke-dashoffset 1.1s var(--ease); }
+  .vload .big b { font-size: 30px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .vload ul { list-style: none; display: grid; gap: 9px; flex: 1; min-width: 0; }
+  .vload li { display: grid; grid-template-columns: 74px 1fr 34px; gap: 10px; align-items: center; font-size: 12.5px; color: var(--body); }
+  .vload li u { height: 4px; background: rgba(255,255,255,.1); display: block; } .vload li u s { display: block; height: 100%; background: var(--ink); transition: width 1.1s var(--ease); }
+  .vload li em { font-style: normal; text-align: right; color: var(--dim); font-variant-numeric: tabular-nums; }
+  /* volume */
+  .vvol { display: grid; gap: 15px; }
+  .vvol div { display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: center; }
+  .vvol i { width: 18px; height: 18px; border-radius: 5px; }
+  .vvol u { height: 4px; background: rgba(255,255,255,.12); position: relative; display: block; }
+  .vvol u s { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); }
+  .vvol u b { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; }
+  /* previews */
+  .vprev { display: flex; gap: 10px; }
+  .vprev div { flex: 1; height: 132px; border: 1px solid var(--line); background: #111215; padding: 8px; display: grid; grid-template-rows: 16px 1fr; gap: 7px; font-size: 11px; color: var(--body); transition: background .3s, border-color .3s; }
+  .vprev div i { background: linear-gradient(150deg, #20232a, #15171c); display: block; position: relative; overflow: hidden; }
+  .vprev div i::before { content: ""; position: absolute; left: 10%; top: 16%; width: 42%; height: 9%; background: rgba(255,255,255,.3); box-shadow: 0 16px 0 rgba(255,255,255,.14), 0 32px 0 rgba(255,255,255,.14), 0 48px 0 rgba(255,255,255,.14); }
+  .vprev div:nth-child(2) { background: #1a1c21; border-color: var(--line2); color: var(--ink); }
+  .vprev div:nth-child(2) i { background: linear-gradient(150deg, #1c4f38, #173a5c); }
+  /* arrange */
+  .varr { display: flex; align-items: center; gap: 8px; height: 60px; }
+  .varr span { height: 44px; border: 1px dashed rgba(34,197,94,.7); background: rgba(255,255,255,.04); flex: none; }
+  .varr span:nth-child(1) { width: 70px; } .varr span:nth-child(3) { width: 96px; margin-left: 34px; } .varr span:nth-child(4) { width: 54px; }
+  .varr span.lift { width: 110px; border: 1.5px solid var(--acc); background: #15171b; box-shadow: 0 16px 30px rgba(0,0,0,.6); animation: carry 4.5s var(--ease) infinite; }
+  @keyframes carry { 0%, 14% { transform: translate(0, 0); } 40%, 60% { transform: translate(46px, -9px) scale(1.04); } 86%, 100% { transform: translate(0, 0); } }
+  /* monitors */
+  .vmon { display: flex; gap: 12px; align-items: flex-end; }
+  .vmon div { border: 1px solid var(--line2); background: #0e1013; position: relative; flex: none; }
+  .vmon div::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 11%; background: var(--ink); opacity: .85; }
+  .vmon div:nth-child(1) { width: 96px; height: 62px; } .vmon div:nth-child(2) { width: 150px; height: 92px; } .vmon div:nth-child(2)::after { background: var(--acc); opacity: 1; } .vmon div:nth-child(3) { width: 60px; height: 100px; }
+
+  /* numbers */
+  .specs { margin-top: clamp(110px, 17vh, 220px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .specs div { padding: clamp(28px, 4vw, 56px) clamp(14px, 2.4vw, 34px); border-left: 1px solid var(--line); }
+  .specs div:first-child { border-left: 0; }
+  .specs b { display: block; font-size: clamp(40px, 6.4vw, 96px); letter-spacing: -.055em; line-height: .95; font-variant-numeric: tabular-nums; }
+  .specs b small { font-size: .36em; letter-spacing: -.01em; color: var(--dim); font-weight: 600; margin-left: .15em; }
+  .specs div > span { display: block; margin-top: 14px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
+
+  /* everything list */
+  .more { margin-top: 56px; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 44px; }
+  .more li { padding: 18px 0 20px; border-top: 1px solid var(--line); font-size: 14.5px; }
+  .more li b { display: block; font-size: 16px; margin-bottom: 5px; letter-spacing: -.01em; }
+
+  /* price */
+  .price { margin-top: clamp(110px, 17vh, 220px); position: relative; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: clamp(80px, 12vh, 150px) 0; isolation: isolate; }
+  .price::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 120vw; height: 120%; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(34,197,94,.2), transparent 70%); }
+  .price .grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 6vw, 90px); align-items: end; }
+  .price .amount { font-size: clamp(96px, 21vw, 320px); line-height: .8; letter-spacing: -.07em; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; margin-top: 30px; }
+  .price .amount small { font-size: .3em; letter-spacing: -.03em; color: var(--dim); font-weight: 600; }
+  .price ul { list-style: none; display: grid; gap: 14px; margin: 0 0 34px; }
+  .price li { display: flex; gap: 14px; align-items: baseline; font-size: 17px; color: var(--ink); }
+  .price li::before { content: ""; flex: none; width: 18px; height: 2px; background: var(--acc); transform: translateY(-5px) skewX(-40deg); }
+  .buy-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .note { margin-top: 26px; font-size: 13.5px; color: var(--dim); max-width: 44em; line-height: 1.6; }
+  .note a, .faq a { color: var(--ink); border-bottom: 1px solid var(--line2); }
+  .note a:hover, .faq a:hover { border-color: var(--acc); }
 
   /* install */
-  .steps { margin-top: 28px; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
-  .steps li { counter-increment: s; border-top: 1px solid var(--line2); padding-top: 14px; font-size: 15px; }
-  .steps li::before { content: counter(s) "."; display: block; color: var(--dim); font-weight: 600; margin-bottom: 4px; }
-  .steps b { display: block; font-size: 16px; margin-bottom: 4px; }
-  .note { margin-top: 32px; padding-left: 16px; border-left: 2px solid var(--line2); color: var(--dim); font-size: 14.5px; max-width: 760px; }
+  .steps { margin-top: 56px; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+  .steps li { counter-increment: s; background: var(--card); border: 1px solid var(--line); padding: 28px 26px 30px; font-size: 15px; }
+  .steps li::before { content: "0" counter(s); display: block; font-size: 12px; letter-spacing: .24em; color: var(--acc); font-weight: 700; margin-bottom: 44px; }
+  .steps b { display: block; font-size: 22px; letter-spacing: -.03em; margin-bottom: 8px; line-height: 1.15; }
 
   /* faq */
-  .faq { margin-top: 24px; max-width: 800px; border-top: 1px solid var(--line); }
+  .faqgrid { margin-top: 56px; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 6vw, 90px); }
+  .faq { border-top: 1px solid var(--line); }
   details { border-bottom: 1px solid var(--line); }
-  summary { cursor: pointer; padding: 15px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  summary { cursor: pointer; padding: 22px 0; font-weight: 600; font-size: 18px; letter-spacing: -.01em; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 18px; }
   summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; color: var(--dim); font-size: 20px; line-height: 1; flex: none; }
-  details[open] summary::after { content: "\2212"; }
-  details p { color: var(--body); padding: 0 0 16px; font-size: 15px; }
+  summary::after { content: ""; flex: none; width: 13px; height: 13px; background: linear-gradient(var(--dim), var(--dim)) center / 100% 1.5px no-repeat, linear-gradient(var(--dim), var(--dim)) center / 1.5px 100% no-repeat; transition: transform .3s var(--ease); }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { padding: 0 0 24px; font-size: 15.5px; color: var(--body); max-width: 46em; }
 
-  .final { padding: 120px 0 104px; }
-  .final p { margin: 12px 0 28px; color: var(--dim); }
-  footer { border-top: 1px solid var(--line); padding: 24px 0 36px; color: var(--faint); font-size: 13.5px; }
+  /* final */
+  .final { position: relative; margin-top: clamp(110px, 17vh, 220px); padding: clamp(90px, 16vh, 200px) 0 0; overflow: hidden; isolation: isolate; text-align: center; }
+  .final::before { content: ""; position: absolute; z-index: -1; left: 50%; bottom: -40vh; width: 150vw; height: 90vh; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(34,197,94,.36), rgba(16,120,90,.14) 45%, transparent 70%); }
+  .final .display { margin: 26px auto 0; max-width: 8.5em; }
+  .final .eyebrow, .final .cta { justify-content: center; }
+  .final .cta { margin-top: 44px; }
+  .final .stage { margin-top: clamp(60px, 10vh, 120px); }
+  .final .cat { display: none; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--faint); font-size: 13px; background: #000; position: relative; z-index: 2; }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  footer a { color: var(--dim); }
-  footer .legal { display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--dim); transition: color .2s; } footer a:hover { color: var(--ink); }
+  footer .legal { display: flex; gap: 22px; flex-wrap: wrap; }
 
-  @media (max-width: 860px) {
-    .feature { padding: 28px 0; }
-    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .facts div { padding-bottom: 4px; }
-  }
-  @media (max-width: 720px) {
+  @media (max-width: 980px) {
     nav .links { display: none; }
-    .hero { padding-top: 56px; }
-    .major { padding-top: 88px; }
-    .minor { padding-top: 64px; }
-    .final { padding: 88px 0 80px; }
-    .more { columns: 1; }
-    .steps { grid-template-columns: 1fr; gap: 20px; }
-    .btn-big { padding: 16px 24px; font-size: 18px; }
+    .edge { grid-template-columns: 1fr; }
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .t3, .t2, .t4 { grid-column: span 1; } .tile.wide { grid-column: span 2; }
+    .more { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .price .grid, .faqgrid { grid-template-columns: 1fr; }
+    .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .specs div:nth-child(3) { border-left: 0; } .specs div:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .desk .cap span { display: none; }
   }
-  @media (max-width: 400px) {
-    .wrap { padding: 0 16px; }
-    .nav-r { gap: 6px; }
+  @media (max-width: 640px) {
+    .wrap { width: calc(100% - 36px); }
+    .bento { grid-template-columns: 1fr; } .tile.wide { grid-column: span 1; }
+    .tile .viz { min-height: 0; }
+    .more, .steps { grid-template-columns: 1fr; }
+    .steps li::before { margin-bottom: 22px; }
+    .btn { padding: 15px 22px; font-size: 16px; }
     .lang button { padding: 5px 7px; }
-    .btn-small { padding: 7px 11px; }
-    .brand { font-size: 17px; gap: 8px; }
-    .facts { grid-template-columns: 1fr; }
+    .hero { padding-top: 96px; }
+    .cta .btn { width: 100%; }
+    .buy-row .btn { width: 100%; }
+    summary { font-size: 16.5px; padding: 18px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
   }
 </style>
 </head>
 <body>
 
-<nav>
+<nav id="nav">
   <div class="wrap">
-    <a class="brand" href="#"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
+    <a class="brand" href="#top"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#03130a" stroke-width="3.2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
     <div class="links">
+      <a href="#looks"><span lang="en">Looks</span><span lang="ru">Виды</span></a>
+      <a href="#music"><span lang="en">Music</span><span lang="ru">Музыка</span></a>
+      <a href="#edges"><span lang="en">Edges</span><span lang="ru">Края</span></a>
       <a href="#features"><span lang="en">Features</span><span lang="ru">Возможности</span></a>
-      <a href="#install"><span lang="en">Install</span><span lang="ru">Установка</span></a>
+      <a href="#buy"><span lang="en">Price</span><span lang="ru">Цена</span></a>
       <a href="#faq"><span lang="en">FAQ</span><span lang="ru">Вопросы</span></a>
-      <a href="#buy"><span lang="en">Buy</span><span lang="ru">Купить</span></a>
     </div>
     <div class="nav-r">
       <div class="lang" role="group" aria-label="Language / Язык">
         <button type="button" data-set-lang="en" aria-pressed="true" title="English">EN</button>
         <button type="button" data-set-lang="ru" aria-pressed="false" title="Русский">RU</button>
       </div>
-      <a class="btn btn-small dl" href="/Quoline.msi" download><span lang="en">Download</span><span lang="ru">Скачать</span></a>
+      <a class="btn small dl" href="/Quoline.msi" download><span lang="en">Download</span><span lang="ru">Скачать</span></a>
     </div>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="wrap">
-    <h1><span lang="en">A replacement taskbar for Windows 11</span><span lang="ru">Замена панели задач для Windows 11</span></h1>
-    <p class="lead"><span lang="en">Quoline hides the standard Windows taskbar and puts its own bar in its place: your apps, plus widgets for the media player, weather, CPU/RAM/GPU load and clipboard history, search on <kbd>Alt</kbd> + <kbd>Space</kbd> and a volume slider for every app.</span><span lang="ru">Quoline прячет стандартную панель задач Windows и ставит на её место свою: твои приложения, виджеты плеера, погоды, нагрузки на процессор, память и видеокарту, история буфера, поиск по <kbd>Alt</kbd> + <kbd>Пробел</kbd> и громкость каждого приложения.</span></p>
-    <div class="cta">
-      <a class="btn btn-big dl" href="/Quoline.msi" download>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+<header class="hero" id="top">
+  <div class="wrap copy">
+    <p class="eyebrow reveal"><span><span lang="en">Quoline <i>·</i> a replacement taskbar for Windows 11</span><span lang="ru">Quoline <i>·</i> замена панели задач для Windows 11</span></span></p>
+    <h1 class="display reveal d1"><span lang="en">The taskbar.<br><em>Reinvented.</em></span><span lang="ru">Панель задач.<br><em>Заново.</em></span></h1>
+    <p class="lead reveal d2"><span lang="en">Quoline hides the standard Windows taskbar and puts its own in its place: your apps, the player, weather, system load, clipboard history and search — every pixel of it yours to change.</span><span lang="ru">Quoline прячет стандартную панель задач Windows и ставит на её место свою: приложения, плеер, погода, нагрузка на ПК, история буфера и поиск — и каждый пиксель можно настроить под себя.</span></p>
+    <div class="cta reveal d3">
+      <a class="btn dl" href="/Quoline.msi" download>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
       </a>
-      <span class="file">Quoline.msi · <span lang="en">about 0.4 MB</span><span lang="ru">около 0,4 МБ</span></span>
+      <span class="file"><b><span lang="en">Free for 3 days</span><span lang="ru">3 дня бесплатно</span></b> · <span lang="en">then €4.99 once</span><span lang="ru">потом 4,99 € один раз</span><br>Quoline.msi · <span lang="en">about 0.5 MB · version</span><span lang="ru">около 0,5 МБ · версия</span> <span class="vnum">4.13.34</span></span>
     </div>
-    <dl class="facts">
-      <div><dt><span lang="en">Version</span><span lang="ru">Версия</span></dt><dd class="vnum">4.13.33</dd></div>
-      <div><dt><span lang="en">System</span><span lang="ru">Система</span></dt><dd>Windows 11<small><span lang="en">also runs on Windows 10</span><span lang="ru">работает и на Windows 10</span></small></dd></div>
-      <div><dt><span lang="en">Installer</span><span lang="ru">Установщик</span></dt><dd>MSI<small><span lang="en">about 0.4 MB, updates itself</span><span lang="ru">около 0,4 МБ, обновляется сам</span></small></dd></div>
-      <div><dt><span lang="en">Price</span><span lang="ru">Цена</span></dt><dd><span lang="en">€4.99</span><span lang="ru">4,99 €</span><small><span lang="en">once, yours forever · 3 days free</span><span lang="ru">один раз, навсегда · 3 дня бесплатно</span></small></dd></div>
-    </dl>
-
   </div>
+  <div class="stage" data-bar="hero" aria-hidden="true"></div>
 </header>
 
-<section id="features" class="major">
+<main>
+
+<section class="sec" id="looks">
   <div class="wrap">
-    <h2><span lang="en">Player, system load, weather, clipboard and designs</span><span lang="ru">Плеер, нагрузка на ПК, погода, буфер обмена и дизайны</span></h2>
-
-    <div class="feature">
-      <div>
-        <h3><span lang="en">Media player and equalizer</span><span lang="ru">Плеер и эквалайзер</span></h3>
-        <p><span lang="en">Album art, track title, play/pause and a seek bar. Works with Spotify, YouTube, SoundCloud and any player in your browser.</span><span lang="ru">Обложка, название, пауза и ползунок длительности с перемоткой. Работает со Spotify, YouTube, SoundCloud и любым плеером в браузере.</span></p>
-        <p><span lang="en">The equalizer follows the music across the whole bar or only inside the player: bars, wave, dots or mirror, in the bar’s accent color or a rainbow. It can listen to the player only, so Discord voices and game sounds do not move it.</span><span lang="ru">Эквалайзер — на всю панель или только в плеере: столбики, волна, точки или зеркало, цветом панели или радугой. Может слушать только плеер — тогда голоса в Discord и звуки игр его не двигают.</span></p>
+    <div class="head">
+      <p class="num reveal"><b>01</b><span lang="en">Looks</span><span lang="ru">Виды</span></p>
+      <h2 class="title reveal d1"><span lang="en">Six looks.<br><em>One click each.</em></span><span lang="ru">Шесть видов.<br><em>Каждый — в один клик.</em></span></h2>
+      <p class="lead reveal d2"><span lang="en">Pick a ready-made look and the whole bar changes at once. Did not like it? One click puts everything back. Then go deeper: any accent color, height, transparency, corner radius, fonts and patterns.</span><span lang="ru">Выбери готовый вид — и вся панель меняется сразу. Не понравилось? Один клик возвращает как было. А дальше — глубже: любой цвет акцента, высота, прозрачность, скругление, шрифты и узоры.</span></p>
+      <div class="chips reveal d3" id="lookChips" role="group">
+        <button class="chip" data-look="classic" aria-pressed="true"><span lang="en">Classic</span><span lang="ru">Классика</span></button>
+        <button class="chip" data-look="windows" aria-pressed="false"><span lang="en">Like Windows</span><span lang="ru">Как в Windows</span></button>
+        <button class="chip" data-look="floating" aria-pressed="false"><span lang="en">Floating</span><span lang="ru">Парящая</span></button>
+        <button class="chip" data-look="islands" aria-pressed="false"><span lang="en">Islands</span><span lang="ru">Острова</span></button>
+        <button class="chip" data-look="dock" aria-pressed="false"><span lang="en">Dock</span><span lang="ru">Док</span></button>
+        <button class="chip" data-look="clear" aria-pressed="false"><span lang="en">Clear</span><span lang="ru">Прозрачная</span></button>
       </div>
     </div>
-
-    <div class="feature">
-      <div>
-        <h3><span lang="en">CPU, memory and GPU load</span><span lang="ru">Процессор, память и видеокарта</span></h3>
-        <p><span lang="en">Widgets show CPU, RAM and GPU load right on the bar. The “What’s using your PC” window lists which apps are using them and ends any of them with one click.</span><span lang="ru">Виджеты показывают нагрузку на процессор, память и видеокарту прямо на панели. Окно «Что грузит ПК» показывает, какие программы их грузят, и завершает любую одним кликом.</span></p>
-      </div>
+  </div>
+  <div class="wrap reveal">
+    <div class="desk" id="desk" data-look="classic">
+      <div class="cap"><b id="lookName">Classic</b><span><span lang="en">This is a live drawing of the bar. Move the mouse over it.</span><span lang="ru">Это живой рисунок панели. Проведи по нему мышкой.</span></span></div>
+      <div class="stage" data-bar="looks" aria-hidden="true"></div>
     </div>
+  </div>
+</section>
 
-    <div class="feature">
-      <div>
-        <h3><span lang="en">Weather and calendar</span><span lang="ru">Погода и календарь</span></h3>
-        <p><span lang="en">Hourly and 7-day forecasts, plus a calendar when you click the clock. Rain and snow on the bar, to match the weather or just for the mood.</span><span lang="ru">Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</span></p>
-      </div>
+<section class="sec" id="music">
+  <div class="wrap">
+    <div class="head">
+      <p class="num reveal"><b>02</b><span lang="en">Music</span><span lang="ru">Музыка</span></p>
+      <h2 class="title reveal d1"><span lang="en">Music moves<br><em>the whole bar.</em></span><span lang="ru">Музыка двигает<br><em>всю панель.</em></span></h2>
+      <p class="lead reveal d2"><span lang="en">Album art, track title, play/pause and a seek bar — for Spotify, YouTube, SoundCloud and any player in your browser. The equalizer follows the sound across the whole bar or only inside the player, and can listen to the player alone, so Discord voices and game sounds do not move it.</span><span lang="ru">Обложка, название, пауза и перемотка — для Spotify, YouTube, SoundCloud и любого плеера в браузере. Эквалайзер идёт за звуком на всю панель или только в плеере и может слушать один плеер — тогда голоса в Discord и звуки игр его не двигают.</span></p>
     </div>
-
-    <div class="feature">
-      <div>
-        <h3><span lang="en">Clipboard history</span><span lang="ru">История буфера обмена</span></h3>
-        <p><span lang="en">A button on the bar opens everything you have copied: text and images, with search and pinning. Even huge chunks of text stay fast, and the history is kept when you turn off your computer.</span><span lang="ru">Кнопка на панели открывает всё, что ты копировал: тексты и картинки, поиск, закрепление. Даже огромные тексты не тормозят, а история не пропадает после выключения компьютера.</span></p>
-      </div>
+    <div class="slab reveal" id="slab">
+      <canvas id="eq" aria-hidden="true"></canvas>
+      <div class="now"><b>Midnight Drive</b><span>Neon Coast</span></div>
     </div>
-
-    <div class="feature" id="designs">
-      <div>
-        <h3><span lang="en">Designs and themes</span><span lang="ru">Дизайны и темы</span></h3>
-        <p><span lang="en">Four designs: Classic, Square, iOS and Island. Light or dark theme, matching Windows, or light only during the day. Any accent color, height, bar and widget transparency and corner radius.</span><span lang="ru">Четыре дизайна: «Классика», «Квадрат», iOS и «Остров». Светлая или тёмная тема, как в Windows или светлая только днём. Любой цвет акцента, высота, прозрачность панели и виджетов, скругление.</span></p>
-        <p><span lang="en">The hover highlight glides from button to button and takes the shape of each one. Islands mode draws a background only behind what’s on the bar. In full-screen games, the bar gets out of the way on its own.</span><span lang="ru">Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой. Режим «Острова» рисует фон только под тем, что есть на панели. В полноэкранных играх панель сама уходит вниз.</span></p>
+    <div class="row2 reveal">
+      <div id="eqShape" role="group"><span class="lbl"><span lang="en">Shape</span><span lang="ru">Форма</span></span>
+        <button class="chip" data-v="bars" aria-pressed="true"><span lang="en">Bars</span><span lang="ru">Столбики</span></button>
+        <button class="chip" data-v="mirror" aria-pressed="false"><span lang="en">Mirror</span><span lang="ru">Зеркало</span></button>
+        <button class="chip" data-v="wave" aria-pressed="false"><span lang="en">Wave</span><span lang="ru">Волна</span></button>
+        <button class="chip" data-v="dots" aria-pressed="false"><span lang="en">Dots</span><span lang="ru">Точки</span></button>
+      </div>
+      <div id="eqColor" role="group"><span class="lbl"><span lang="en">Color</span><span lang="ru">Цвет</span></span>
+        <button class="chip" data-v="accent" aria-pressed="true"><span lang="en">Accent</span><span lang="ru">Акцент</span></button>
+        <button class="chip" data-v="rainbow" aria-pressed="false"><span lang="en">Rainbow</span><span lang="ru">Радуга</span></button>
+        <button class="chip" data-v="white" aria-pressed="false"><span lang="en">White</span><span lang="ru">Белый</span></button>
       </div>
     </div>
   </div>
 </section>
 
-<section id="more" class="minor">
+<section class="sec" id="edges">
   <div class="wrap">
-    <h2><span lang="en">Also in Quoline</span><span lang="ru">Ещё в Quoline</span></h2>
-    <ul class="more">
-      <li><b><span lang="en">Search with <kbd>Alt</kbd> + <kbd>Space</kbd></span><span lang="ru">Поиск по <kbd>Alt</kbd> + <kbd>Пробел</kbd></span></b><span lang="en">Apps, Windows settings, recent files, a calculator, and commands like “sleep” or “screenshot”.</span><span lang="ru">Приложения, настройки Windows, недавние файлы, калькулятор и команды вроде «сон» или «скриншот».</span></li>
-      <li><b><span lang="en">Sound</span><span lang="ru">Звук</span></b><span lang="en">A sound button next to the tray: master volume, a separate slider for every app, and one-click switching between headphones and speakers.</span><span lang="ru">Кнопка звука у трея: общая громкость, свой ползунок для каждой программы и переключение наушники ↔ колонки одним кликом.</span></li>
+    <div class="edge">
+      <div class="pick">
+        <p class="num reveal"><b>03</b><span lang="en">Edges</span><span lang="ru">Края</span></p>
+        <h2 class="title reveal d1"><span lang="en">Any edge<br><em>of the screen.</em></span><span lang="ru">Любой край<br><em>экрана.</em></span></h2>
+        <p class="lead reveal d2"><span lang="en">Bottom, top, or a narrow column on the left or right. On a side bar every widget can be redrawn as a column — player, disk, weather, battery, all from top to bottom — or stay as it is and slide out whole when you hover over it. Windows always keep clear of the bar.</span><span lang="ru">Снизу, сверху или узким столбиком слева или справа. На боковой панели блоки можно сделать вертикальными — плеер, диск, погода, батарея, всё сверху вниз — или оставить обычными: тогда они целиком выезжают при наведении. Окна всегда держатся в стороне от панели.</span></p>
+        <div class="chips reveal d3" id="posChips" role="group">
+          <button class="chip" data-pos="bottom" aria-pressed="true"><span lang="en">Bottom</span><span lang="ru">Снизу</span></button>
+          <button class="chip" data-pos="top" aria-pressed="false"><span lang="en">Top</span><span lang="ru">Сверху</span></button>
+          <button class="chip" data-pos="left" aria-pressed="false"><span lang="en">Left</span><span lang="ru">Слева</span></button>
+          <button class="chip" data-pos="right" aria-pressed="false"><span lang="en">Right</span><span lang="ru">Справа</span></button>
+        </div>
+      </div>
+      <div class="screen reveal" id="screen" data-pos="bottom" aria-hidden="true">
+        <div class="win w1"></div><div class="win w2"></div>
+        <div class="mbar">
+          <div class="g"><span class="blk"></span><span class="blk s"></span><span class="blk"></span></div>
+          <div class="g"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="g"><span class="blk s"></span><span class="blk a"></span><span class="blk"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="head">
+      <p class="num reveal"><b>04</b><span lang="en">Features</span><span lang="ru">Возможности</span></p>
+      <h2 class="title reveal d1"><span lang="en">Everything<br><em>within reach.</em></span><span lang="ru">Всё<br><em>под рукой.</em></span></h2>
+    </div>
+    <div class="bento">
+      <article class="tile t4 wide reveal">
+        <div class="viz"><div class="vsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span id="typed"></span><span class="car"></span></div><div class="vres" id="typedRes"></div></div>
+        <div class="txt"><h3><span lang="en">Search on <kbd>Alt</kbd> + <kbd>Space</kbd></span><span lang="ru">Поиск по <kbd>Alt</kbd> + <kbd>Пробел</kbd></span></h3>
+        <p><span lang="en">Apps, Windows settings, recent files, a calculator, and commands like “sleep” or “screenshot”.</span><span lang="ru">Приложения, настройки Windows, недавние файлы, калькулятор и команды вроде «сон» или «скриншот».</span></p></div>
+      </article>
+      <article class="tile t2 reveal d1">
+        <div class="viz"><div class="vclip"><div><span lang="en">quoline.app — the taskbar, reinvented</span><span lang="ru">quoline.app — панель задач, заново</span></div><div><i></i><span lang="en">Screenshot · 3840 × 2160</span><span lang="ru">Скриншот · 3840 × 2160</span></div><div>#22C55E</div></div></div>
+        <div class="txt"><h3><span lang="en">Clipboard history</span><span lang="ru">История буфера</span></h3>
+        <p><span lang="en">Everything you copied: text and images, with search and pinning. It survives a restart.</span><span lang="ru">Всё, что ты копировал: тексты и картинки, поиск, закрепление. Не пропадает после перезагрузки.</span></p></div>
+      </article>
+      <article class="tile t3 reveal">
+        <div class="viz"><div class="vload"><div class="big"><svg viewBox="0 0 120 120"><circle class="tr" cx="60" cy="60" r="52"/><circle class="ar" id="bigArc" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="220"/></svg><b id="bigPct">37%</b></div>
+          <ul id="procs"><li>Chrome<u><s style="width:62%"></s></u><em>14%</em></li><li>Game<u><s style="width:48%"></s></u><em>11%</em></li><li>Discord<u><s style="width:22%"></s></u><em>5%</em></li><li>Spotify<u><s style="width:12%"></s></u><em>3%</em></li></ul></div></div>
+        <div class="txt"><h3><span lang="en">CPU, memory and GPU</span><span lang="ru">Процессор, память, видеокарта</span></h3>
+        <p><span lang="en">Load right on the bar. “What’s using your PC” lists the apps behind it and ends any of them with one click.</span><span lang="ru">Нагрузка прямо на панели. Окно «Что грузит ПК» показывает, какие программы её дают, и завершает любую одним кликом.</span></p></div>
+      </article>
+      <article class="tile t3 reveal d1">
+        <div class="viz"><div class="vprev"><div><span>Notes</span><i></i></div><div><span>Browser</span><i></i></div><div><span>Chat</span><i></i></div></div></div>
+        <div class="txt"><h3><span lang="en">Window previews</span><span lang="ru">Превью окон</span></h3>
+        <p><span lang="en">Hover over an app to see its windows live, minimized ones too. Rest on a preview and the window itself appears at full size.</span><span lang="ru">Наведи на иконку — живые картинки её окон, и свёрнутых тоже. Задержи мышку на превью — само окно покажется в полный размер.</span></p></div>
+      </article>
+      <article class="tile t2 reveal">
+        <div class="viz"><div class="vvol"><div><i style="background:#23b866"></i><u><s style="width:78%"></s><b style="left:78%"></b></u></div><div><i style="background:#6370f5"></i><u><s style="width:34%"></s><b style="left:34%"></b></u></div><div><i style="background:#e2603a"></i><u><s style="width:56%"></s><b style="left:56%"></b></u></div><div><i style="background:#2787e6"></i><u><s style="width:12%"></s><b style="left:12%"></b></u></div></div></div>
+        <div class="txt"><h3><span lang="en">Volume for every app</span><span lang="ru">Громкость каждой программы</span></h3>
+        <p><span lang="en">Master volume, a slider per app, headphones ↔ speakers in one click.</span><span lang="ru">Общая громкость, свой ползунок для каждой программы, наушники ↔ колонки одним кликом.</span></p></div>
+      </article>
+      <article class="tile t2 reveal d1">
+        <div class="viz"><div class="varr"><span></span><span class="lift"></span><span></span><span></span></div></div>
+        <div class="txt"><h3><span lang="en">Arrange it by hand</span><span lang="ru">Расставь руками</span></h3>
+        <p><span lang="en">Carry a block with the mouse and the others glide out of its way. Leave it apart and the gap stays; bring it close and it snaps.</span><span lang="ru">Неси блок мышкой — остальные плавно расступаются. Оставь в стороне — промежуток сохранится, поднеси ближе — прилипнет.</span></p></div>
+      </article>
+      <article class="tile t2 reveal d2">
+        <div class="viz"><div class="vmon"><div></div><div></div><div></div></div></div>
+        <div class="txt"><h3><span lang="en">Every monitor</span><span lang="ru">Каждый монитор</span></h3>
+        <p><span lang="en">A bar on each screen, sharp on 4K and 8K, with its own widgets if you like.</span><span lang="ru">Панель на каждом экране, чёткая на 4K и 8K, со своими виджетами, если хочешь.</span></p></div>
+      </article>
+    </div>
+  </div>
+
+  <div class="specs">
+    <div class="reveal"><b><span lang="en">0.5</span><span lang="ru">0,5</span><small><span lang="en">MB</span><span lang="ru">МБ</span></small></b><span><span lang="en">The whole installer</span><span lang="ru">Весь установщик</span></span></div>
+    <div class="reveal d1"><b>20<small>+</small></b><span><span lang="en">Widgets to place</span><span lang="ru">Виджетов на выбор</span></span></div>
+    <div class="reveal d2"><b>144<small><span lang="en">Hz</span><span lang="ru">Гц</span></small></b><span><span lang="en">Motion keeps up with fast screens</span><span lang="ru">Движение успевает за быстрым экраном</span></span></div>
+    <div class="reveal d3"><b>3<small><span lang="en">days</span><span lang="ru">дня</span></small></b><span><span lang="en">Free, no key needed</span><span lang="ru">Бесплатно, без ключа</span></span></div>
+  </div>
+
+  <div class="wrap sec" id="more" style="padding-top:clamp(90px,14vh,180px)">
+    <div class="head">
+      <p class="num reveal"><b>05</b><span lang="en">And more</span><span lang="ru">И ещё</span></p>
+      <h2 class="title reveal d1"><span lang="en">Also in<br><em>Quoline.</em></span><span lang="ru">Ещё в<br><em>Quoline.</em></span></h2>
+    </div>
+    <ul class="more reveal">
+      <li><b><span lang="en">Weather and calendar</span><span lang="ru">Погода и календарь</span></b><span lang="en">Hourly and 7-day forecasts, plus a calendar when you click the clock. Rain and snow on the bar, to match the weather or just for the mood.</span><span lang="ru">Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</span></li>
       <li><b><span lang="en">Quick settings</span><span lang="ru">Быстрые настройки</span></b><span lang="en">The arrow next to Wi‑Fi and Bluetooth opens a panel: networks with password entry, headphones with their battery level, brightness and Night light. Click the keyboard layout for a list of languages.</span><span lang="ru">Стрелка у Wi‑Fi и Bluetooth — окошко: сети с вводом пароля, наушники одной кнопкой и их заряд, яркость и ночной свет. Клик по раскладке — список языков.</span></li>
-      <li><b><span lang="en">Widget layout</span><span lang="ru">Расстановка виджетов</span></b><span lang="en">Right-click the bar → “Arrange widgets…”: carry a block with the mouse and the others glide out of its way. Leave it apart and the gap stays; bring it close and it snaps. Pull an edge to resize, remove anything with the ×.</span><span lang="ru">Правый клик → «Расставить виджеты…»: неси блок мышкой — остальные плавно расступаются. Оставь в стороне — промежуток сохранится, поднеси ближе — прилипнет. Тяни за край — ширина, лишнее убирается крестиком.</span></li>
-      <li><b><span lang="en">Window previews</span><span lang="ru">Превью окон</span></b><span lang="en">Hover over an app icon to see its windows live, minimized ones too. Rest the mouse on a preview and the window itself appears on the screen at full size.</span><span lang="ru">Наведи на иконку — живые картинки её окон, и свёрнутых тоже. Задержи мышку на превью — само окно покажется на экране в полный размер.</span></li>
-      <li><b><span lang="en">Multiple monitors</span><span lang="ru">Несколько мониторов</span></b><span lang="en">A bar on every screen, sharp on 4K and 8K, with adjustable size. Secondary displays can show just app icons and the clock.</span><span lang="ru">Панель на каждом экране — чёткая даже на 4K и 8K, размер можно увеличить. На второстепенных можно оставить только иконки и часы.</span></li>
+      <li><b><span lang="en">Designs and themes</span><span lang="ru">Дизайны и темы</span></b><span lang="en">Four designs: Classic, Square, iOS and Island. Light or dark theme, matching Windows, or light only during the day. The hover highlight glides from button to button and takes the shape of each one.</span><span lang="ru">Четыре дизайна: «Классика», «Квадрат», iOS и «Остров». Светлая или тёмная тема, как в Windows или светлая только днём. Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой.</span></li>
       <li><b><span lang="en">Screenshots with markup</span><span lang="ru">Скриншоты с рисованием</span></b><span lang="en">Select an area, add arrows, boxes and highlighter, then copy or save.</span><span lang="ru">Выдели область, добавь стрелки, рамки и маркер, скопируй или сохрани.</span></li>
       <li><b><span lang="en">Timer and Pomodoro</span><span lang="ru">Таймер и помодоро</span></b><span lang="en">Type any duration (15, 1:30, 1h 30m) or pick a preset. The Pomodoro timer counts your sessions for the day.</span><span lang="ru">Впиши любое время (15, 1:30, 1ч 30м) или выбери готовое. Помодоро считает помидоры за день.</span></li>
       <li><b><span lang="en">Game mode</span><span lang="ru">Игровой режим</span></b><span lang="en">While a game runs full screen, Quoline stays almost idle, leaving more frames for the game. Everything comes back on its own afterward.</span><span lang="ru">Пока игра идёт на весь экран, Quoline почти ничего не делает — больше кадров игре. После игры всё возвращается само.</span></li>
       <li><b><span lang="en">Notes and to-dos</span><span lang="ru">Заметки и дела</span></b><span lang="en">A quick note and a to-do list; the number of open tasks is shown on the button. Drag a file onto an app icon to open it in that app.</span><span lang="ru">Быстрая заметка и список дел; сколько дел осталось — видно на кнопке. Файл можно перетащить на иконку программы — откроется в ней.</span></li>
-      <li><b><span lang="en">Settings with live previews</span><span lang="ru">Настройки с превью</span></b><span lang="en">Hover over a setting and a small animation on the right shows what it does: colors, designs, patterns, fonts. Search finds any option by keyword. The “Simple” view shows only the main settings; “All” shows everything.</span><span lang="ru">Наведи на настройку — справа маленькая анимация покажет, что она меняет: цвет, дизайн, узор, шрифт. Поиск находит всё по слову. В виде «Просто» — только главные настройки, «Все» — всё сразу.</span></li>
-      <li><b><span lang="en">English and Russian</span><span lang="ru">Английский и русский</span></b><span lang="en">The whole interface in English or Russian, switched in the settings with one click.</span><span lang="ru">Весь интерфейс на английском или русском — переключается в настройках одним кликом.</span></li>
+      <li><b><span lang="en">Settings with live previews</span><span lang="ru">Настройки с превью</span></b><span lang="en">Hover over a setting and a small animation shows what it does. Search finds any option by keyword. The “Simple” view shows only the main settings; “All” shows everything.</span><span lang="ru">Наведи на настройку — маленькая анимация покажет, что она меняет. Поиск находит всё по слову. В виде «Просто» — только главные настройки, «Все» — всё сразу.</span></li>
       <li><b><span lang="en">Player volume</span><span lang="ru">Громкость плеера</span></b><span lang="en">Scroll over the player to change the volume of Spotify or the browser only — other apps stay as they are.</span><span lang="ru">Колёсико над плеером меняет громкость только Spotify или браузера — остальные программы не трогает.</span></li>
       <li><b><span lang="en">Your widget color</span><span lang="ru">Свой цвет виджетов</span></b><span lang="en">Disk, CPU, memory and battery meters in neutral white or any color you like; the Start button as a magnifier or the Windows logo.</span><span lang="ru">Полоски и кольца диска, процессора, памяти и батареи — белые или любого цвета; кнопка «Пуск» — лупа или значок Windows.</span></li>
-      <li><b><span lang="en">Bar on any edge</span><span lang="ru">Панель с любого края</span></b><span lang="en">Bottom, top, or a narrow column on the left or right. On a side bar every widget can be redrawn as a column — player, disk, weather, battery, all from top to bottom — or stay as it is and slide out whole when you hover over it.</span><span lang="ru">Снизу, сверху или узким столбиком слева или справа. На боковой панели блоки можно сделать вертикальными — плеер, диск, погода, батарея, всё сверху вниз — или оставить обычными: тогда они целиком выезжают при наведении.</span></li>
-      <li><b><span lang="en">Ready-made looks</span><span lang="ru">Готовые виды</span></b><span lang="en">Six looks on the first settings page: classic, like Windows, floating, islands, dock, clear. One click to try, one click to undo.</span><span lang="ru">Шесть видов на первой странице настроек: классика, как в Windows, парящая, острова, док, прозрачная. Один клик — примерить, один — вернуть как было.</span></li>
       <li><b><span lang="en">Profiles</span><span lang="ru">Профили</span></b><span lang="en">“Main”, “Island”, “Focus” or your own presets, switched with one click.</span><span lang="ru">«Основной», «Остров», «Фокус» или свои наборы — переключаются одним кликом.</span></li>
       <li><b><span lang="en">Exchange rates and crypto</span><span lang="ru">Курсы и крипта</span></b><span lang="en">BTC, ETH, USD/EUR and more with a 24-hour chart, no sign-up and no API keys.</span><span lang="ru">BTC, ETH, USD/EUR и другие с графиком за сутки — без регистрации и ключей.</span></li>
-      <li><b><span lang="en">Pixel cat</span><span lang="ru">Пиксельный котик</span></b><span lang="en">Walks along the bar, naps when you step away, and jumps with hearts when you pet it. On a side bar it climbs the bar like a wall.</span><span lang="ru">Гуляет по панели, спит, когда ты отошёл, и прыгает с сердечками, если его погладить. По боковой панели лазает как по стене.</span></li>
+      <li><b><span lang="en">Pixel cat</span><span lang="ru">Пиксельный котик</span></b><span lang="en">Walks along the bar, naps when you step away, and jumps with hearts when you pet it.</span><span lang="ru">Гуляет по панели, спит, когда ты отошёл, и прыгает с сердечками, если его погладить.</span></li>
+      <li><b><span lang="en">English and Russian</span><span lang="ru">Английский и русский</span></b><span lang="en">The whole interface in English or Russian, switched in the settings with one click.</span><span lang="ru">Весь интерфейс на английском или русском — переключается в настройках одним кликом.</span></li>
       <li><b><span lang="en">Automatic updates</span><span lang="ru">Обновляется сам</span></b><span lang="en">When a new version is out, a notification appears above the bar. One click installs it.</span><span lang="ru">Новая версия — уведомление над панелью. Один клик, и всё установлено.</span></li>
     </ul>
   </div>
 </section>
 
-<section id="install" class="minor">
+<section class="price" id="buy">
   <div class="wrap">
-    <h2><span lang="en">How to install Quoline</span><span lang="ru">Как установить Quoline</span></h2>
-    <ol class="steps">
+    <div class="grid">
+      <div>
+        <p class="num reveal"><b>06</b><span lang="en">Price</span><span lang="ru">Цена</span></p>
+        <p class="amount reveal d1"><span lang="en">€4.99</span><span lang="ru">4,99<small> €</small></span></p>
+      </div>
+      <div class="reveal d2">
+        <ul>
+          <li><span lang="en">Paid once. No subscription.</span><span lang="ru">Один раз. Без подписки.</span></li>
+          <li><span lang="en">One key for one PC, yours forever.</span><span lang="ru">Один ключ на один ПК, навсегда.</span></li>
+          <li><span lang="en">All future updates included.</span><span lang="ru">Все будущие обновления включены.</span></li>
+          <li><span lang="en">The first 3 days are free.</span><span lang="ru">Первые 3 дня бесплатно.</span></li>
+        </ul>
+        <div class="buy-row">
+          <a class="btn" href="https://quoline.lemonsqueezy.com/checkout/buy/a111873b-d4b2-49f7-a7fb-6bfb9a00e8e7"><span lang="en">Buy a key — €4.99</span><span lang="ru">Купить ключ — 4,99 €</span></a>
+          <a class="btn ghost" href="/Quoline.msi" download><span lang="en">Try 3 days free</span><span lang="ru">3 дня бесплатно</span></a>
+        </div>
+        <p class="note"><span lang="en">The key arrives by email right after payment. Payment by card, PayPal or Apple Pay through Lemon Squeezy, our reseller: it handles the payment, VAT and the receipt. Not happy? <a href="/legal.html#refunds">Money back within 14 days</a>.</span><span lang="ru">Ключ придёт на почту сразу после оплаты. Оплата картой, PayPal или Apple Pay через Lemon Squeezy — нашего продавца: он принимает платёж, считает налоги и присылает чек. Не понравилось? <a href="/legal.html#refunds">Вернём деньги в течение 14 дней</a>.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="install">
+  <div class="wrap">
+    <div class="head">
+      <p class="num reveal"><b>07</b><span lang="en">Install</span><span lang="ru">Установка</span></p>
+      <h2 class="title reveal d1"><span lang="en">Three steps.<br><em>One minute.</em></span><span lang="ru">Три шага.<br><em>Одна минута.</em></span></h2>
+    </div>
+    <ol class="steps reveal">
       <li><b><span lang="en">Download Quoline.msi</span><span lang="ru">Скачай Quoline.msi</span></b><span lang="en">The “Download” button always gets the latest version.</span><span lang="ru">Кнопка «Скачать» всегда загружает последнюю версию.</span></li>
       <li><b><span lang="en">Run the installer</span><span lang="ru">Запусти установщик</span></b><span lang="en">Quoline installs, starts automatically and hides the standard taskbar.</span><span lang="ru">Quoline установится, сам запустится и спрячет обычную панель задач.</span></li>
       <li><b><span lang="en">Use it free for 3 days</span><span lang="ru">Пользуйся 3 дня бесплатно</span></b><span lang="en">After that Quoline asks for a license key (€4.99, once). Paste the key from your purchase email, and that is it.</span><span lang="ru">Потом Quoline попросит ключ активации (4,99 €, один раз). Вставь ключ из письма после покупки — и всё.</span></li>
     </ol>
-    <p class="note"><span lang="en">Windows may show “Windows protected your PC”. This happens with new apps that don’t have an expensive code-signing certificate. Click <b>“More info” → “Run anyway”</b>.</span><span lang="ru">Windows может показать «Система Windows защитила ваш компьютер». Так бывает с новыми программами без дорогой цифровой подписи. Нажми <b>«Подробнее» → «Выполнить в любом случае»</b>.</span></p>
+    <p class="note reveal"><span lang="en">Windows may show “Windows protected your PC”. This happens with new apps that don’t have an expensive code-signing certificate. Click <b>“More info” → “Run anyway”</b>.</span><span lang="ru">Windows может показать «Система Windows защитила ваш компьютер». Так бывает с новыми программами без дорогой цифровой подписи. Нажми <b>«Подробнее» → «Выполнить в любом случае»</b>.</span></p>
   </div>
 </section>
 
-<section id="faq" class="minor">
+<section class="sec" id="faq">
   <div class="wrap">
-    <h2><span lang="en">Questions</span><span lang="ru">Вопросы</span></h2>
-    <div class="faq">
-      <details><summary><span lang="en">How much does it cost?</span><span lang="ru">Сколько стоит?</span></summary><p><span lang="en">€4.99, paid once — no subscription. The first 3 days are free, no key needed.</span><span lang="ru">4,99 € один раз — без подписки. Первые 3 дня бесплатно, ключ не нужен.</span></p></details>
-      <details><summary><span lang="en">Where do I get a license key?</span><span lang="ru">Где взять ключ активации?</span></summary><p><span lang="en">Buy it <a href="#buy">here</a>: the key arrives by email right after payment. Paste it into the activation window (right-click the bar → “Activate Quoline…”).</span><span lang="ru">Купи его <a href="#buy">здесь</a>: ключ придёт на почту сразу после оплаты. Вставь его в окно активации (правый клик по панели → «Активировать Quoline…»).</span></p></details>
-      <details><summary><span lang="en">Can I move my key to a new PC?</span><span lang="ru">Можно перенести ключ на другой ПК?</span></summary><p><span lang="en">Yes. One key works on one PC at a time. On the old PC: right-click the bar → Settings → General → Key… → “Unlink this PC”, then activate the key on the new one.</span><span lang="ru">Да. Один ключ работает на одном ПК. На старом: правый клик по панели → Настройки → Главное → Ключ… → «Отвязать этот ПК», потом активируй ключ на новом.</span></p></details>
-      <details><summary><span lang="en">Does it work on Windows 10?</span><span lang="ru">Работает на Windows 10?</span></summary><p><span lang="en">Yes. Quoline is tested on Windows 10 and Windows 11 and works on both.</span><span lang="ru">Да. Quoline проверен на Windows 10 и Windows 11 и работает на обеих.</span></p></details>
-      <details><summary><span lang="en">How do I get the standard Windows taskbar back?</span><span lang="ru">Как вернуть обычную панель Windows?</span></summary><p><span lang="en">Right-click the bar → “Quit and restore the Windows taskbar”. Uninstalling Quoline also puts everything back the way it was.</span><span lang="ru">Правый клик по панели → «Выйти и вернуть таскбар Windows». При удалении Quoline всё тоже возвращается как было.</span></p></details>
-      <details><summary><span lang="en">How do I uninstall it?</span><span lang="ru">Как удалить?</span></summary><p><span lang="en">Windows Settings → Apps → Installed apps → Quoline → Uninstall.</span><span lang="ru">Параметры Windows → Приложения → Установленные приложения → Quoline → Удалить.</span></p></details>
-      <details><summary><span lang="en">Does it use a lot of memory?</span><span lang="ru">Много ли ест памяти?</span></summary><p><span lang="en">No. Heavy work runs in the background, and the bar only redraws when something changes.</span><span lang="ru">Нет. Тяжёлая работа идёт в фоне, а панель перерисовывается только когда что-то меняется.</span></p></details>
-      <details><summary><span lang="en">How do I update?</span><span lang="ru">Как обновить?</span></summary><p><span lang="en">You don’t have to do anything: when a new version is released, a notification appears above the bar. Click it, and Quoline updates itself.</span><span lang="ru">Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</span></p></details>
+    <div class="faqgrid">
+      <div class="head">
+        <p class="num reveal"><b>08</b><span lang="en">Questions</span><span lang="ru">Вопросы</span></p>
+        <h2 class="title reveal d1"><span lang="en">Good to<br><em>know.</em></span><span lang="ru">Полезно<br><em>знать.</em></span></h2>
+      </div>
+      <div class="faq reveal">
+        <details><summary><span lang="en">How much does it cost?</span><span lang="ru">Сколько стоит?</span></summary><p><span lang="en">€4.99, paid once — no subscription. The first 3 days are free, no key needed.</span><span lang="ru">4,99 € один раз — без подписки. Первые 3 дня бесплатно, ключ не нужен.</span></p></details>
+        <details><summary><span lang="en">Where do I get a license key?</span><span lang="ru">Где взять ключ активации?</span></summary><p><span lang="en">Buy it <a href="#buy">here</a>: the key arrives by email right after payment. Paste it into the activation window (right-click the bar → “Activate Quoline…”).</span><span lang="ru">Купи его <a href="#buy">здесь</a>: ключ придёт на почту сразу после оплаты. Вставь его в окно активации (правый клик по панели → «Активировать Quoline…»).</span></p></details>
+        <details><summary><span lang="en">Can I move my key to a new PC?</span><span lang="ru">Можно перенести ключ на другой ПК?</span></summary><p><span lang="en">Yes. One key works on one PC at a time. On the old PC: right-click the bar → Settings → General → Key… → “Unlink this PC”, then activate the key on the new one.</span><span lang="ru">Да. Один ключ работает на одном ПК. На старом: правый клик по панели → Настройки → Главное → Ключ… → «Отвязать этот ПК», потом активируй ключ на новом.</span></p></details>
+        <details><summary><span lang="en">Does it work on Windows 10?</span><span lang="ru">Работает на Windows 10?</span></summary><p><span lang="en">Yes. Quoline is tested on Windows 10 and Windows 11 and works on both.</span><span lang="ru">Да. Quoline проверен на Windows 10 и Windows 11 и работает на обеих.</span></p></details>
+        <details><summary><span lang="en">How do I get the standard Windows taskbar back?</span><span lang="ru">Как вернуть обычную панель Windows?</span></summary><p><span lang="en">Right-click the bar → “Quit and restore the Windows taskbar”. Uninstalling Quoline also puts everything back the way it was.</span><span lang="ru">Правый клик по панели → «Выйти и вернуть таскбар Windows». При удалении Quoline всё тоже возвращается как было.</span></p></details>
+        <details><summary><span lang="en">How do I uninstall it?</span><span lang="ru">Как удалить?</span></summary><p><span lang="en">Windows Settings → Apps → Installed apps → Quoline → Uninstall.</span><span lang="ru">Параметры Windows → Приложения → Установленные приложения → Quoline → Удалить.</span></p></details>
+        <details><summary><span lang="en">Does it use a lot of memory?</span><span lang="ru">Много ли ест памяти?</span></summary><p><span lang="en">No. Heavy work runs in the background, and the bar only redraws when something changes.</span><span lang="ru">Нет. Тяжёлая работа идёт в фоне, а панель перерисовывается только когда что-то меняется.</span></p></details>
+        <details><summary><span lang="en">How do I update?</span><span lang="ru">Как обновить?</span></summary><p><span lang="en">You don’t have to do anything: when a new version is released, a notification appears above the bar. Click it, and Quoline updates itself.</span><span lang="ru">Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</span></p></details>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="buy" class="minor">
+<section class="final">
   <div class="wrap">
-    <h2><span lang="en">Buy a license key</span><span lang="ru">Купить ключ</span></h2>
-    <p class="lead"><span lang="en">€4.99 once — no subscription. One key for one PC, yours forever, with all future updates. The key arrives by email right after payment.</span><span lang="ru">4,99 € один раз — без подписки. Один ключ на один ПК, навсегда и со всеми обновлениями. Ключ придёт на почту сразу после оплаты.</span></p>
-    <div class="buy-row">
-      <a class="btn btn-big" href="https://quoline.lemonsqueezy.com/checkout/buy/a111873b-d4b2-49f7-a7fb-6bfb9a00e8e7"><span lang="en">Buy a key — €4.99</span><span lang="ru">Купить ключ — 4,99 €</span></a>
-      <a class="btn btn-big btn-line" href="/Quoline.msi" download><span lang="en">Try 3 days free</span><span lang="ru">3 дня бесплатно</span></a>
+    <p class="eyebrow reveal"><span>Quoline <span class="vnum">4.13.34</span> <i>·</i> Windows 11 <span lang="en">and</span><span lang="ru">и</span> 10</span></p>
+    <h2 class="display reveal d1"><span lang="en">Make it<br><em>yours.</em></span><span lang="ru">Сделай её<br><em>своей.</em></span></h2>
+    <div class="cta reveal d2">
+      <a class="btn dl" href="/Quoline.msi" download>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+        <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
+      </a>
+      <a class="btn ghost" href="#buy"><span lang="en">Buy a key — €4.99</span><span lang="ru">Купить ключ — 4,99 €</span></a>
     </div>
-    <p class="note"><span lang="en">Payment by card, PayPal or Apple Pay through Lemon Squeezy, our reseller: it handles the payment, VAT and the receipt. Not happy? <a href="/legal.html#refunds">Money back within 14 days</a>.</span><span lang="ru">Оплата картой, PayPal или Apple Pay через Lemon Squeezy — нашего продавца: он принимает платёж, считает налоги и присылает чек. Не понравилось? <a href="/legal.html#refunds">Вернём деньги в течение 14 дней</a>.</span></p>
   </div>
+  <div class="stage" data-bar="final" aria-hidden="true"></div>
 </section>
 
-<div class="final">
-  <div class="wrap">
-    <h2><span lang="en">Download Quoline</span><span lang="ru">Скачать Quoline</span> <span class="vnum">4.13.33</span></h2>
-    <p><span lang="en">Quoline.msi · about 0.4 MB · Windows 11 and 10 · 3 days free, then €4.99</span><span lang="ru">Quoline.msi · около 0,4 МБ · Windows 11 и 10 · 3 дня бесплатно, потом 4,99 €</span></p>
-    <a class="btn btn-big dl" href="/Quoline.msi" download>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
-      <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
-    </a>
-  </div>
-</div>
+</main>
 
 <footer>
   <div class="wrap">
@@ -334,30 +716,35 @@
 </footer>
 
 <script>
+(function () {
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // ---------- language switch ----------
   var META = {
     en: { title: "Quoline — a replacement taskbar for Windows 11",
-          desc: "Quoline replaces the Windows 11 taskbar with its own bar: media player, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search and per-app volume. MSI installer, about 0.4 MB." },
+          desc: "Quoline replaces the Windows 11 taskbar with its own bar: media player and equalizer, weather, CPU/RAM/GPU load, clipboard history, Alt + Space search, per-app volume, six ready-made looks, any screen edge. MSI installer, about 0.5 MB. 3 days free, then €4.99 once." },
     ru: { title: "Quoline — замена панели задач для Windows 11",
-          desc: "Quoline заменяет панель задач Windows 11 своей: плеер, погода, нагрузка на процессор, память и видеокарту, история буфера, поиск по Alt + Пробел и громкость каждого приложения. Установщик MSI около 0,4 МБ." }
+          desc: "Quoline заменяет панель задач Windows 11 своей: плеер и эквалайзер, погода, нагрузка на процессор, память и видеокарту, история буфера, поиск по Alt + Пробел, громкость каждого приложения, шесть готовых видов, любой край экрана. Установщик MSI около 0,5 МБ. 3 дня бесплатно, потом 4,99 € один раз." }
   };
+  var LOOKS = { classic: ["Classic", "Классика"], windows: ["Like Windows", "Как в Windows"], floating: ["Floating", "Парящая"], islands: ["Islands", "Острова"], dock: ["Dock", "Док"], clear: ["Clear", "Прозрачная"] };
+  var look = "classic";
+  function lang() { return document.documentElement.lang === "ru" ? "ru" : "en"; }
+  function nameLook() { var el = $("#lookName"); if (el) el.textContent = LOOKS[look][lang() === "ru" ? 1 : 0]; }
   function setLang(l, save) {
     if (!META[l]) l = "en";
     document.documentElement.lang = l;
     document.title = META[l].title;
-    var md = document.querySelector('meta[name="description"]');
+    var md = $('meta[name="description"]');
     if (md) md.setAttribute("content", META[l].desc);
-    document.querySelectorAll("img[data-alt-" + l + "]").forEach(function (im) { im.alt = im.getAttribute("data-alt-" + l); });
-    document.querySelectorAll("[data-set-lang]").forEach(function (b) {
-      b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === l ? "true" : "false");
-    });
+    $$("[data-set-lang]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === l ? "true" : "false"); });
     if (save) { try { localStorage.setItem("quoline-lang2", l); } catch (e) {} }
+    nameLook(); tick(); fitBars();
   }
-  document.querySelectorAll("[data-set-lang]").forEach(function (b) {
-    b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); });
-  });
-  setLang(document.documentElement.lang, false);
-  document.getElementById("yr").textContent = new Date().getFullYear();
+  $$("[data-set-lang]").forEach(function (b) { b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); }); });
+  $("#yr").textContent = new Date().getFullYear();
 
   // current version: version.txt next to this page (written with every release)
   fetch("/version.txt", { cache: "no-cache" })
@@ -365,10 +752,222 @@
     .then(function (t) {
       var v = (t || "").trim();
       if (!/^\d+(\.\d+){1,3}$/.test(v)) return;
-      document.querySelectorAll(".vnum").forEach(function (el) { el.textContent = v; });
-      document.querySelectorAll(".dl").forEach(function (a) { a.title = "Quoline " + v; });
+      $$(".vnum").forEach(function (el) { el.textContent = v; });
+      $$(".dl").forEach(function (a) { a.title = "Quoline " + v; });
     })
     .catch(function () {});
+
+  // ---------- nav, reveals ----------
+  var nav = $("#nav");
+  // (whatever comes into view is shown — also without IntersectionObserver, and if it is ever late)
+  function showSeen() { var h = window.innerHeight; $$(".reveal:not(.in)").forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < h * 0.94 && r.bottom > 0) el.classList.add("in"); }); }
+  var seenQueued = false;
+  function onScroll() {
+    nav.classList.toggle("solid", window.scrollY > 24);
+    if (!seenQueued) { seenQueued = true; setTimeout(function () { seenQueued = false; showSeen(); }, 70); }
+  }
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  if ("IntersectionObserver" in window && !calm) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    $$(".reveal").forEach(function (el) { io.observe(el); });
+  } else $$(".reveal").forEach(function (el) { el.classList.add("in"); });
+  setTimeout(showSeen, 600); window.addEventListener("resize", showSeen);
+
+  // ---------- the live bar ----------
+  var I = {
+    prev: '<svg viewBox="0 0 12 12"><path d="M2 1.5h1.6v9H2zM11 1.5v9L4.4 6z"/></svg>',
+    next: '<svg viewBox="0 0 12 12"><path d="M8.4 1.5H10v9H8.4zM1 1.5v9L7.6 6z"/></svg>',
+    play: '<svg class="pl" viewBox="0 0 12 12"><path d="M3 1.2v9.6L10.6 6z"/></svg><svg class="pa" viewBox="0 0 12 12"><path d="M2.6 1.5h2.4v9H2.6zM7 1.5h2.4v9H7z"/></svg>',
+    q: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.4 16.4 21 21"/></svg>',
+    folder: '<svg viewBox="0 0 16 16" fill="#7a4d00"><path d="M1.5 4.2c0-.7.5-1.2 1.2-1.2h3l1.4 1.6h6.2c.7 0 1.2.5 1.2 1.2v6c0 .7-.5 1.2-1.2 1.2H2.7c-.7 0-1.2-.5-1.2-1.2z"/></svg>',
+    note: '<svg viewBox="0 0 16 16" fill="#04240f"><path d="M6 2.4 13 1v9.2a2.3 2.3 0 1 1-1.4-2.1V4L7.4 4.9v6.7A2.3 2.3 0 1 1 6 9.5z"/></svg>',
+    chat: '<svg viewBox="0 0 16 16" fill="#fff"><path d="M2 3.6C2 2.7 2.7 2 3.6 2h8.8c.9 0 1.6.7 1.6 1.6v6c0 .9-.7 1.6-1.6 1.6H7.2L4 14v-2.8h-.4c-.9 0-1.6-.7-1.6-1.6z"/></svg>',
+    pad: '<svg viewBox="0 0 16 16" fill="#dbe7f5"><path d="M4.4 4h7.2a3.4 3.4 0 0 1 3.3 4.2l-.6 2.6a1.8 1.8 0 0 1-3.2.7L10 10H6l-1.1 1.5a1.8 1.8 0 0 1-3.2-.7l-.6-2.6A3.4 3.4 0 0 1 4.400 4z"/></svg>',
+    star: '<svg viewBox="0 0 16 16" fill="#fff"><path d="M8 1.2 9.2 6l4.6-1.6-3.2 3.6 3.2 3.600L9.200 10 8 14.8 6.8 10l-4.600 1.600L5.400 8 2.200 4.400 6.800 6z"/></svg>',
+    globe: '<svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2 2 2 10 0 12M8 2c-2 2-2 10 0 12"/></svg>',
+    clip: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="4.500" y="2" width="8" height="10.500" rx="1.500"/><path d="M3 5v8.500h6.500"/></svg>',
+    tr: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.300" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7M5.500 2.500V4M3 4c.4 2.300 2 4.300 4.500 5M8 4c-.500 2.600-2.400 4.800-5.500 5.500M8.500 14l2.800-6.500L14 14M9.400 12h3.600"/></svg>',
+    wifi: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.400" stroke-linecap="round"><path d="M1.500 6.200a9.500 9.500 0 0 1 13 0M3.800 8.600a6.200 6.200 0 0 1 8.400 0M6.100 11a2.900 2.900 0 0 1 3.800 0"/><circle cx="8" cy="13" r=".7" fill="currentColor"/></svg>',
+    vol: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.300" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.200h2.300L7.500 3.500v9L4.300 9.800H2z"/><path d="M10 6a3 3 0 0 1 0 4M11.900 4.200a5.600 5.600 0 0 1 0 7.600"/></svg>',
+    bt: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.300" stroke-linecap="round" stroke-linejoin="round"><path d="M4.500 5 11 11l-3.200 3V2L11 5 4.500 11"/></svg>',
+    ch: '<svg class="ch" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.400" stroke-linecap="round" stroke-linejoin="round"><path d="M1.200 5.200 4 2.600l2.800 2.600"/></svg>',
+    sun: '<svg viewBox="0 0 28 28"><g stroke="#ffc83a" stroke-width="2" stroke-linecap="round"><path d="M14 2.500v3M14 22.500v3M2.500 14h3M22.500 14h3M5.900 5.900 8 8M20 20l2.100 2.100M22.100 5.900 20 8M8 20l-2.100 2.100"/></g><circle cx="14" cy="14" r="5.600" fill="#ffc83a"/></svg>'
+  };
+  function ring(pct, id) { var c = 2 * Math.PI * 13; return '<span class="ring"><svg viewBox="0 0 30 30"><circle class="tr" cx="15" cy="15" r="13"/><circle class="ar" cx="15" cy="15" r="13" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - pct / 100)).toFixed(1) + '" data-ring="' + id + '"/></svg><span data-pct="' + id + '">' + pct + '%</span></span>'; }
+  function app(cls, icon, extra) { return '<button class="app hit ' + cls + ' ' + (extra || "") + '" tabindex="-1"><span>' + icon + '</span></button>'; }
+  function barHtml() {
+    return '<span class="plate"></span>' +
+      '<div class="grp l">' +
+        '<div class="w disk hit"><div class="t"><b>107 GB</b><i>free</i></div><u><s></s></u></div>' +
+        '<div class="w cpu hit">' + ring(12, "cpu") + '<div class="rows"><span>CPU<u><s data-row="cpu" style="width:12%"></s></u><em data-n="cpu">12%</em></span><span>RAM<u><s data-row="ram" style="width:61%"></s></u><em data-n="ram">61%</em></span></div></div>' +
+        '<div class="w media"><span class="eqm"><i></i><i></i><i></i><i></i></span><div class="tt"><b>Midnight Drive</b><span>Neon Coast</span></div>' +
+          '<button class="mb hit" tabindex="-1">' + I.prev + '</button><button class="mb play hit" data-play tabindex="-1">' + I.play + '</button><button class="mb hit" tabindex="-1">' + I.next + '</button></div>' +
+      '</div>' +
+      '<div class="grp c">' + app("start", I.q) + app("a1", I.folder, "run") + app("a2", I.note, "run") + app("a3", I.chat, "run") + app("a4", I.pad) + app("a5", I.star, "on") + app("a6", I.globe, "run") + '</div>' +
+      '<div class="grp r">' +
+        '<button class="ic hit" tabindex="-1">' + I.clip + '</button><button class="ic hit" tabindex="-1">' + I.tr + '</button>' +
+        '<div class="w quick"><span class="pill hit">' + I.wifi + I.ch + '</span><span class="pill hit">' + I.ch + '</span><span class="pill hit">' + I.vol + I.ch + '</span><span class="pill hit">' + I.bt + I.ch + '</span><span class="pill hit">EN</span><span class="pill hit"><span class="bat"><span>96</span></span></span></div>' +
+        '<div class="w wx hit">' + I.sun + '<div class="two"><b>+4°</b><i>London</i></div></div>' +
+        '<div class="w clock hit"><div class="two"><b><span data-hm>12:48</span><small data-ss>:00</small></b><i data-date></i></div></div>' +
+      '</div>';
+  }
+  var CAT = {
+    f1: ["..........O..O..", ".........OFOOFO.", ".O.......OFFFFO.", "OFO......OFEFEO.", "OFO.OOOOOOFFPFO.", ".OFOFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFLLFFFFLLFO..", "..OFOOFO.OFOOFO.", "..OO..OO.OO..OO."],
+    f2: ["..........O..O..", ".........OFOOFO.", "..O......OFFFFO.", ".OFO.....OFEFEO.", ".OFOOOOOOOFFPFO.", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFFFFFFFFFFO..", "..OFLLFFFFLLFO..", "...OFOFO.OFOFO..", "...OO.OO.OO.OO.."]
+  };
+  function catSvg(rows, cls) {
+    var col = { O: "#2b1e1c", F: "#f2a65a", L: "#fff1e2", E: "#231a1c", P: "#ff96aa" }, s = '<svg class="' + cls + '" viewBox="0 0 16 11" shape-rendering="crispEdges">';
+    rows.forEach(function (r, y) { for (var x = 0; x < r.length; x++) if (col[r[x]]) s += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + col[r[x]] + '"/>'; });
+    return s + "</svg>";
+  }
+  var bars = [];
+  $$(".stage[data-bar]").forEach(function (stage) {
+    var fit = document.createElement("div"); fit.className = "fit";
+    var bar = document.createElement("div"); bar.className = "qbar"; bar.innerHTML = barHtml();
+    var cat = document.createElement("div"); cat.className = "cat"; cat.innerHTML = catSvg(CAT.f1, "f1") + catSvg(CAT.f2, "f2");
+    bar.appendChild(cat); fit.appendChild(bar); stage.appendChild(fit);
+    var plate = $(".plate", bar), hold = false, idle = 0;
+    function to(el) {
+      if (!el) { plate.style.opacity = 0; return; }
+      var b = bar.getBoundingClientRect(), r = el.getBoundingClientRect(), k = b.width / bar.offsetWidth || 1;
+      plate.style.left = ((r.left - b.left) / k) + "px"; plate.style.top = ((r.top - b.top) / k - 1) + "px";
+      plate.style.width = (r.width / k) + "px"; plate.style.height = (r.height / k) + "px";
+      plate.style.borderRadius = getComputedStyle(el).borderRadius; plate.style.opacity = 1;
+    }
+    bar.addEventListener("mouseover", function (e) { var h = e.target.closest ? e.target.closest(".hit") : null; if (h && bar.contains(h)) { hold = true; to(h); } });
+    bar.addEventListener("mouseleave", function () { hold = false; to(null); });
+    bar.addEventListener("click", function (e) { var p = e.target.closest ? e.target.closest("[data-play]") : null; if (p) bars.forEach(function (x) { x.bar.classList.toggle("paused"); }); });
+    bars.push({ stage: stage, fit: fit, bar: bar, cat: cat, hits: $$(".grp.c .hit, .w.clock, .w.wx, .w.cpu, .w.disk", bar), idle: function () { if (hold || calm) return; idle = (idle + 1) % this.hits.length; to(this.hits[idle]); } });
+  });
+  function fitBars() {
+    bars.forEach(function (x) {
+      var w = x.stage.clientWidth, k = Math.max(0.6, Math.min(1.34, w / 1440));
+      x.fit.style.setProperty("--k", k.toFixed(4));
+    });
+  }
+  window.addEventListener("resize", fitBars);
+  // the highlight wanders over the hero bar until somebody takes the mouse to it
+  setInterval(function () { if (bars[0] && document.visibilityState === "visible") bars[0].idle(); }, 1500);
+  setInterval(function () { bars.forEach(function (x) { x.cat.classList.toggle("step"); }); }, 190);
+
+  // the clock and the meters are alive
+  var cpu = 12, ram = 61;
+  function tick() {
+    var d = new Date(), ru = lang() === "ru";
+    var hm = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2), ss = ":" + ("0" + d.getSeconds()).slice(-2);
+    var date = "";
+    try { date = d.toLocaleDateString(ru ? "ru-RU" : "en-GB", { weekday: "short", day: "numeric", month: "short" }).replace(/[.,]/g, ""); } catch (e) {}
+    $$("[data-hm]").forEach(function (el) { el.textContent = hm; });
+    $$("[data-ss]").forEach(function (el) { el.textContent = ss; });
+    $$("[data-date]").forEach(function (el) { el.textContent = date; });
+  }
+  setInterval(tick, 1000);
+  function meters() {
+    cpu = Math.max(4, Math.min(88, Math.round(cpu + (Math.random() - 0.46) * 22)));
+    ram = Math.max(48, Math.min(79, Math.round(ram + (Math.random() - 0.5) * 4)));
+    var c = 2 * Math.PI * 13;
+    $$('[data-ring="cpu"]').forEach(function (el) { el.setAttribute("stroke-dashoffset", (c * (1 - cpu / 100)).toFixed(1)); });
+    $$('[data-pct="cpu"], [data-n="cpu"]').forEach(function (el) { el.textContent = cpu + "%"; });
+    $$('[data-row="cpu"]').forEach(function (el) { el.style.width = cpu + "%"; });
+    $$('[data-n="ram"]').forEach(function (el) { el.textContent = ram + "%"; });
+    $$('[data-row="ram"]').forEach(function (el) { el.style.width = ram + "%"; });
+    // the big ring in "what's using your PC"
+    var big = Math.max(18, Math.min(86, cpu + 22)), arc = $("#bigArc"), pct = $("#bigPct");
+    if (arc) arc.setAttribute("stroke-dashoffset", (326.7 * (1 - big / 100)).toFixed(1));
+    if (pct) pct.textContent = big + "%";
+    var share = [0.38, 0.3, 0.14, 0.08];
+    $$("#procs li").forEach(function (li, i) { var v = Math.max(1, Math.round(big * share[i])); $("s", li).style.width = Math.min(100, v * 4.4) + "%"; $("em", li).textContent = v + "%"; });
+  }
+  if (!calm) setInterval(meters, 1900);
+
+  // ---------- looks ----------
+  var desk = $("#desk");
+  $$("#lookChips .chip").forEach(function (b) {
+    b.addEventListener("click", function () {
+      look = b.getAttribute("data-look");
+      desk.setAttribute("data-look", look);
+      $$("#lookChips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      nameLook(); lookAuto = false;
+    });
+  });
+  // until somebody clicks, the looks take turns while the section is in view
+  var lookAuto = !calm, lookSeen = false, order = ["classic", "windows", "floating", "islands", "dock", "clear"];
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { lookSeen = es[0].isIntersecting; }, { threshold: 0.4 }).observe(desk);
+  setInterval(function () {
+    if (!lookAuto || !lookSeen) return;
+    look = order[(order.indexOf(look) + 1) % order.length];
+    desk.setAttribute("data-look", look);
+    $$("#lookChips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-look") === look ? "true" : "false"); });
+    nameLook();
+  }, 3200);
+
+  // ---------- edges ----------
+  var screen = $("#screen"), posAuto = !calm, posSeen = false, poses = ["bottom", "left", "top", "right"];
+  function setPos(p) { screen.setAttribute("data-pos", p); $$("#posChips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-pos") === p ? "true" : "false"); }); }
+  $$("#posChips .chip").forEach(function (b) { b.addEventListener("click", function () { posAuto = false; setPos(b.getAttribute("data-pos")); }); });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { posSeen = es[0].isIntersecting; }, { threshold: 0.5 }).observe(screen);
+  setInterval(function () { if (posAuto && posSeen) setPos(poses[(poses.indexOf(screen.getAttribute("data-pos")) + 1) % poses.length]); }, 2800);
+
+  // ---------- the equaliser ----------
+  var cv = $("#eq"), cx = cv.getContext("2d"), shape = "bars", color = "accent", eqOn = false, N = 72, lv = [], t0 = performance.now();
+  for (var i = 0; i < N; i++) lv.push(0);
+  function pick(group, cb) { $$("#" + group + " .chip").forEach(function (b) { b.addEventListener("click", function () { $$("#" + group + " .chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); cb(b.getAttribute("data-v")); }); }); }
+  pick("eqShape", function (v) { shape = v; }); pick("eqColor", function (v) { color = v; });
+  function col(i, a) { return color === "white" ? "rgba(240,242,248," + a + ")" : color === "rainbow" ? "hsla(" + ((i / N * 300 + (performance.now() - t0) / 34) % 360) + ",80%,62%," + a + ")" : "rgba(34,197,94," + a + ")"; }
+  function frame(now) {
+    if (!eqOn) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+    var t = (now - t0) / 1000, beat = Math.pow(Math.abs(Math.sin(t * 3.1)), 6);
+    for (var i = 0; i < N; i++) {
+      var f = i / N;
+      var v = (0.42 + 0.34 * Math.sin(t * 2.3 + i * 0.55) + 0.24 * Math.sin(t * 5.1 + i * 1.7)) * (1 - f * 0.55) + beat * (1 - f) * 0.5 + 0.12 * Math.sin(t * 9 + i * 3.3);
+      v = Math.max(0.03, Math.min(1, v));
+      lv[i] += (v - lv[i]) * (v > lv[i] ? 0.5 : 0.16);
+    }
+    var bw = W / N;
+    if (shape === "wave") {
+      cx.beginPath(); cx.moveTo(0, H);
+      for (var j = 0; j < N; j++) { var x = (j + 0.5) * bw, y = H - lv[j] * H * 0.86; if (j === 0) cx.lineTo(0, y); var nx = (j + 1.5) * bw, ny = H - lv[Math.min(N - 1, j + 1)] * H * 0.86; cx.quadraticCurveTo(x, y, (x + nx) / 2, (y + ny) / 2); }
+      cx.lineTo(W, H); cx.closePath();
+      var g = cx.createLinearGradient(0, 0, W, 0);
+      if (color === "rainbow") for (var s = 0; s <= 6; s++) g.addColorStop(s / 6, col(s / 6 * N, 0.5)); else { g.addColorStop(0, col(0, 0.5)); g.addColorStop(1, col(0, 0.5)); }
+      cx.fillStyle = g; cx.fill();
+    } else {
+      for (var k = 0; k < N; k++) {
+        var h = lv[k] * H * (shape === "mirror" ? 0.8 : 0.9);
+        cx.fillStyle = col(k, shape === "dots" ? 0.9 : 0.62);
+        if (shape === "dots") { var d = Math.max(3, Math.min(7, bw - 4)), rows = Math.floor((H - 4) / (d + 3)), lit = Math.round(lv[k] * rows); for (var r = 0; r < lit; r++) { cx.beginPath(); cx.arc((k + 0.5) * bw, H - 4 - r * (d + 3) - d / 2, d / 2, 0, 6.3); cx.fill(); } }
+        else if (shape === "mirror") cx.fillRect(k * bw + 1.5, H / 2 - h / 2, Math.max(1, bw - 3), h);
+        else cx.fillRect(k * bw + 1.5, H - h, Math.max(1, bw - 3), h);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  if ("IntersectionObserver" in window && !calm) new IntersectionObserver(function (es) { var on = es[0].isIntersecting; if (on && !eqOn) { eqOn = true; requestAnimationFrame(frame); } else if (!on) eqOn = false; }, { threshold: 0.05 }).observe(cv);
+  else { eqOn = true; requestAnimationFrame(function (n) { frame(n); eqOn = false; }); }
+
+  // ---------- search: somebody is typing ----------
+  var typed = $("#typed"), res = $("#typedRes");
+  var Q = [
+    { q: "128 * 4", en: [["512", "Calculator"], ["Copy the result", "Enter"]], ru: [["512", "Калькулятор"], ["Скопировать результат", "Enter"]] },
+    { q: "spot", en: [["Spotify", "App"], ["Spotify — settings", "Windows"]], ru: [["Spotify", "Приложение"], ["Spotify — параметры", "Windows"]] },
+    { q: "blue", en: [["Bluetooth & devices", "Windows settings"], ["Bluetooth — on / off", "Command"]], ru: [["Bluetooth и устройства", "Параметры Windows"], ["Bluetooth — вкл / выкл", "Команда"]] },
+    { q: "screenshot", en: [["Take a screenshot", "Command"], ["Screenshots", "Folder"]], ru: [["Сделать скриншот", "Команда"], ["Скриншоты", "Папка"]] }
+  ];
+  var qi = 0, ci = 0, wait = 0;
+  function showRes(n) { var rows = Q[qi][lang()] || Q[qi].en; res.innerHTML = n ? rows.map(function (r) { return "<div><span>" + r[0] + "</span><span>" + r[1] + "</span></div>"; }).join("") : ""; }
+  function type() {
+    var q = Q[qi].q;
+    if (wait > 0) { wait--; return; }
+    if (ci <= q.length) { typed.textContent = q.slice(0, ci); showRes(ci >= Math.min(3, q.length)); ci++; if (ci > q.length) wait = 16; }
+    else { qi = (qi + 1) % Q.length; ci = 0; typed.textContent = ""; showRes(false); wait = 3; }
+  }
+  if (calm) { typed.textContent = Q[0].q; showRes(true); } else setInterval(type, 130);
+
+  setLang(document.documentElement.lang, false);
+})();
 </script>
 </body>
 </html>
