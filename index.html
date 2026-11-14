@@ -27,6 +27,7 @@
     document.documentElement.lang = l;
   })();
 </script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/icon-48.png">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <style>
@@ -83,8 +84,8 @@
   nav.solid { background: rgba(0,0,0,.72); -webkit-backdrop-filter: saturate(160%) blur(18px); backdrop-filter: saturate(160%) blur(18px); border-bottom-color: var(--line); }
   nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 14px; }
   .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 18px; letter-spacing: -.01em; color: var(--ink); }
-  .logo { width: 28px; height: 28px; background: var(--acc); display: grid; place-items: center; flex: none; clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px); }
-  .logo svg { width: 17px; height: 17px; }
+  .logo { width: 30px; height: 30px; display: grid; place-items: center; flex: none; }
+  .logo svg { width: 30px; height: 30px; display: block; }
   nav .links { display: flex; gap: 30px; font-size: 14px; color: var(--dim); }
   nav .links a { transition: color .2s; }
   nav .links a:hover { color: var(--ink); }
@@ -464,7 +465,7 @@
 
 <nav id="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#03130a" stroke-width="3.2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg></span>Quoline</a>
+    <a class="brand" href="#top"><span class="logo"><svg viewBox="-360 -360 720 720" aria-hidden="true"><defs><mask id="qcut" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800"><rect x="-400" y="-400" width="800" height="800" fill="#fff"/><rect x="144" y="-74" width="332" height="148" rx="40" transform="rotate(45)" fill="#000"/></mask></defs><path fill="#ECECF1" fill-rule="evenodd" mask="url(#qcut)" d="M-300 0a300 300 0 1 0 600 0a300 300 0 1 0-600 0ZM-200 0a200 200 0 1 0 400 0a200 200 0 1 0-400 0Z"/><rect x="168" y="-50" width="284" height="100" rx="16" transform="rotate(45)" fill="#22C55E"/></svg></span>Quoline</a>
     <div class="links">
       <a href="#looks"><span lang="en">Looks</span><span lang="ru">Виды</span></a>
       <a href="#music"><span lang="en">Music</span><span lang="ru">Музыка</span></a>
@@ -493,7 +494,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
       </a>
-      <span class="file"><b><span lang="en">Free for 3 days</span><span lang="ru">3 дня бесплатно</span></b> · <span lang="en">then €4.99 once</span><span lang="ru">потом 4,99 € один раз</span><br>Quoline.msi · <span lang="en">about 0.5 MB · version</span><span lang="ru">около 0,5 МБ · версия</span> <span class="vnum">4.13.55</span></span>
+      <span class="file"><b><span lang="en">Free for 3 days</span><span lang="ru">3 дня бесплатно</span></b> · <span lang="en">then €4.99 once</span><span lang="ru">потом 4,99 € один раз</span><br>Quoline.msi · <span lang="en">about 0.5 MB · version</span><span lang="ru">около 0,5 МБ · версия</span> <span class="vnum">4.13.56</span></span>
     </div>
   </div>
   <div class="stage" data-bar="hero" aria-hidden="true"></div>
@@ -720,7 +721,7 @@
 
 <section class="final">
   <div class="wrap">
-    <p class="eyebrow reveal"><span>Quoline <span class="vnum">4.13.55</span> <i>·</i> Windows 11 <span lang="en">and</span><span lang="ru">и</span> 10</span></p>
+    <p class="eyebrow reveal"><span>Quoline <span class="vnum">4.13.56</span> <i>·</i> Windows 11 <span lang="en">and</span><span lang="ru">и</span> 10</span></p>
     <h2 class="display reveal d1"><span lang="en">Make it<br><em>yours.</em></span><span lang="ru">Сделай её<br><em>своей.</em></span></h2>
     <div class="cta reveal d2">
       <a class="btn dl" href="/Quoline.msi" download>
