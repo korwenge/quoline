@@ -328,10 +328,13 @@
   .vsearch svg { width: 17px; height: 17px; color: var(--dim); flex: none; }
   .vsearch .car { width: 1.5px; height: 20px; background: var(--acc); animation: blink 1s steps(2) infinite; margin-left: -8px; }
   @keyframes blink { 50% { opacity: 0; } }
-  .vres { margin-top: 8px; max-width: 420px; display: grid; gap: 2px; }
-  .vres div { display: flex; justify-content: space-between; padding: 9px 16px; font-size: 14px; background: rgba(255,255,255,.04); color: var(--body); }
+  /* the results keep ONE height (two rows reserved, no wrapping): while the demo types, empties and fills them,
+     the page under it must not jump up and down (it did on phones) */
+  .vres { margin-top: 8px; max-width: 420px; display: grid; gap: 2px; min-height: 78px; align-content: start; }
+  .vres div { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 38px; padding: 0 16px; font-size: 14px; background: rgba(255,255,255,.04); color: var(--body); white-space: nowrap; overflow: hidden; }
   .vres div:first-child { background: rgba(34,197,94,.14); color: var(--ink); }
-  .vres div span:last-child { color: var(--dim); font-size: 12px; }
+  .vres div span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .vres div span:last-child { flex: none; color: var(--dim); font-size: 12px; }
   /* clipboard */
   .vclip { display: grid; gap: 7px; }
   .vclip div { height: 40px; background: #111215; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 13px; color: var(--body); white-space: nowrap; overflow: hidden; }
@@ -398,6 +401,31 @@
   .price li::before { content: ""; flex: none; width: 18px; height: 2px; background: var(--acc); transform: translateY(-5px) skewX(-40deg); }
   .buy-row { display: flex; flex-wrap: wrap; gap: 12px; }
   .note { margin-top: 26px; font-size: 13.5px; color: var(--dim); max-width: 44em; line-height: 1.6; }
+  /* "Windows protected your PC": what it is and what to press, shown before people meet it */
+  .ss { margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; background: var(--card); border: 1px solid var(--line); padding: 36px; }
+  .ss h3 { font-size: 26px; letter-spacing: -.03em; line-height: 1.15; margin-bottom: 14px; }
+  .ss p { color: var(--body); font-size: 15px; line-height: 1.6; }
+  .ss ol { margin-top: 18px; padding-left: 0; list-style: none; counter-reset: k; }
+  .ss ol li { counter-increment: k; display: flex; gap: 12px; align-items: baseline; margin: 10px 0; font-size: 15px; }
+  .ss ol li::before { content: counter(k); flex: none; width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 13px; font-weight: 700; color: var(--acc-ink); background: var(--acc); }
+  .ss .why { margin-top: 14px; font-size: 13px; color: var(--dim); }
+  .ssd { position: relative; aspect-ratio: 4 / 3; max-width: 460px; width: 100%; justify-self: center; }
+  .ssd .win { position: absolute; inset: 0; background: #0b5cad; color: #fff; padding: 7% 8%; font-family: "Segoe UI", system-ui, sans-serif; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+  .ssd .win b { display: block; font-size: clamp(17px, 2.3vw, 24px); font-weight: 600; line-height: 1.2; margin-bottom: 4%; }
+  .ssd .win small { display: block; font-size: clamp(11px, 1.2vw, 13px); line-height: 1.45; opacity: .92; }
+  .ssd .lnk { display: inline-block; margin-top: 4%; font-size: clamp(11px, 1.2vw, 13px); text-decoration: underline; position: relative; }
+  .ssd .meta { margin-top: 4%; font-size: clamp(11px, 1.2vw, 13px); line-height: 1.6; opacity: .92; }
+  .ssd .btns { position: absolute; right: 6%; bottom: 7%; display: flex; gap: 8px; }
+  .ssd .btns > span { border: 2px solid rgba(255,255,255,.75); padding: 6px 12px; font-size: clamp(11px, 1.2vw, 13px); white-space: nowrap; position: relative; }
+  .ssd .ss-ring { position: absolute; inset: -7px; border: 3px solid var(--acc); animation: ssring 1.4s ease-in-out infinite; pointer-events: none; }
+  .ssd .ss-tag { position: absolute; top: -34px; left: 50%; transform: translateX(-50%); background: var(--acc); color: var(--acc-ink); font: 700 12px/1 "Segoe UI", system-ui, sans-serif; padding: 6px 9px; white-space: nowrap; }
+  .ssd .s1 { animation: ss1 9s infinite; }
+  .ssd .s2 { animation: ss2 9s infinite; }
+  @keyframes ss1 { 0%, 46% { opacity: 1; } 50%, 96% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes ss2 { 0%, 46% { opacity: 0; } 50%, 96% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes ssring { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(1.04); } }
+  .cta .warn { color: var(--dim); font-size: 13px; }
+  .cta .warn a { color: var(--acc); }
   .note a, .faq a { color: var(--ink); border-bottom: 1px solid var(--line2); }
   .note a:hover, .faq a:hover { border-color: var(--acc); }
 
@@ -446,6 +474,7 @@
     .bento { grid-template-columns: 1fr; } .tile.wide { grid-column: span 1; }
     .tile .viz { min-height: 0; }
     .more, .steps { grid-template-columns: 1fr; }
+    .ss { grid-template-columns: 1fr; padding: 24px 18px 48px; gap: 54px; }
     .steps li::before { margin-bottom: 22px; }
     .btn { padding: 15px 22px; font-size: 16px; }
     .lang button { padding: 5px 7px; }
@@ -494,7 +523,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         <span lang="en">Download for Windows</span><span lang="ru">Скачать для Windows</span>
       </a>
-      <span class="file"><b><span lang="en">Free forever</span><span lang="ru">Бесплатно навсегда</span></b> · <span lang="en">Pro €4.99 once</span><span lang="ru">Pro — 4,99 € один раз</span><br>Quoline.msi · <span lang="en">about 0.5 MB · version</span><span lang="ru">около 0,5 МБ · версия</span> <span class="vnum">4.13.69</span></span>
+      <span class="file"><b><span lang="en">Free forever</span><span lang="ru">Бесплатно навсегда</span></b> · <span lang="en">Pro €4.99 once</span><span lang="ru">Pro — 4,99 € один раз</span><br>Quoline.msi · <span lang="en">about 0.5 MB · version</span><span lang="ru">около 0,5 МБ · версия</span> <span class="vnum">4.13.70</span><br><span class="warn"><span lang="en">Windows may show a blue warning for new apps — <a href="#safe">here is what to press</a>.</span><span lang="ru">Windows может показать синее окно для новых программ — <a href="#safe">вот что нажать</a>.</span></span></span>
     </div>
   </div>
   <div class="stage" data-bar="hero" aria-hidden="true"></div>
@@ -699,7 +728,31 @@
       <li><b><span lang="en">Run the installer</span><span lang="ru">Запусти установщик</span></b><span lang="en">Quoline installs, starts automatically and hides the standard taskbar.</span><span lang="ru">Quoline установится, сам запустится и спрячет обычную панель задач.</span></li>
       <li><b><span lang="en">Use it — free</span><span lang="ru">Пользуйся — бесплатно</span></b><span lang="en">The first 3 days everything is Pro. After that Quoline stays free; to keep Pro, paste the key from your purchase email (€4.99, once).</span><span lang="ru">Первые 3 дня весь Pro бесплатно. Потом Quoline остаётся бесплатным; чтобы Pro остался, вставь ключ из письма после покупки (4,99 €, один раз).</span></li>
     </ol>
-    <p class="note reveal"><span lang="en">Windows may show “Windows protected your PC”. This happens with new apps that don’t have an expensive code-signing certificate. Click <b>“More info” → “Run anyway”</b>.</span><span lang="ru">Windows может показать «Система Windows защитила ваш компьютер». Так бывает с новыми программами без дорогой цифровой подписи. Нажми <b>«Подробнее» → «Выполнить в любом случае»</b>.</span></p>
+    <div class="ss reveal" id="safe">
+      <div>
+        <h3><span lang="en">A blue window? That’s normal.</span><span lang="ru">Синее окно? Это нормально.</span></h3>
+        <p><span lang="en">Windows shows “Windows protected your PC” for every new program it hasn’t seen many times yet. It doesn’t mean anything is wrong with Quoline.</span><span lang="ru">Windows показывает «Система Windows защитила ваш компьютер» для любой новой программы, которую видела ещё мало раз. Это не значит, что с Quoline что-то не так.</span></p>
+        <ol>
+          <li><span><span lang="en">Click <b>More info</b></span><span lang="ru">Нажми <b>Подробнее</b></span></span></li>
+          <li><span><span lang="en">Click <b>Run anyway</b></span><span lang="ru">Нажми <b>Выполнить в любом случае</b></span></span></li>
+        </ol>
+        <p class="why"><span lang="en">That’s all — it is asked only once, during installation.</span><span lang="ru">И всё — это спрашивается один раз, при установке.</span></p>
+      </div>
+      <div class="ssd" aria-hidden="true">
+        <div class="win s1">
+          <b><span lang="en">Windows protected your PC</span><span lang="ru">Система Windows защитила ваш компьютер</span></b>
+          <small><span lang="en">Microsoft Defender SmartScreen prevented an unrecognized app from starting.</span><span lang="ru">Фильтр SmartScreen в Microsoft Defender предотвратил запуск неопознанного приложения.</span></small>
+          <span class="lnk"><span lang="en">More info</span><span lang="ru">Подробнее</span><i class="ss-ring"></i><i class="ss-tag">1</i></span>
+          <div class="btns"><span><span lang="en">Don’t run</span><span lang="ru">Не выполнять</span></span></div>
+        </div>
+        <div class="win s2">
+          <b><span lang="en">Windows protected your PC</span><span lang="ru">Система Windows защитила ваш компьютер</span></b>
+          <small><span lang="en">Microsoft Defender SmartScreen prevented an unrecognized app from starting.</span><span lang="ru">Фильтр SmartScreen в Microsoft Defender предотвратил запуск неопознанного приложения.</span></small>
+          <div class="meta"><span lang="en">App: Quoline.msi</span><span lang="ru">Приложение: Quoline.msi</span></div>
+          <div class="btns"><span><span lang="en">Run anyway</span><span lang="ru">Выполнить в любом случае</span><i class="ss-ring"></i><i class="ss-tag">2</i></span><span><span lang="en">Don’t run</span><span lang="ru">Не выполнять</span></span></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -726,7 +779,7 @@
 
 <section class="final">
   <div class="wrap">
-    <p class="eyebrow reveal"><span>Quoline <span class="vnum">4.13.69</span> <i>·</i> Windows 11 <span lang="en">and</span><span lang="ru">и</span> 10</span></p>
+    <p class="eyebrow reveal"><span>Quoline <span class="vnum">4.13.70</span> <i>·</i> Windows 11 <span lang="en">and</span><span lang="ru">и</span> 10</span></p>
     <h2 class="display reveal d1"><span lang="en">Make it<br><em>yours.</em></span><span lang="ru">Сделай её<br><em>своей.</em></span></h2>
     <div class="cta reveal d2">
       <a class="btn dl" href="/Quoline.msi" download>
