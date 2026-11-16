@@ -854,16 +854,13 @@
   $("#yr").textContent = new Date().getFullYear();
 
   // a friend's creator code: quoline.app/?ref=JUZO — the downloads go through our server, which remembers the
-  // address for two days, so Quoline's first start from it counts for that friend (no money, points only)
+  // address for two days, so Quoline's first start from it counts for that friend (no money, points only).
+  // Only on the friend's own link: the plain page never carries a code (and an older page's memory is wiped).
   (function () {
     var code = "";
+    try { localStorage.removeItem("quoline-ref"); } catch (e) {}
     try { code = (new URLSearchParams(location.search).get("ref") || "").toUpperCase(); } catch (e) {}
-    if (/^[A-Z0-9_]{2,16}$/.test(code)) { try { localStorage.setItem("quoline-ref", JSON.stringify({ c: code, t: Date.now() })); } catch (e) {} }
-    else {
-      code = "";
-      try { var s = JSON.parse(localStorage.getItem("quoline-ref") || "null"); if (s && Date.now() - s.t < 7 * 864e5 && /^[A-Z0-9_]{2,16}$/.test(s.c)) code = s.c; } catch (e) {}
-    }
-    if (!code) return;
+    if (!/^[A-Z0-9_]{2,16}$/.test(code)) return;
     $$('a[href="/Quoline.msi"]').forEach(function (a) { a.href = "https://api.quoline.app/ref/dl/" + code; a.download = ""; a.removeAttribute("download"); });
     var f = $(".file");
     if (f) {
