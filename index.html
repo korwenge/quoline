@@ -461,6 +461,102 @@
   footer a { color: var(--dim); transition: color .2s; } footer a:hover { color: var(--ink); }
   footer .legal { display: flex; gap: 22px; flex-wrap: wrap; }
 
+  /* ---------- the live island (under "a thousand faces"): its states, short videos coming out of it ---------- */
+  .islhead { margin-top: clamp(90px, 13vh, 160px); display: grid; gap: 22px; }
+  .title.sm { font-size: clamp(34px, 5.2vw, 72px); }
+  .protag { display: inline-block; vertical-align: .55em; margin-left: .35em; padding: 4px 9px 3px; font-size: 12px; font-weight: 700; letter-spacing: .14em; color: #2b1d00;
+    background: linear-gradient(135deg, #ffd56a, #f5a524); clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px); }
+  .isldesk { margin-top: 44px; position: relative; height: clamp(440px, 46vw, 600px); overflow: hidden; border: 1px solid var(--line); font-size: clamp(10.5px, 2.75vw, 15px);
+    background: radial-gradient(55% 70% at 85% 105%, rgba(34,197,94,.42), transparent 60%), radial-gradient(60% 80% at 10% 100%, rgba(99,102,241,.45), transparent 62%), linear-gradient(#06070c, #0d1018); transition: background .6s; }
+  .isldesk[data-isl="tiktok"] { background: radial-gradient(55% 70% at 85% 105%, rgba(37,244,238,.32), transparent 60%), radial-gradient(60% 80% at 10% 100%, rgba(254,44,85,.36), transparent 62%), linear-gradient(#06070c, #0d1018); }
+  .isldesk[data-isl="reels"] { background: radial-gradient(55% 70% at 85% 105%, rgba(253,186,64,.34), transparent 60%), radial-gradient(60% 80% at 10% 100%, rgba(193,53,132,.46), transparent 62%), linear-gradient(#06070c, #120a18); }
+  .isldesk[data-isl="shorts"] { background: radial-gradient(55% 70% at 85% 105%, rgba(255,60,60,.34), transparent 60%), radial-gradient(60% 80% at 10% 100%, rgba(255,140,60,.26), transparent 62%), linear-gradient(#07070a, #140b0b); }
+  .isldesk .cap { position: absolute; left: 28px; bottom: 24px; width: calc(50% - 15.5em - 28px); display: grid; gap: 8px; z-index: 4; pointer-events: none; }
+  .isldesk .cap b { font-size: clamp(18px, 2.3vw, 30px); letter-spacing: -.03em; }
+  .isldesk .cap span { color: var(--dim); font-size: 14px; line-height: 1.45; }
+  .isl { position: absolute; top: 1.1em; left: 50%; transform: translateX(-50%); width: 6.8em; height: 2.3em; border-radius: 99em; background: #000; z-index: 3;
+    box-shadow: 0 .8em 2.2em rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.07); overflow: hidden;
+    transition: width .6s cubic-bezier(.2,.9,.25,1.12), height .6s cubic-bezier(.2,.9,.25,1.12); }
+  .isldesk[data-isl="music"] .isl { width: 22em; height: 3.7em; }
+  .isldesk[data-isl="widgets"] .isl, .isldesk[data-isl="tiktok"] .isl, .isldesk[data-isl="reels"] .isl, .isldesk[data-isl="shorts"] .isl { width: 27em; height: 3.7em; }
+  .isldesk[data-isl="volume"] .isl { width: 16em; height: 2.9em; }
+  .ip { position: absolute; inset: 0; display: flex; align-items: center; gap: .9em; padding: 0 1.1em; opacity: 0; transition: opacity .25s; white-space: nowrap; color: #fff; }
+  .isldesk[data-isl="folded"] .ip.mini, .isldesk[data-isl="music"] .ip.mus, .isldesk[data-isl="volume"] .ip.vol,
+  .isldesk[data-isl="widgets"] .ip.row, .isldesk[data-isl="tiktok"] .ip.row, .isldesk[data-isl="reels"] .ip.row, .isldesk[data-isl="shorts"] .ip.row { opacity: 1; transition: opacity .35s .22s; }
+  .ip.mini { justify-content: center; gap: .5em; font-weight: 700; font-size: .95em; }
+  .ip.mini i { width: .45em; height: .45em; border-radius: 50%; background: var(--acc); box-shadow: 0 0 .6em var(--acc); }
+  .ip .cov { flex: none; width: 2.5em; height: 2.5em; border-radius: .6em; background: linear-gradient(135deg, #f472b6, #8b5cf6 55%, #22d3ee); }
+  .ip .tt { display: grid; gap: .1em; min-width: 0; flex: 1; }
+  .ip .tt b { font-size: .95em; overflow: hidden; text-overflow: ellipsis; }
+  .ip .tt small { font-size: .78em; color: #9a9ca5; }
+  .ip .eqb { display: flex; gap: .18em; align-items: flex-end; height: 1.3em; }
+  .ip .eqb s { width: .26em; background: var(--acc); border-radius: .2em; animation: eqb 1s ease-in-out infinite alternate; }
+  .ip .eqb s:nth-child(2) { animation-delay: -.35s; } .ip .eqb s:nth-child(3) { animation-delay: -.7s; } .ip .eqb s:nth-child(4) { animation-delay: -.15s; }
+  @keyframes eqb { from { height: 25%; } to { height: 100%; } }
+  .ip .pl { flex: none; width: 2em; height: 2em; border-radius: 50%; background: var(--acc); display: grid; place-items: center; }
+  .ip .pl::after { content: ""; margin-left: .15em; border-style: solid; border-width: .38em 0 .38em .62em; border-color: transparent transparent transparent var(--acc-ink); }
+  .ip.row { gap: .7em; padding: 0 .9em; }
+  .ip.row .seg { display: flex; align-items: center; gap: .55em; padding: 0 .3em; }
+  .ip.row .cov { width: 2.1em; height: 2.1em; border-radius: .5em; }
+  .ip.row .ctl { display: flex; gap: .55em; align-items: center; }
+  .ip.row .ctl i { width: 0; height: 0; border-style: solid; border-width: .34em 0 .34em .55em; border-color: transparent transparent transparent #fff; }
+  .ip.row .ctl i.bk { transform: scaleX(-1); }
+  .ip.row .ctl i.pp { border-width: .42em 0 .42em .7em; border-color: transparent transparent transparent var(--acc); }
+  .ip.row .vbtn { flex: none; width: 2.3em; height: 2.3em; border-radius: .7em; background: rgba(255,255,255,.1); display: grid; place-items: center; transition: background .35s; }
+  .ip.row .vbtn::after { content: ""; width: .9em; height: 1.3em; border-radius: .22em; box-shadow: inset 0 0 0 .14em #fff; }
+  .isldesk[data-isl="tiktok"] .vbtn, .isldesk[data-isl="reels"] .vbtn, .isldesk[data-isl="shorts"] .vbtn { background: var(--acc); }
+  .isldesk[data-isl="tiktok"] .vbtn::after, .isldesk[data-isl="reels"] .vbtn::after, .isldesk[data-isl="shorts"] .vbtn::after { box-shadow: inset 0 0 0 .14em var(--acc-ink); }
+  .ip.row .sun { width: 1.25em; height: 1.25em; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 .7em rgba(251,191,36,.7); }
+  .ip.row .two { display: grid; line-height: 1.15; } .ip.row .two b { font-size: .95em; } .ip.row .two small { font-size: .72em; color: #9a9ca5; }
+  .ip.row .clk { margin-left: auto; text-align: right; }
+  .ip.vol svg { width: 1.3em; height: 1.3em; flex: none; }
+  .ip.vol u { flex: 1; height: .45em; border-radius: 1em; background: rgba(255,255,255,.16); position: relative; overflow: hidden; }
+  .ip.vol u s { position: absolute; left: 0; top: 0; bottom: 0; width: 64%; background: #fff; border-radius: 1em; transition: width .5s; }
+  .isldesk[data-isl="volume"] .ip.vol u s { animation: volup 2.4s ease-in-out infinite alternate; }
+  @keyframes volup { from { width: 38%; } to { width: 72%; } }
+  .ip.vol b { font-size: .85em; min-width: 2.4em; text-align: right; }
+  /* the feed: one shape with the island, growing down out of it (as in Quoline) */
+  .feed { position: absolute; top: 2.95em; left: 50%; transform: translateX(-50%); width: 27em; height: min(31em, calc(100% - 5.6em)); z-index: 2; background: #0b0b0d;
+    border-radius: 0 0 1.5em 1.5em; padding: 2.2em .9em .9em; display: flex; gap: .8em; box-shadow: 0 1.2em 3em rgba(0,0,0,.5);
+    clip-path: inset(0 0 100% 0 round 0 0 1.5em 1.5em); transition: clip-path .32s cubic-bezier(.4,0,.6,1); }
+  .isldesk[data-isl="tiktok"] .feed, .isldesk[data-isl="reels"] .feed, .isldesk[data-isl="shorts"] .feed { clip-path: inset(0 0 0 0 round 0 0 1.5em 1.5em); transition: clip-path .5s cubic-bezier(.2,.8,.2,1) .25s; }
+  .feed .tabs { position: absolute; top: 2.3em; left: 0; right: 0; display: flex; justify-content: center; gap: 1.2em; font-size: .82em; font-weight: 700; color: #8c8e96; z-index: 2; }
+  .feed .tabs > span { display: none; } .feed .tabs b { color: #fff; border-bottom: .15em solid #fff; padding-bottom: .2em; }
+  .isldesk[data-isl="tiktok"] .feed .tabs .tk, .isldesk[data-isl="reels"] .feed .tabs .rl, .isldesk[data-isl="shorts"] .feed .tabs .sh { display: contents; }
+  .feed .screen2 { position: relative; flex: 1; border-radius: .9em; overflow: hidden; background: #000; }
+  .feed .reel { position: absolute; inset: 0; animation: reel 9.6s cubic-bezier(.65,0,.35,1) infinite; }
+  @keyframes reel { 0%, 26% { transform: translateY(0); } 33%, 59% { transform: translateY(-100%); } 66%, 92% { transform: translateY(-200%); } 99.9% { transform: translateY(-300%); } 100% { transform: translateY(0); } }
+  .feed .clip { position: absolute; left: 0; right: 0; height: 100%; overflow: hidden; }
+  .feed .clip:nth-child(1), .feed .clip:nth-child(4) { top: 0; } .feed .clip:nth-child(2) { top: 100%; } .feed .clip:nth-child(3) { top: 200%; } .feed .clip:nth-child(4) { top: 300%; }
+  .feed .clip i { position: absolute; border-radius: 50%; filter: blur(.4em); }
+  .feed .clip p { position: absolute; left: .9em; right: 3.6em; bottom: 1em; margin: 0; display: grid; gap: .35em; }
+  .feed .clip p b { font-size: .82em; color: #fff; } .feed .clip p u { height: .42em; border-radius: .3em; background: rgba(255,255,255,.55); } .feed .clip p u + u { width: 60%; background: rgba(255,255,255,.35); }
+  .feed .side { position: absolute; right: .55em; bottom: 1em; display: grid; gap: .9em; justify-items: center; z-index: 2; }
+  .feed .side span { display: grid; justify-items: center; gap: .15em; font-size: .68em; font-weight: 700; color: #fff; }
+  .feed .side span i { width: 2.6em; height: 2.6em; border-radius: 50%; background: rgba(255,255,255,.16); display: grid; place-items: center; }
+  .feed .side span i svg { width: 1.35em; height: 1.35em; }
+  .feed .bar2 { position: absolute; left: 0; bottom: 0; height: .2em; background: #fff; animation: prog 3.2s linear infinite; }
+  @keyframes prog { from { width: 0; } to { width: 100%; } }
+  /* each site its own colours */
+  .c1 { background: linear-gradient(160deg, #0f2a33, #07151b); } .c1 i:nth-child(1) { width: 9em; height: 9em; left: 18%; top: 22%; background: rgba(37,244,238,.55); }
+  .c1 i:nth-child(2) { width: 6em; height: 6em; left: 46%; top: 44%; background: rgba(254,44,85,.6); }
+  .c2 { background: linear-gradient(160deg, #331021, #12060d); } .c2 i:nth-child(1) { width: 10em; height: 10em; left: 30%; top: 14%; background: rgba(254,44,85,.55); }
+  .c2 i:nth-child(2) { width: 5em; height: 5em; left: 12%; top: 52%; background: rgba(255,214,102,.55); }
+  .c3 { background: linear-gradient(160deg, #102536, #0a0f1a); } .c3 i:nth-child(1) { width: 8em; height: 8em; left: 40%; top: 30%; background: rgba(96,165,250,.6); }
+  .c3 i:nth-child(2) { width: 6em; height: 6em; left: 14%; top: 18%; background: rgba(37,244,238,.4); }
+  .isldesk[data-isl="reels"] .c1 { background: linear-gradient(160deg, #3b1240, #160818); } .isldesk[data-isl="reels"] .c1 i:nth-child(1) { background: rgba(253,186,64,.6); } .isldesk[data-isl="reels"] .c1 i:nth-child(2) { background: rgba(193,53,132,.7); }
+  .isldesk[data-isl="reels"] .c2 { background: linear-gradient(160deg, #40230e, #170c05); } .isldesk[data-isl="reels"] .c2 i:nth-child(1) { background: rgba(245,96,64,.6); }
+  .isldesk[data-isl="reels"] .c3 { background: linear-gradient(160deg, #23113f, #0d0718); } .isldesk[data-isl="reels"] .c3 i:nth-child(1) { background: rgba(131,58,180,.7); }
+  .isldesk[data-isl="shorts"] .c1 { background: linear-gradient(160deg, #3a0d0d, #160505); } .isldesk[data-isl="shorts"] .c1 i:nth-child(1) { background: rgba(255,60,60,.6); } .isldesk[data-isl="shorts"] .c1 i:nth-child(2) { background: rgba(255,170,60,.55); }
+  .isldesk[data-isl="shorts"] .c2 { background: linear-gradient(160deg, #1d2a14, #0a1007); } .isldesk[data-isl="shorts"] .c2 i:nth-child(1) { background: rgba(132,204,22,.55); }
+  .isldesk[data-isl="shorts"] .c3 { background: linear-gradient(160deg, #2e1a0a, #120a04); } .isldesk[data-isl="shorts"] .c3 i:nth-child(1) { background: rgba(255,120,40,.6); }
+  /* the wheel hint next to the feed */
+  .wheel { position: absolute; top: 50%; left: calc(50% + 15.2em); width: 1.9em; height: 3em; border-radius: 1em; box-shadow: inset 0 0 0 .14em rgba(255,255,255,.55); opacity: 0; transition: opacity .4s; z-index: 2; }
+  .wheel::after { content: ""; position: absolute; left: 50%; top: .55em; width: .22em; height: .6em; margin-left: -.11em; border-radius: .2em; background: #fff; animation: whl 3.2s ease-in-out infinite; }
+  @keyframes whl { 0%, 70% { transform: translateY(0); opacity: 1; } 85% { transform: translateY(.7em); opacity: 0; } 100% { opacity: 0; } }
+  .isldesk[data-isl="tiktok"] .wheel, .isldesk[data-isl="reels"] .wheel, .isldesk[data-isl="shorts"] .wheel { opacity: 1; transition-delay: .6s; }
+  @media (max-width: 760px) { .wheel, .isldesk .cap { display: none; } }
+
   @media (max-width: 980px) {
     nav .links { display: none; }
     .edge { grid-template-columns: 1fr; }
@@ -554,6 +650,53 @@
     <div class="desk" id="desk" data-look="classic">
       <div class="cap"><b id="lookName">Classic</b><span id="lookNote"></span></div>
       <div class="stage" data-bar="looks" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="islhead">
+      <h3 class="title sm reveal"><span lang="en">And an island<br><em>on top.</em></span><span lang="ru">И остров<br><em>сверху.</em></span><span class="protag">PRO</span></h3>
+      <p class="lead reveal d1"><span lang="en">A black pill at the top of the screen — always open, opening under the mouse, folded to the time, or hidden at the edge. Put any blocks on it: the player, weather, the clock. New tracks, the volume and charging show up on it for a moment. And short videos slide out of it — TikTok, Instagram Reels or YouTube Shorts: one wheel notch is one video, the wheel over its button is their volume.</span><span lang="ru">Чёрная плашка вверху экрана — всегда открыта, раскрывается под мышкой, свёрнута до часов или спрятана у края. Поставь на неё любые блоки: плеер, погоду, часы. Новый трек, громкость и зарядка появляются на ней на миг. А из неё выезжают короткие видео — TikTok, Instagram Reels или YouTube Shorts: одно деление колёсика — одно видео, колёсико над кнопкой — их громкость.</span></p>
+      <div class="chips reveal d2" id="islChips" role="group">
+        <button class="chip" data-isl="folded" aria-pressed="true"><span lang="en">Folded</span><span lang="ru">Свёрнут</span></button>
+        <button class="chip" data-isl="music" aria-pressed="false"><span lang="en">New track</span><span lang="ru">Новый трек</span></button>
+        <button class="chip" data-isl="widgets" aria-pressed="false"><span lang="en">Widgets</span><span lang="ru">Виджеты</span></button>
+        <button class="chip" data-isl="tiktok" aria-pressed="false">TikTok</button>
+        <button class="chip" data-isl="reels" aria-pressed="false">Instagram Reels</button>
+        <button class="chip" data-isl="shorts" aria-pressed="false">YouTube Shorts</button>
+        <button class="chip" data-isl="volume" aria-pressed="false"><span lang="en">Volume</span><span lang="ru">Громкость</span></button>
+      </div>
+    </div>
+    <div class="isldesk reveal" id="isldesk" data-isl="folded" aria-hidden="true">
+      <div class="isl">
+        <div class="ip mini"><i></i>16:29</div>
+        <div class="ip mus"><span class="cov"></span><span class="tt"><b>Midnight Drive</b><small>Neon Coast</small></span><span class="eqb"><s></s><s></s><s></s><s></s></span><span class="pl"></span></div>
+        <div class="ip row">
+          <span class="seg"><span class="cov"></span><span class="ctl"><i class="bk"></i><i class="pp"></i><i></i></span></span>
+          <span class="vbtn"></span>
+          <span class="seg"><span class="sun"></span><span class="two"><b>+8°</b><small><span lang="en">Sunny</span><span lang="ru">Ясно</span></small></span></span>
+          <span class="seg clk"><span class="two"><b>16:29</b><small><span lang="en">Mon 16</span><span lang="ru">Пн 16</span></small></span></span>
+        </div>
+        <div class="ip vol"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h3l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg><u><s></s></u><b>64%</b></div>
+      </div>
+      <div class="feed">
+        <div class="tabs"><span class="tk"><span lang="en">Following</span><span lang="ru">Подписки</span> <b lang="en">For You</b><b lang="ru">Для вас</b></span><span class="rl"><b>Reels</b></span><span class="sh"><b>Shorts</b></span></div>
+        <div class="screen2">
+          <div class="reel">
+            <div class="clip c1"><i></i><i></i><p><b>@nightrides</b><u></u><u></u></p></div>
+            <div class="clip c2"><i></i><i></i><p><b>@cookwithme</b><u></u><u></u></p></div>
+            <div class="clip c3"><i></i><i></i><p><b>@skate.daily</b><u></u><u></u></p></div>
+            <div class="clip c1"><i></i><i></i><p><b>@nightrides</b><u></u><u></u></p></div>
+          </div>
+          <div class="side">
+            <span><i><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.5 3 5 6.5 5c2 0 3.6 1.2 4.5 2.6.9-1.4 2.5-2.6 4.5-2.6C19 5 21 8.5 19.6 11.8 17.5 16.4 12 21 12 21z"/></svg></i>48K</span>
+            <span><i><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 5h16v11H9l-5 4z"/></svg></i>912</span>
+            <span><i><svg viewBox="0 0 24 24" fill="#fff"><path d="M14 4l7 7-7 7v-4c-5 0-8 1.5-10 5 .6-5.5 3.5-9.5 10-10z"/></svg></i>3K</span>
+          </div>
+          <div class="bar2"></div>
+        </div>
+      </div>
+      <span class="wheel"></span>
+      <div class="cap"><b id="islName"></b><span id="islNote"></span></div>
     </div>
   </div>
 </section>
@@ -670,28 +813,38 @@
       <h2 class="title reveal d1"><span lang="en">Also in<br><em>Quoline.</em></span><span lang="ru">Ещё в<br><em>Quoline.</em></span></h2>
     </div>
     <ul class="more reveal">
-      <li><b><span lang="en">Weather and calendar</span><span lang="ru">Погода и календарь</span></b><span lang="en">Hourly and 7-day forecasts, plus a calendar when you click the clock. Rain and snow on the bar, to match the weather or just for the mood.</span><span lang="ru">Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</span></li>
+      <li><b><span lang="en">Weather and calendar</span><span lang="ru">Погода и календарь</span></b><span lang="en">Finds your city by itself, or search for any city. Hourly and 7-day forecasts, plus a calendar when you click the clock. Rain and snow on the bar, to match the weather or just for the mood.</span><span lang="ru">Сама находит твой город, или найди любой. Прогноз по часам и на неделю, календарь по клику на часы. Дождь и снег на панели — по погоде или просто для атмосферы.</span></li>
       <li><b><span lang="en">Quick settings</span><span lang="ru">Быстрые настройки</span></b><span lang="en">The arrow next to Wi‑Fi and Bluetooth opens a panel: networks with password entry, headphones with their battery level, brightness and Night light. Click the keyboard layout for a list of languages.</span><span lang="ru">Стрелка у Wi‑Fi и Bluetooth — окошко: сети с вводом пароля, наушники одной кнопкой и их заряд, яркость и ночной свет. Клик по раскладке — список языков.</span></li>
       <li><b><span lang="en">An edge for each monitor</span><span lang="ru">Свой край панели для каждого монитора</span></b><span lang="en">On a multi-monitor setup each screen’s bar sits where you want it — bottom on one, on the side on another, with its own widgets.</span><span lang="ru">С несколькими мониторами край панели задаётся отдельно на каждом экране — на одном снизу, на другом сбоку, и у каждого свои виджеты.</span></li>
-      <li><b><span lang="en">Live island</span><span lang="ru">Живой остров</span></b><span lang="en">A pill at the top of the screen: always open, opening under the mouse, or hidden at the edge. Put any block on it — music, clock, weather, timer — and it shows new tracks and the volume as they happen.</span><span lang="ru">Плашка вверху экрана: всегда открыта, раскрывается мышкой или спрятана у края. Поставь на неё любой блок — музыку, часы, погоду, таймер — и она покажет новый трек и громкость, когда они меняются.</span></li>
+      <li><b><span lang="en">Live island</span><span lang="ru">Живой остров</span></b><span lang="en">A pill at the top of the screen with any blocks on it. TikTok, Instagram Reels and YouTube Shorts slide out of it — scroll videos with the wheel without opening a browser.</span><span lang="ru">Плашка вверху экрана с любыми блоками. Из неё выезжают TikTok, Instagram Reels и YouTube Shorts — листай видео колёсиком, не открывая браузер.</span></li>
       <li><b><span lang="en">Quick settings as a deck of cards</span><span lang="ru">Быстрые настройки — колода карт</span></b><span lang="en">Wi‑Fi, Bluetooth and sound are playing cards: click one and it turns over into its settings. Or pick “Remote”: round buttons and tall sliders.</span><span lang="ru">Wi‑Fi, Bluetooth и звук — игральные карты: клик, и карта переворачивается, а на обороте её настройки. Или стиль «Пульт»: круглые кнопки и высокие ползунки.</span></li>
       <li><b><span lang="en">App folders</span><span lang="ru">Папки приложений</span></b><span lang="en">Drag one icon onto another and hold — they become a folder. A click opens it with all its apps; rename it with a click on its name.</span><span lang="ru">Перетащи иконку на другую и подержи — получится папка. Клик открывает её со всеми приложениями, имя меняется кликом по названию.</span></li>
-      <li><b><span lang="en">Battery of your devices</span><span lang="ru">Заряд устройств</span></b><span lang="en">Wireless headphones, mouse, keyboard or Xbox gamepad: their charge right on the bar — red when it runs low. Works with devices that report it to Windows.</span><span lang="ru">Беспроводные наушники, мышь, клавиатура или геймпад Xbox — заряд прямо на панели, красным, когда садится. Для устройств, которые сообщают его Windows.</span></li>
+      <li><b><span lang="en">Battery of your devices</span><span lang="ru">Заряд устройств</span></b><span lang="en">AirPods (each earbud and the case), Logitech mice with a receiver, other wireless headphones, keyboards and Xbox gamepads: their charge right on the bar — red when it runs low.</span><span lang="ru">AirPods (каждый наушник и кейс), мыши Logitech с приёмником, другие беспроводные наушники, клавиатуры и геймпады Xbox — заряд прямо на панели, красным, когда садится.</span></li>
       <li><b><span lang="en">Share your look</span><span lang="ru">Поделиться видом</span></b><span lang="en">Your whole bar as one short code. Send it to a friend — one click, and they have the same bar. Paste someone else’s code to try their look.</span><span lang="ru">Вся твоя панель — одним коротким кодом. Отправь другу — один клик, и у него такая же панель. Вставь чужой код, чтобы примерить чужой вид.</span></li>
       <li><b><span lang="en">Look workshop</span><span lang="ru">Мастерская видов</span></b><span lang="en">Bars and backgrounds made by other people — see a picture, apply in one click, undo with another. A look comes with its GIFs. Share yours too.</span><span lang="ru">Панели и фоны от других людей — смотришь картинку, применяешь в один клик, возвращаешь так же. Вид приезжает вместе со своими гифками. Выкладывай и свои.</span></li>
-      <li><b><span lang="en">Designs and themes</span><span lang="ru">Дизайны и темы</span></b><span lang="en">Four designs: Classic, Square, iOS and Island. Light or dark theme, matching Windows, or light only during the day. The hover highlight glides from button to button and takes the shape of each one.</span><span lang="ru">Четыре дизайна: «Классика», «Квадрат», iOS и «Остров». Светлая или тёмная тема, как в Windows или светлая только днём. Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой.</span></li>
-      <li><b><span lang="en">Screenshots with markup</span><span lang="ru">Скриншоты с рисованием</span></b><span lang="en">Select an area, add arrows, boxes and highlighter, then copy or save.</span><span lang="ru">Выдели область, добавь стрелки, рамки и маркер, скопируй или сохрани.</span></li>
+      <li><b><span lang="en">Designs and themes</span><span lang="ru">Дизайны и темы</span></b><span lang="en">Four designs: Classic, Square, iOS and Island. Light or dark theme, matching Windows, or light only during the day. The hover highlight glides from button to button and takes the shape of each one; icons can grow under the mouse like a dock.</span><span lang="ru">Четыре дизайна: «Классика», «Квадрат», iOS и «Остров». Светлая или тёмная тема, как в Windows или светлая только днём. Плашка под мышкой перетекает от кнопки к кнопке и принимает форму каждой; иконки могут расти под мышкой, как в доке.</span></li>
+      <li><b><span lang="en">Screenshots with markup</span><span lang="ru">Скриншоты с рисованием</span></b><span lang="en">Select an area, add arrows, boxes and highlighter, then copy or save. A colour picker takes the colour of any pixel on the screen.</span><span lang="ru">Выдели область, добавь стрелки, рамки и маркер, скопируй или сохрани. Пипетка берёт цвет любой точки экрана.</span></li>
       <li><b><span lang="en">Timer and Pomodoro</span><span lang="ru">Таймер и помодоро</span></b><span lang="en">Type any duration (15, 1:30, 1h 30m) or pick a preset. The Pomodoro timer counts your sessions for the day.</span><span lang="ru">Впиши любое время (15, 1:30, 1ч 30м) или выбери готовое. Помодоро считает помидоры за день.</span></li>
-      <li><b><span lang="en">Game mode</span><span lang="ru">Игровой режим</span></b><span lang="en">While a game runs full screen, Quoline stays almost idle, leaving more frames for the game. Everything comes back on its own afterward.</span><span lang="ru">Пока игра идёт на весь экран, Quoline почти ничего не делает — больше кадров игре. После игры всё возвращается само.</span></li>
+      <li><b><span lang="en">Game mode</span><span lang="ru">Игровой режим</span></b><span lang="en">While a game runs full screen, Quoline stays almost idle, leaving more frames for the game. Its notifications wait until you are out, Alt + Space goes to the game, and Windows knows not to pop anything over it.</span><span lang="ru">Пока игра идёт на весь экран, Quoline почти ничего не делает — больше кадров игре. Его уведомления ждут, пока ты выйдешь, Alt + Пробел достаётся игре, и Windows не показывает поверх неё уведомления.</span></li>
       <li><b><span lang="en">Notes and to-dos</span><span lang="ru">Заметки и дела</span></b><span lang="en">A quick note and a to-do list; the number of open tasks is shown on the button. Drag a file onto an app icon to open it in that app.</span><span lang="ru">Быстрая заметка и список дел; сколько дел осталось — видно на кнопке. Файл можно перетащить на иконку программы — откроется в ней.</span></li>
-      <li><b><span lang="en">Settings with live previews</span><span lang="ru">Настройки с превью</span></b><span lang="en">Hover over a setting and a small animation shows what it does. Search finds any option by keyword. The “Simple” view shows only the main settings; “All” shows everything.</span><span lang="ru">Наведи на настройку — маленькая анимация покажет, что она меняет. Поиск находит всё по слову. В виде «Просто» — только главные настройки, «Все» — всё сразу.</span></li>
+      <li><b><span lang="en">Settings with live previews</span><span lang="ru">Настройки с превью</span></b><span lang="en">Hover over a setting and a small animation shows what it does. Search finds any option by keyword. Right-click any block on the bar → “Set up …” opens exactly its settings.</span><span lang="ru">Наведи на настройку — маленькая анимация покажет, что она меняет. Поиск находит всё по слову. Правый клик по любому блоку панели → «Настроить …» откроет именно его настройки.</span></li>
       <li><b><span lang="en">Player volume</span><span lang="ru">Громкость плеера</span></b><span lang="en">Scroll over the player to change the volume of Spotify or the browser only — other apps stay as they are.</span><span lang="ru">Колёсико над плеером меняет громкость только Spotify или браузера — остальные программы не трогает.</span></li>
       <li><b><span lang="en">Your widget color</span><span lang="ru">Свой цвет виджетов</span></b><span lang="en">Disk, CPU, memory and battery meters in neutral white or any color you like; the Start button as a magnifier or the Windows logo.</span><span lang="ru">Полоски и кольца диска, процессора, памяти и батареи — белые или любого цвета; кнопка «Пуск» — лупа или значок Windows.</span></li>
       <li><b><span lang="en">Your own background picture</span><span lang="ru">Своя картинка на фоне</span></b><span lang="en">Any picture behind the bar — fill, stretch, tile or centre, a little darker so icons stay readable. Quoline even saves an empty template of your bar's exact size.</span><span lang="ru">Любая картинка на фоне панели — заполнить, растянуть, плиткой или по центру, чуть темнее, чтобы иконки читались. Quoline даже сохранит пустой шаблон ровно под размер твоей панели.</span></li>
+      <li><b><span lang="en">Translator</span><span lang="ru">Переводчик</span></b><span lang="en">Select text anywhere and translate it in a click — the language is found by itself.</span><span lang="ru">Выдели текст где угодно и переведи его в один клик — язык определяется сам.</span></li>
+      <li><b><span lang="en">Steam friends and your YouTube</span><span lang="ru">Друзья в Steam и твой YouTube</span></b><span lang="en">Which of your Steam friends are online and what they play; your channel's subscribers and views.</span><span lang="ru">Кто из друзей в Steam в сети и во что играет; подписчики и просмотры твоего канала.</span></li>
+      <li><b><span lang="en">Ping and internet speed</span><span lang="ru">Пинг и скорость интернета</span></b><span lang="en">Ping to any address with packet loss, and download / upload speed.</span><span lang="ru">Пинг до любого адреса с потерями и скорость загрузки и отдачи.</span></li>
+      <li><b><span lang="en">Pictures and GIFs on the bar</span><span lang="ru">Картинки и гифки на панели</span></b><span lang="en">Up to three of your own pictures or animated GIFs anywhere on the bar; a click opens a link or an app.</span><span lang="ru">До трёх своих картинок или анимированных гифок в любом месте панели; клик открывает ссылку или программу.</span></li>
+      <li><b><span lang="en">Microphone and desktops</span><span lang="ru">Микрофон и рабочие столы</span></b><span lang="en">Mute the microphone in one click; virtual desktops as buttons, switched with a click.</span><span lang="ru">Выключить микрофон одним кликом; виртуальные рабочие столы — кнопками, переключаются кликом.</span></li>
+      <li><b><span lang="en">Battery saver in one click</span><span lang="ru">Экономия заряда одним кликом</span></b><span lang="en">Click the battery on the bar to turn battery saver on or off.</span><span lang="ru">Клик по батарее на панели включает и выключает экономию заряда.</span></li>
+      <li><b><span lang="en">Web apps and Store apps</span><span lang="ru">Веб-приложения и приложения из Store</span></b><span lang="en">A site installed as an app from Chrome or Edge gets its own icon, apart from the browser. Store apps keep their real icons. Your Windows pins move over in the same order.</span><span lang="ru">Сайт, установленный как приложение из Chrome или Edge, получает свою иконку, отдельно от браузера. Приложения из Store — со своими иконками. Закрепы Windows переезжают в том же порядке.</span></li>
+      <li><b><span lang="en">Set up in a minute</span><span lang="ru">Настройка за минуту</span></b><span lang="en">At the first start: pick a look, a colour and what to show — the bar changes as you click. Pro is free for the first days, no card needed.</span><span lang="ru">При первом запуске: выбери вид, цвет и что показывать — панель меняется прямо на глазах. Первые дни Pro бесплатно, без карты.</span></li>
+      <li><b><span lang="en">Help in one click</span><span lang="ru">Помощь в один клик</span></b><span lang="en">“Report a problem”: write what happened, add screenshots or a video — it reaches us right away, no e-mail needed.</span><span lang="ru">«Сообщить о проблеме»: напиши, что случилось, приложи скриншоты или видео — дойдёт сразу, без почты.</span></li>
+      <li><b><span lang="en">Leaves no trace</span><span lang="ru">Без следов</span></b><span lang="en">Quit or uninstall and the Windows taskbar is back as it was; you can wipe your settings too. Quoline warns you if another taskbar tool would fight with it.</span><span lang="ru">Выйди или удали — таскбар Windows вернётся как был, можно стереть и свои настройки. Quoline предупредит, если с ним спорит другая программа для таскбара.</span></li>
       <li><b><span lang="en">Profiles</span><span lang="ru">Профили</span></b><span lang="en">“Main”, “Island”, “Focus” or your own presets, switched with one click.</span><span lang="ru">«Основной», «Остров», «Фокус» или свои наборы — переключаются одним кликом.</span></li>
       <li><b><span lang="en">Exchange rates and crypto</span><span lang="ru">Курсы и крипта</span></b><span lang="en">BTC, ETH, USD/EUR and more with a 24-hour chart, no sign-up and no API keys.</span><span lang="ru">BTC, ETH, USD/EUR и другие с графиком за сутки — без регистрации и ключей.</span></li>
       <li><b><span lang="en">English and Russian</span><span lang="ru">Английский и русский</span></b><span lang="en">The whole interface in English or Russian, switched in the settings with one click.</span><span lang="ru">Весь интерфейс на английском или русском — переключается в настройках одним кликом.</span></li>
-      <li><b><span lang="en">Automatic updates</span><span lang="ru">Обновляется сам</span></b><span lang="en">When a new version is out, a notification appears above the bar. One click installs it.</span><span lang="ru">Новая версия — уведомление над панелью. Один клик, и всё установлено.</span></li>
+      <li><b><span lang="en">Automatic updates</span><span lang="ru">Обновляется сам</span></b><span lang="en">When a new version is out, a notification appears above the bar and a bright row at the top of its menu. One click installs it.</span><span lang="ru">Новая версия — уведомление над панелью и яркая строка сверху в её меню. Один клик, и всё установлено.</span></li>
     </ul>
   </div>
 </section>
@@ -848,7 +1001,7 @@
     if (md) md.setAttribute("content", META[l].desc);
     $$("[data-set-lang]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === l ? "true" : "false"); });
     if (save) { try { localStorage.setItem("quoline-lang2", l); } catch (e) {} }
-    nameLook(); tick(); fitBars();
+    nameLook(); nameIsl(); tick(); fitBars();
   }
   $$("[data-set-lang]").forEach(function (b) { b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); }); });
   $("#yr").textContent = new Date().getFullYear();
@@ -1032,6 +1185,32 @@
     $$("#lookChips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-look") === look ? "true" : "false"); });
     nameLook();
   }, 3200);
+
+  // ---------- the live island ----------
+  var ISL = {
+    folded: ["Folded", "Свёрнут", "Folded to the time; the mouse opens it", "Свёрнут до часов, мышка раскрывает"],
+    music: ["New track", "Новый трек", "A new song comes up by itself: cover, title, play", "Новая песня появляется сама: обложка, название, пауза"],
+    widgets: ["Widgets", "Виджеты", "Any blocks in one row: player, short videos, weather, clock", "Любые блоки в ряд: плеер, короткие видео, погода, часы"],
+    tiktok: ["TikTok", "TikTok", "Slides out of the island. One wheel notch — the next video", "Выезжает из острова. Одно деление колёсика — следующее видео"],
+    reels: ["Instagram Reels", "Instagram Reels", "The same, with Reels. You stay signed in", "То же самое с Reels. Вход сохраняется"],
+    shorts: ["YouTube Shorts", "YouTube Shorts", "YouTube Shorts work without signing in", "YouTube Shorts работают без входа"],
+    volume: ["Volume", "Громкость", "Volume, charging, the microphone — for a moment", "Громкость, зарядка, микрофон — на миг"]
+  };
+  var isd = $("#isldesk"), isl = "folded", islAuto = !calm, islSeen = false, islOrder = ["folded", "music", "widgets", "tiktok", "reels", "shorts", "volume"];
+  function setIsl(s) {
+    isl = s; isd.setAttribute("data-isl", s);
+    $$("#islChips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-isl") === s ? "true" : "false"); });
+    nameIsl();
+  }
+  function nameIsl() { if (!isd || !ISL[isl]) return; var k = lang() === "ru" ? 1 : 0; $("#islName").textContent = ISL[isl][k]; $("#islNote").textContent = ISL[isl][k + 2]; }
+  $$("#islChips .chip").forEach(function (b) { b.addEventListener("click", function () { islAuto = false; setIsl(b.getAttribute("data-isl")); }); });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { islSeen = es[0].isIntersecting; }, { threshold: 0.35 }).observe(isd);
+  // the videos stay out a little longer than the rest
+  (function islStep() {
+    var wait = /tiktok|reels|shorts/.test(isl) ? 5200 : 3000;
+    setTimeout(function () { if (islAuto && islSeen) setIsl(islOrder[(islOrder.indexOf(isl) + 1) % islOrder.length]); islStep(); }, wait);
+  })();
+  nameIsl();
 
   // ---------- edges ----------
   var screen = $("#screen"), posAuto = !calm, posSeen = false, poses = ["bottom", "left", "top", "right"];
