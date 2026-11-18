@@ -584,21 +584,29 @@
   }
 
   /* ---------- the film: scrolling plays it ---------- */
-  .film { position: relative; height: 860vh; }
+  .film { position: relative; height: 980vh; }
   .film-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
   .film-caps { position: relative; z-index: 3; pointer-events: none; width: min(1200px, 92vw); height: 30vh; margin-top: max(64px, 9vh); flex: none; }
   .fcap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; text-align: center; gap: min(14px, 1.6vh); opacity: 0; visibility: hidden; will-change: opacity, transform; }
   .fcap .title { font-size: clamp(28px, min(5.4vw, 7vh), 80px); }
   .fcap .lead { font-size: clamp(14px, min(1.45vw, 2.3vh), 20px); color: var(--dim); max-width: 34em; }
   .fcap .num { justify-content: center; }
+  .fcap .ln { display: block; overflow: hidden; padding: .04em 0 .1em; margin: -.04em 0 -.1em; }
+  .fcap .ln > span { display: block; will-change: transform; }
+  .fcap .sub { will-change: opacity, transform; }
   .fcap .btn { margin-top: 10px; pointer-events: auto; }
   .fcap[data-c="intro"] .title, .fcap[data-c="intro"] .lead { text-shadow: 0 2px 30px rgba(0,0,0,.6); }
   .film-screen { position: relative; flex: none; width: min(1200px, 92vw, calc((100svh - 30vh - max(64px, 9vh) - 7vh) * 16 / 9)); aspect-ratio: 16 / 9; overflow: hidden;
     border: 1px solid rgba(255,255,255,.12); border-radius: 14px; background: #05070a; transform-origin: 50% 100%; will-change: transform;
-    box-shadow: 0 40px 120px rgba(0,0,0,.65); }
-  .film-layer.desk { position: absolute; inset: 0; margin: 0; height: auto; border: 0; opacity: 0; will-change: opacity, transform; transition: none; }
-  .film-layer.desk:first-child { opacity: 1; }
+    box-shadow: 0 40px 120px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.4); z-index: 2; }
+  .film-screen::after { content: ""; position: absolute; inset: 0; z-index: 6; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,0) 38%); }
+  .film-glow { position: absolute; left: 50%; bottom: -18vh; width: 150vw; height: 95vh; margin-left: -75vw; z-index: 1; pointer-events: none; }
+  .film-glow i { position: absolute; inset: 0; opacity: 0; will-change: opacity; background: radial-gradient(closest-side, var(--g), transparent 72%); }
+  .film-layer.desk { position: absolute; inset: 0; margin: 0; height: auto; border: 0; visibility: hidden; will-change: transform; transition: none; }
+  .film-layer.desk:first-child { visibility: visible; }
   .film-layer .stage { position: absolute; left: 0; right: 0; bottom: 0; }
+  .film-layer .qbar .app > span { transition: none; }   /* the dock wave moves them every frame */
   .fisl { position: absolute; left: 50%; top: 3.2%; z-index: 5; height: 2.6em; width: 7em; margin-left: -3.5em; border-radius: 99em; background: #000; color: #fff;
     font-size: clamp(9px, 1.15vw, 15px); box-shadow: 0 .8em 2.4em rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.08); overflow: hidden; transform: translateY(-260%); will-change: transform; }
   .fisl > div { position: absolute; inset: 0; display: flex; align-items: center; white-space: nowrap; }
@@ -673,7 +681,8 @@
 
 <section class="film" id="film" aria-label="Quoline">
   <div class="film-pin">
-    <div class="film-caps"><div class="fcap" data-c="intro"><p class="num"><b>01</b><span lang="en">Looks</span><span lang="ru">Виды</span></p><h2 class="title"><span lang="en">Your taskbar.<br><em>Any way you want it.</em></span><span lang="ru">Твоя панель задач.<br><em>Какой захочешь.</em></span></h2><p class="lead"><span lang="en">Keep scrolling — it is the same Quoline all the way down.</span><span lang="ru">Листай дальше — всё это один и тот же Quoline.</span></p></div><div class="fcap" data-c="look0"><p class="num"><b>01 / 06</b></p><h2 class="title"><span lang="en">Classic</span><span lang="ru">Классика</span></h2><p class="lead"><span lang="en">Dark, green accent, every block on its own plate</span><span lang="ru">Тёмная, зелёный акцент, каждый блок на своей подложке</span></p></div><div class="fcap" data-c="look1"><p class="num"><b>02 / 06</b></p><h2 class="title"><span lang="en">Crimson</span><span lang="ru">Багровая</span></h2><p class="lead"><span lang="en">Red bar and accent, line pattern, square corners, a narrow font</span><span lang="ru">Красная панель и акцент, узор из линий, прямые углы, узкий шрифт</span></p></div><div class="fcap" data-c="look2"><p class="num"><b>03 / 06</b></p><h2 class="title"><span lang="en">Ocean</span><span lang="ru">Океан</span></h2><p class="lead"><span lang="en">Islands, blue accent, round icons</span><span lang="ru">Острова, синий акцент, круглые иконки</span></p></div><div class="fcap" data-c="look3"><p class="num"><b>04 / 06</b></p><h2 class="title"><span lang="en">Paper</span><span lang="ru">Бумага</span></h2><p class="lead"><span lang="en">Light theme, floating, orange accent, a serif font</span><span lang="ru">Светлая тема, парящая, оранжевый акцент, шрифт с засечками</span></p></div><div class="fcap" data-c="look4"><p class="num"><b>05 / 06</b></p><h2 class="title"><span lang="en">Violet dock</span><span lang="ru">Фиолетовый док</span></h2><p class="lead"><span lang="en">A glass dock with big icons, dotted pattern on the sides</span><span lang="ru">Стеклянный док с большими иконками, узор из точек по бокам</span></p></div><div class="fcap" data-c="look5"><p class="num"><b>06 / 06</b></p><h2 class="title"><span lang="en">Glass</span><span lang="ru">Стекло</span></h2><p class="lead"><span lang="en">No bar at all: only what stands on it</span><span lang="ru">Панели нет вовсе: только то, что на ней стоит</span></p></div><div class="fcap" data-c="island"><p class="num"><b>PRO</b><span lang="en">Island</span><span lang="ru">Остров</span></p><h2 class="title"><span lang="en">And an island<br><em>on top.</em></span><span lang="ru">И остров<br><em>сверху.</em></span></h2><p class="lead"><span lang="en">A new track, the volume, charging — it shows for a moment and folds back to the time.</span><span lang="ru">Новый трек, громкость, зарядка — покажется на миг и снова свернётся до часов.</span></p></div><div class="fcap" data-c="music"><p class="num"><b>02</b><span lang="en">Music</span><span lang="ru">Музыка</span></p><h2 class="title"><span lang="en">The bar<br><em>hears your music.</em></span><span lang="ru">Панель<br><em>слышит музыку.</em></span></h2><p class="lead"><span lang="en">An equalizer right on the bar — in your accent, a rainbow or white. It can listen only to the player.</span><span lang="ru">Эквалайзер прямо на панели — цвета акцента, радугой или белый. Может слушать только плеер.</span></p></div><div class="fcap" data-c="end"><h2 class="title"><span lang="en">All of it.<br><em>One Quoline.</em></span><span lang="ru">Всё это.<br><em>Один Quoline.</em></span></h2><a class="btn dl" href="/Quoline.msi" download><span lang="en">Download for Windows — free</span><span lang="ru">Скачать для Windows — бесплатно</span></a></div></div>
+    <div class="film-glow"><i style="--g:rgba(34,197,94,.30)"></i><i style="--g:rgba(255,40,64,.32)"></i><i style="--g:rgba(30,144,255,.30)"></i><i style="--g:rgba(245,165,36,.26)"></i><i style="--g:rgba(139,92,246,.34)"></i><i style="--g:rgba(255,110,90,.30)"></i></div>
+    <div class="film-caps"><div class="fcap" data-c="intro"><p class="num"><b>01</b><span lang="en">Looks</span><span lang="ru">Виды</span></p><h2 class="title"><span lang="en">Your taskbar.<br><em>Any way you want it.</em></span><span lang="ru">Твоя панель задач.<br><em>Какой захочешь.</em></span></h2><p class="lead"><span lang="en">Keep scrolling — it is the same Quoline all the way down.</span><span lang="ru">Листай дальше — всё это один и тот же Quoline.</span></p></div><div class="fcap" data-c="look0"><p class="num"><b>01 / 06</b></p><h2 class="title"><span lang="en">Classic</span><span lang="ru">Классика</span></h2><p class="lead"><span lang="en">Dark, green accent, every block on its own plate</span><span lang="ru">Тёмная, зелёный акцент, каждый блок на своей подложке</span></p></div><div class="fcap" data-c="look1"><p class="num"><b>02 / 06</b></p><h2 class="title"><span lang="en">Crimson</span><span lang="ru">Багровая</span></h2><p class="lead"><span lang="en">Red bar and accent, line pattern, square corners, a narrow font</span><span lang="ru">Красная панель и акцент, узор из линий, прямые углы, узкий шрифт</span></p></div><div class="fcap" data-c="look2"><p class="num"><b>03 / 06</b></p><h2 class="title"><span lang="en">Ocean</span><span lang="ru">Океан</span></h2><p class="lead"><span lang="en">Islands, blue accent, round icons</span><span lang="ru">Острова, синий акцент, круглые иконки</span></p></div><div class="fcap" data-c="look3"><p class="num"><b>04 / 06</b></p><h2 class="title"><span lang="en">Paper</span><span lang="ru">Бумага</span></h2><p class="lead"><span lang="en">Light theme, floating, orange accent, a serif font</span><span lang="ru">Светлая тема, парящая, оранжевый акцент, шрифт с засечками</span></p></div><div class="fcap" data-c="look4"><p class="num"><b>05 / 06</b></p><h2 class="title"><span lang="en">Violet dock</span><span lang="ru">Фиолетовый док</span></h2><p class="lead"><span lang="en">A glass dock with big icons, dotted pattern on the sides</span><span lang="ru">Стеклянный док с большими иконками, узор из точек по бокам</span></p></div><div class="fcap" data-c="look5"><p class="num"><b>06 / 06</b></p><h2 class="title"><span lang="en">Glass</span><span lang="ru">Стекло</span></h2><p class="lead"><span lang="en">No bar at all: only what stands on it</span><span lang="ru">Панели нет вовсе: только то, что на ней стоит</span></p></div><div class="fcap" data-c="island"><p class="num"><b>PRO</b><span lang="en">Island</span><span lang="ru">Остров</span></p><h2 class="title"><span lang="en">And an island<br><em>on top.</em></span><span lang="ru">И остров<br><em>сверху.</em></span></h2><p class="lead"><span lang="en">A new track, the volume, charging — it shows for a moment and folds back to the time.</span><span lang="ru">Новый трек, громкость, зарядка — покажется на миг и снова свернётся до часов.</span></p></div><div class="fcap" data-c="music"><p class="num"><b>02</b><span lang="en">Music</span><span lang="ru">Музыка</span></p><h2 class="title"><span lang="en">The bar<br><em>hears your music.</em></span><span lang="ru">Панель<br><em>слышит музыку.</em></span></h2><p class="lead"><span lang="en">An equalizer right on the bar — in your accent, a rainbow or white. It can listen only to the player.</span><span lang="ru">Эквалайзер прямо на панели — цвета акцента, радугой или белый. Может слушать только плеер.</span></p></div><div class="fcap" data-c="dock"><p class="num"><b>03</b><span lang="en">Dock</span><span lang="ru">Док</span></p><h2 class="title"><span lang="en">Icons that grow<br><em>under the mouse.</em></span><span lang="ru">Иконки растут<br><em>под мышкой.</em></span></h2><p class="lead"><span lang="en">Like a Mac dock — smooth, exactly centred, not a pixel of jitter.</span><span lang="ru">Как док на Mac — плавно, ровно по центру, без единого дрожания.</span></p></div><div class="fcap" data-c="end"><h2 class="title"><span lang="en">All of it.<br><em>One Quoline.</em></span><span lang="ru">Всё это.<br><em>Один Quoline.</em></span></h2><a class="btn dl" href="/Quoline.msi" download><span lang="en">Download for Windows — free</span><span lang="ru">Скачать для Windows — бесплатно</span></a></div></div>
     <div class="film-screen" aria-hidden="true"><div class="film-layer desk" data-look="classic"><div class="stage" data-bar="looks"></div></div><div class="film-layer desk" data-look="crimson"><div class="stage" data-bar="looks"></div></div><div class="film-layer desk" data-look="ocean"><div class="stage" data-bar="looks"></div></div><div class="film-layer desk" data-look="paper"><div class="stage" data-bar="looks"></div></div><div class="film-layer desk" data-look="violet"><div class="stage" data-bar="looks"></div></div><div class="film-layer desk" data-look="glass"><div class="stage" data-bar="looks"></div></div><div class="feq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="fisl"><div class="fmini"><i></i><span data-hm>12:48</span></div><div class="fmus"><span class="cov"></span><span class="tt"><b>Midnight Drive</b><small>Neon Coast</small></span><span class="eqb"><s></s><s></s><s></s><s></s></span></div></div></div>
     <div class="film-bar"><i></i></div>
   </div>
@@ -1222,51 +1231,79 @@
   (function () {
     var film = $("#film");
     if (!film) return;
-    var screen = $(".film-screen", film), layers = $$(".film-layer", film), caps = $$(".fcap", film);
+    var screen = $(".film-screen", film), layers = $$(".film-layer", film), caps = $$(".fcap", film), glows = $$(".film-glow i", film);
     var isl = $(".fisl", film), mini = $(".fmini", film), mus = $(".fmus", film), eqb = $$(".eqb s", film);
     var feq = $(".feq", film), cols = $$(".feq i", film), bar = $(".film-bar i", film);
+    var dockIcons = $$(".grp.c .app > span", layers[layers.length - 1]);
     var cur = 0, want = 0, last = 0, on = false, seed = cols.map(function (_, i) { return [1.3 + (i * 7 % 11) / 5, i * 1.7, .35 + .65 * Math.sin(Math.PI * (i + .5) / cols.length)]; });
     function cl(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
     function ss(a, b, x) { x = cl((x - a) / (b - a)); return x * x * (3 - 2 * x); }
-    function band(a, b, x, f) { f = f || .009; return ss(a - f, a + f, x) * (1 - ss(b - f, b + f, x)); }
+    function eo(x) { x = cl(x); return 1 - Math.pow(1 - x, 4); }   // ease-out quart: fast start, long soft landing
+    // titles: every line in its own mask, so it can rise from under it
+    caps.forEach(function (c) {
+      $$(".title > span", c).forEach(function (t) {
+        t.innerHTML = t.innerHTML.split(/<br\s*\/?>/i).map(function (l) { return '<span class="ln"><span>' + l + '</span></span>'; }).join("");
+      });
+      c._lines = $$(".ln > span", c);
+      c._subs = $$(".num, .lead, .btn", c);
+      c._subs.forEach(function (x) { x.classList.add("sub"); });
+    });
     function progress() { var r = film.getBoundingClientRect(), h = film.offsetHeight - window.innerHeight; return h > 0 ? cl(-r.top / h) : 0; }
-    // chapters: 0–.1 the screen comes close; .12–.6 six looks; .6–.74 the island; .74–.88 the music; .88– the end
-    // (each caption is gone before the next one comes: two never stand over each other)
-    var CAP = { intro: [-1, .1], look0: [.12, .2], look1: [.2, .28], look2: [.28, .36], look3: [.36, .44], look4: [.44, .52], look5: [.52, .6],
-                island: [.6, .74], music: [.74, .88], end: [.88, 2] };
+    // the chapters
+    var L0 = .1, LS = .068;                                     // six looks from .1, each .068 long
+    var CAP = { intro: [-1, .085], island: [.52, .63], music: [.64, .75], dock: [.76, .87], end: [.885, 2] };
+    for (var k = 0; k < 6; k++) CAP["look" + k] = [L0 + LS * k + (k ? .004 : .012), L0 + LS * (k + 1) - .004];
     function paint(p, t) {
-      // the screen: from a close-up of the bar to the whole desktop, at the end it steps back a little
-      var zin = ss(0, .11, p), back = ss(.88, .97, p);
-      screen.style.transform = "translateY(" + (back * -2).toFixed(2) + "vh) scale(" + (1.55 - .55 * zin - .1 * back).toFixed(4) + ")";
-      // the looks: each one comes in over the last (a short cross-fade and a slight settle)
-      var f = (p - .12) / .08;
+      // the monitor: rises from a tilt and a close-up, faces you; at the end it steps back a little
+      var rise = eo(p / .1), back = ss(.885, .96, p);
+      screen.style.transform = "perspective(1700px) translateY(" + ((1 - rise) * 9 - back * 2).toFixed(2) + "vh) rotateX(" + ((1 - rise) * 24).toFixed(2) +
+        "deg) scale(" + (1.32 - .32 * rise - .08 * back).toFixed(4) + ")";
+      // the looks: each one pours in from the bar, as a soft circle of light that grows over the screen
+      var f = (p - L0) / LS;
       for (var i = 1; i < layers.length; i++) {
-        var a = ss(i - .18, i + .18, f);
-        layers[i].style.opacity = a.toFixed(3);
-        layers[i].style.transform = "scale(" + (1.035 - .035 * a).toFixed(4) + ")";
+        var m = ss(i - .22, i + .22, f), st = layers[i].style;
+        if (m <= 0) { if (st.visibility !== "hidden") st.visibility = "hidden"; continue; }
+        st.visibility = "visible";
+        if (m >= 1) { if (st.webkitMaskImage !== "none") { st.webkitMaskImage = st.maskImage = "none"; } st.transform = "none"; continue; }
+        var r = (m * 175).toFixed(1), g = "radial-gradient(circle at 50% 104%, #000 " + Math.max(0, m * 175 - 26).toFixed(1) + "%, transparent " + r + "%)";
+        st.webkitMaskImage = st.maskImage = g;
+        st.transform = "scale(" + (1.025 - .025 * m).toFixed(4) + ")";
       }
-      // the captions
+      // the glow of the look behind the monitor
+      var gi = Math.max(0, Math.min(5, f));
+      glows.forEach(function (g, n) { var o = Math.max(0, 1 - Math.abs(gi - n - .5) / .9); if (p < L0) o = n === 0 ? rise : 0; g.style.opacity = (Math.min(1, o * 1.15) * (1 - .5 * back)).toFixed(3); });
+      // the captions: the lines rise from under their masks one after the other, and leave upwards
       caps.forEach(function (c) {
-        var r = CAP[c.getAttribute("data-c")], o = band(r[0] + .012, r[1] - .012, p);
-        c.style.opacity = o.toFixed(3);
-        c.style.visibility = o > .01 ? "visible" : "hidden";
-        c.style.transform = "translateY(" + ((1 - o) * (p < r[0] ? 26 : -26)).toFixed(1) + "px)";
+        var r = CAP[c.getAttribute("data-c")], a = ss(r[0], r[0] + .03, p), z = ss(r[1] - .022, r[1], p);
+        var vis = a > 0 && z < 1;
+        if (c._vis !== vis) { c._vis = vis; c.style.opacity = vis ? 1 : 0; c.style.visibility = vis ? "visible" : "hidden"; }
+        if (!vis) return;
+        c._lines.forEach(function (l, n) { var y = (1 - eo(a * 1.5 - n * .25)) * 105 - eo(z * 1.5 - n * .2) * 105; l.style.transform = "translateY(" + y.toFixed(2) + "%)"; });
+        var so = Math.min(eo(a * 1.4 - .35), 1 - z);
+        c._subs.forEach(function (x) { x.style.opacity = so.toFixed(3); x.style.transform = "translateY(" + ((1 - so) * (z > 0 ? -14 : 14)).toFixed(1) + "px)"; });
       });
       // the island drops in, then opens to the track
-      var drop = ss(.6, .645, p), open = ss(.665, .72, p);
+      var drop = eo((p - .53) / .035), open = ss(.565, .61, p);
       isl.style.transform = "translateY(" + (-260 * (1 - drop)).toFixed(1) + "%)";
       var w = 7 + 16 * open, h = 2.6 + 1.3 * open;
       isl.style.width = w.toFixed(3) + "em"; isl.style.height = h.toFixed(3) + "em"; isl.style.marginLeft = (-w / 2).toFixed(3) + "em";
-      mini.style.opacity = (1 - ss(.665, .69, p)).toFixed(3);
-      mus.style.opacity = ss(.695, .72, p).toFixed(3);
-      // the music: an equalizer rises behind the bar
-      var amp = ss(.745, .8, p) * (1 - ss(.9, .96, p));
+      mini.style.opacity = (1 - ss(.565, .585, p)).toFixed(3);
+      mus.style.opacity = ss(.59, .61, p).toFixed(3);
+      // the music: an equalizer rises behind the bar (and settles before the dock)
+      var amp = ss(.645, .69, p) * (1 - ss(.75, .775, p));
       feq.style.opacity = Math.min(1, amp * 1.4).toFixed(3);
       if (amp > .002) cols.forEach(function (c, i) {
         var s0 = seed[i], v = .5 + .5 * Math.sin(t * s0[0] + s0[1]) * Math.sin(t * .37 * s0[0] + s0[1] * .5);
         c.style.transform = "scaleY(" + (.04 + .96 * amp * s0[2] * (.25 + .75 * v)).toFixed(3) + ")";
       });
       eqb.forEach(function (b, i) { b.style.transform = "scaleY(" + (.3 + .7 * Math.abs(Math.sin(t * (2.2 + i * .6) + i))).toFixed(3) + ")"; });
+      // the dock: a wave of magnification runs along the icons, there and back
+      var dw = ss(.765, .865, p), on2 = ss(.765, .78, p) * (1 - ss(.86, .875, p)), c0 = -1.5 + dw * (dockIcons.length + 2);
+      dockIcons.forEach(function (ic, n) {
+        var g = on2 * Math.exp(-Math.pow(n - c0, 2) / 1.3), sc = 1 + .85 * g;
+        ic.style.transform = g > .001 ? "translateY(" + (-(sc - 1) * 13).toFixed(2) + "px) scale(" + sc.toFixed(4) + ")" : "";
+        ic.style.transformOrigin = "50% 100%";
+      });
       bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
     }
     function frame(now) {
@@ -1274,8 +1311,8 @@
       var dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
       want = progress();
       // a soft follow: the film keeps gliding a moment after the wheel stops (like on the big car makers' sites)
-      cur += (want - cur) * (calm ? 1 : 1 - Math.exp(-dt * 7.5));
-      if (Math.abs(want - cur) < .00005) cur = want;
+      cur += (want - cur) * (calm ? 1 : 1 - Math.exp(-dt * 6.5));
+      if (Math.abs(want - cur) < .00004) cur = want;
       paint(cur, now / 1000);
       requestAnimationFrame(frame);
     }
