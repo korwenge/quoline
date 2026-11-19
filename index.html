@@ -439,6 +439,21 @@
   .steps b { display: block; font-size: 22px; letter-spacing: -.03em; margin-bottom: 8px; line-height: 1.15; }
 
   /* faq */
+  /* the daily game */
+  .play .card { margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border-radius: 26px; overflow: hidden;
+                background: #ece2cc; color: #2a2116; text-decoration: none; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9); }
+  .play .card .txt { padding: clamp(26px, 4vw, 48px); display: flex; flex-direction: column; gap: 14px; }
+  .play .card h3 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(30px, 4vw, 48px); line-height: 1.05; margin: 0; font-weight: 700; letter-spacing: -.02em; }
+  .play .card p { margin: 0; color: #4d4231; font-size: 17px; line-height: 1.5; }
+  .play .card .kinds { display: flex; flex-wrap: wrap; gap: 8px; }
+  .play .card .kinds span { background: #f6eedd; border: 1px solid #d8c8a8; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; color: #6b5c45; }
+  .play .card .row7 { display: flex; gap: 6px; }
+  .play .card .row7 i { width: 26px; height: 26px; border-radius: 7px; background: #22c55e; }
+  .play .card .row7 i.y { background: #eab308; } .play .card .row7 i.o { background: #f97316; } .play .card .row7 i.r { background: #ef4444; }
+  .play .card .go { align-self: flex-start; background: #b45309; color: #fff7ed; font-weight: 700; padding: 14px 22px; border-radius: 12px; margin-top: 6px; }
+  .play .card .pic { position: relative; background: #a8c2bd; min-height: 320px; }
+  .play .card .pic svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @media (max-width: 860px) { .play .card { grid-template-columns: 1fr; } .play .card .pic { min-height: 240px; order: -1; } }
   .faqgrid { margin-top: 56px; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 6vw, 90px); }
   .faq { border-top: 1px solid var(--line); }
   details { border-bottom: 1px solid var(--line); }
@@ -651,6 +666,7 @@
       <a href="#features"><span lang="en">Features</span><span lang="ru">Возможности</span></a>
       <a href="#buy"><span lang="en">Price</span><span lang="ru">Цена</span></a>
       <a href="#faq"><span lang="en">FAQ</span><span lang="ru">Вопросы</span></a>
+      <a href="/play/"><span lang="en">Play</span><span lang="ru">Игра</span></a>
     </div>
     <div class="nav-r">
       <div class="lang" role="group" aria-label="Language / Язык">
@@ -948,6 +964,34 @@
         <details><summary><span lang="en">How do I update?</span><span lang="ru">Как обновить?</span></summary><p><span lang="en">You don’t have to do anything: when a new version is released, a notification appears above the bar. Click it, and Quoline updates itself.</span><span lang="ru">Ничего делать не нужно: когда выйдет новая версия, над панелью появится уведомление. Кликни по нему — Quoline обновится сам.</span></p></details>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="sec play" id="play">
+  <div class="wrap">
+    <div class="head">
+      <p class="num reveal"><b>09</b><span lang="en">Daily game</span><span lang="ru">Игра дня</span></p>
+      <h2 class="title reveal d1"><span lang="en">Seven tasks.<br><em>Every day.</em></span><span lang="ru">Семь заданий.<br><em>Каждый день.</em></span></h2>
+    </div>
+    <a class="card reveal" href="/play/">
+      <div class="txt">
+        <h3><span lang="en">How many?</span><span lang="ru">Сколько?</span></h3>
+        <p><span lang="en">Guess how many trees grow on Earth. Draw the Nile from memory. Put the Titanic at its depth. New tasks every midnight, the same for everyone.</span><span lang="ru">Угадай, сколько деревьев на Земле. Нарисуй Нил по памяти. Поставь «Титаник» на его глубину. Новые задания каждую полночь, у всех одинаковые.</span></p>
+        <div class="kinds"><span><span lang="en">Numbers</span><span lang="ru">Числа</span></span><span><span lang="en">Rivers</span><span lang="ru">Реки</span></span><span><span lang="en">Countries</span><span lang="ru">Страны</span></span><span><span lang="en">Cities</span><span lang="ru">Города</span></span><span><span lang="en">Depth and height</span><span lang="ru">Глубина и высота</span></span></div>
+        <div class="row7"><i></i><i class="y"></i><i></i><i class="o"></i><i></i><i class="r"></i><i class="y"></i></div>
+        <span class="go"><span lang="en">Play today's seven</span><span lang="ru">Играть</span></span>
+      </div>
+      <div class="pic" aria-hidden="true">
+        <svg viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice">
+          <defs><radialGradient id="pseabg" cx="50%" cy="35%" r="80%"><stop offset="0" stop-color="#c2d7d2"/><stop offset="1" stop-color="#a3bfba"/></radialGradient></defs>
+          <rect width="400" height="320" fill="url(#pseabg)"/>
+          <path d="M40 0 L400 0 L400 320 L250 320 C240 280 262 250 238 214 C220 186 236 150 214 120 C196 96 150 98 128 70 C110 48 70 40 40 0 Z" fill="#eadab4" stroke="rgba(40,80,80,.3)" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M40 0 L400 0 L400 320 L250 320 C240 280 262 250 238 214 C220 186 236 150 214 120 C196 96 150 98 128 70 C110 48 70 40 40 0 Z" fill="#eadab4"/>
+          <path d="M300 300 C290 250 316 220 300 180 C286 146 312 118 296 82 C284 56 300 30 292 6" fill="none" stroke="#b91c1c" stroke-width="4" stroke-linecap="round"/>
+          <path d="M306 300 C300 254 322 226 308 184 C292 150 318 120 304 86 C292 58 306 34 300 8" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" opacity=".55" stroke-dasharray="1 0"/>
+        </svg>
+      </div>
+    </a>
   </div>
 </section>
 
